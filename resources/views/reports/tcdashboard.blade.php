@@ -118,15 +118,7 @@
     
     <div class="row">
  
-    <div class="col-sm-5 well wellbox" >
-     <h2 style="font-size: 28pt;text-align: left;"></h2>
-     
-    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:100%;height: 6px;background-color:#37a8e0;">
-      <span class="sr-only">70% Complete</span>
-    </div>
-  
-   <h2 style="font-size:15pt;text-align: left;">No of candidates provided<br> for placement</h2>
-    </div>
+    
     
      <div class="col-sm-5 well wellbox" >
     <h2 style="font-size:15pt;text-align: left;">Expenditure incurred towards<br>providing employment</h2>

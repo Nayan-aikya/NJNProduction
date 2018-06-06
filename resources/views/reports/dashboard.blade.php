@@ -57,16 +57,16 @@
 
 <br><br>
 <div class="row">
- 
-    <div class="col-sm-5 well wellbox" >
-     <h2 style="font-size:15pt;text-align: center;">Training Center Status</h2>
+  <div class="col-sm-5 well wellbox" >
+     <h2 style="font-size: 15pt;text-align: left;">Training Center Status</h2>
      
-    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:100%;height: 6px;">
+    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:100%;height: 6px;background-color:#f26c4f;">
       <span class="sr-only">70% Complete</span>
     </div>
-  
-  <br> <h2 style="font-size: 28pt;text-align: center;">{{ $data['status'] }}</h2>
+                   
+   <h2 style="font-size:13pt;text-align: left;">Active&nbsp&nbsp;   <b style="color:#7cbc01;">{{ $data['active']}}</b> &nbsp&nbsp;  Idle &nbsp&nbsp;<b style="color:#f26c4f;">{{ $data['idle']}}</b>&nbsp&nbsp; Defunct&nbsp&nbsp; <b style="color:#37a8e0;">{{ $data['defunt']}}</b></h2>
     </div>
+    
      <div class="col-sm-5 well wellbox" >
      
      <h2 style="font-size:15pt;text-align: left;">No of batches</h2>
@@ -105,7 +105,7 @@
      
   </div>
     
-     <div class="row">
+    <div class="row">
   <div class="col-sm-2 offset-sm-2">
    </div>
     <div class="col-sm-12 well wellbox"  style="height:167px;width: 748px;">
@@ -115,7 +115,8 @@
       <span class="sr-only">70% Complete</span>
     </div>
   
-   <h2 style="font-size:15pt;text-align: left;"><p style="font-size:13pt;text-align: left;"> Stipend &nbsp&nbsp; <b style="color:#f26c4f;"> {{ $data['stipend']}}&nbsp&nbsp; &nbsp&nbsp; </b>Raw Material&nbsp&nbsp;  <b style="color:#37a8e0;">{{ $data['rawmaterial']}}&nbsp&nbsp; &nbsp&nbsp; </b>Institutinoal expenditure&nbsp&nbsp;  <b style="color:#37a8e0;">{{ $data['inst_exp']}}<br><br><br> |Total<b style="color:#f26c4f;"> </b>{{ $data['total_exp']}}</b></p></h2>
+   <h2 style="font-size:15pt;text-align: left;"><p style="font-size:13pt;text-align: left;"> Stipend &nbsp&nbsp; <b style="color:#f26c4f;"> &nbsp&nbsp; {{ $data['stipend'] }} &nbsp;&nbsp; </b>Raw Material&nbsp;&nbsp;  <b style="color:#37a8e0;"> {{ $data['rawmaterial'] }}  &nbsp;&nbsp;</b>Institutional Expenses&nbsp;&nbsp; <b style="color:#7cbc01;"> {{ $data['inst_exp'] }} </b><br><br><br>
+           <b align="right" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |Total<b style="color:#f26c4f;"> {{ $data['total_exp'] }}</b></b></p></h2>
     </div>
     
      
@@ -124,14 +125,14 @@
     
     <div class="row">
  
-    <div class="col-sm-5 well wellbox" >
-     <h2 style="font-size: 28pt;text-align: left;"></h2>
+      <div class="col-sm-5 well wellbox" >
+     <h2 style="font-size:15pt;text-align: center;">Training Center Count</h2>
      
-    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:100%;height: 6px;background-color:#37a8e0;">
+    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:100%;height: 6px;">
       <span class="sr-only">70% Complete</span>
     </div>
   
-   <h2 style="font-size:15pt;text-align: left;">No of candidates provided<br> for placement</h2>
+  <br> <h2 style="font-size: 28pt;text-align: center;">{{ $data['status'] }}</h2>
     </div>
     
      <div class="col-sm-5 well wellbox" >

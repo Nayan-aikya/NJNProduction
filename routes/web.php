@@ -154,6 +154,25 @@ Route::get('/tcdashboard','TcController@fetchTcDashboardInfo');
 
 Route::get('/printcertification','TdController@printCertification');
 
+// Power subsidy private
+Route::get('weavers/powersubsidy-list', 'WeaverController@psList');
+Route::get('weavers/powersubsidy-app/details/{id}', 'WeaverController@psDetails');
+Route::get('weavers/powersubsidy-getfile/{type}/{id}', 'WeaverController@psGetfile');
+Route::get('weavers/powersubsidy-adminaction/{action}/{id}', 'WeaverController@psAdminaction');
+Route::get('weavers/powersubsidy-getzip/{id}', 'WeaverController@psGetzip');// Electronic jaq private
+Route::get('weavers/ej-2loom-list', 'WeaverController@ejTlList');
+Route::get('weavers/ej-2loom-app/details/{id}', 'WeaverController@ejTlDetails');
+Route::get('weavers/ej-2loom-getfile/{type}/{id}', 'WeaverController@ejTlGetfile');
+Route::get('weavers/ej-2loom-adminaction/{action}/{id}', 'WeaverController@ejTlAdminaction');
+Route::get('weavers/ej-2loom-getzip/{id}', 'WeaverController@ejTlGetzip');
+// weaver investment form
+Route::post('weavers/invest-apply', 'WeaverController@investApply');
+Route::get('weavers/invest-apply', function()
+{
+   return View::make('weavers.invest_apply');
+});
+Route::get('weavers/invest-list','WeaverController@investList');
+
 
 
 
