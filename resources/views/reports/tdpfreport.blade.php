@@ -47,8 +47,9 @@
 <h1 style="color: #b30000;">Report</h1>
 <div class="response" id="view">
 <table id="exportTable" class="table table-bordered">
-  <tr><th>Centre Id</th><th>Centre Name</th><th>District</th><th>Batch Id</th><th>Batch Name</th><th>Training Subject</th><th colspan="3">Physical Target</th><th colspan="3">Financial Target</th></tr>
-  <tr><th></th><th></th><th></th><th></th><th></th><th></th><th>Male Total</th><th>Female Total</th><th>Total</th><th>Male Total</th><th>Female Total</th><th>Total</th></tr>
+ <!--  <tr><th>Centre Id</th><th>Centre Name</th><th>District</th><th>Batch Id</th><th>Batch Name</th><th>Training Subject</th><th colspan="3">Physical Target</th><th colspan="3">Financial Target</th></tr>
+  <tr><th></th><th></th><th></th><th></th><th></th><th></th><th>Male Total</th><th>Female Total</th><th>Total</th><th>Male Total</th><th>Female Total</th><th>Total</th></tr> -->
+  <tr><th>Centre Id</th><th>Centre Name</th><th>District</th><th>Batch Id</th><th>Batch Name</th><th>Training Subject</th><th>PT- Male</th><th>PT- FeMale</th><th>PT- Total</th><th>FT- Male</th><th>FT- FeMale</th><th>FT- Total</th></tr>
   @foreach ($physicalinfo as $p)
   <tr><td>{{ $p->centre_id }}</td><td>{{ $p->centre_name }}</td><td>{{ $p->district }}</td><td>{{ $p->batch_id }}</td><td>{{ $p->batch_name }}</td><td>{{ $p->batch_type }}</td><td>{{ $p-> phy_male }}</td><td>{{ $p-> phy_female }}</td><td>{{ $p-> phy_total }}</td><td>{{ $p->fin_male }}</td><td>{{ $p->fin_female }}</td><td>{{ $p->fin_total }}</td></tr>
   @endforeach
@@ -67,7 +68,8 @@
             var tc = $(this).val();
             var fiscalyear = $("select[name='fiscalyear']").val();
             if(tc) {
-              var row = '<table class="table table-bordered"  id="exportTable"><tr><th>Centre ID</th><th>Centre Name</th><th>District</th><th>Batch Id</th><th>Batch Name</th><th>Training Type</th><th colspan="3">Physical Target</th><th colspan="3">Financial Target</th></tr><tr><th></th><th></th><th></th><th></th><th></th><th></th><th>Male Total</th><th>Female Total</th><th>Total</th><th>Male Total</th><th>Female Total</th><th>Total</th></tr>';
+              // var row = '<table class="table table-bordered"  id="exportTable"><tr><th>Centre ID</th><th>Centre Name</th><th>District</th><th>Batch Id</th><th>Batch Name</th><th>Training Type</th><th colspan="3">Physical Target</th><th colspan="3">Financial Target</th></tr><tr><th></th><th></th><th></th><th></th><th></th><th></th><th>Male Total</th><th>Female Total</th><th>Total</th><th>Male Total</th><th>Female Total</th><th>Total</th></tr>';
+              var row = '<tr><th>Centre Id</th><th>Centre Name</th><th>District</th><th>Batch Id</th><th>Batch Name</th><th>Training Subject</th><th>PT- Male</th><th>PT- FeMale</th><th>PT- Total</th><th>FT- Male</th><th>FT- FeMale</th><th>FT- Total</th></tr>';
                 $.ajax({
                     url: '/pfreport/'+tc+'/'+fiscalyear,
                     type: "GET",
