@@ -173,6 +173,10 @@ Route::get('weavers/invest-apply', function()
 });
 Route::get('weavers/invest-list','WeaverController@investList');
 
+Route::post('/candidatePhoto','TcController@candidatePhoto');
+Route::post('/batchcandidatedelete', 'TcController@batchCandidateDelete');
 
 
-
+Route::get('/pfreport','TdController@pfreportInfo');
+Route::get('/pfreport/{tc}/{fiscalyear}','TdController@specpfReport');
+Route::get('/tcpfreport','TcController@tcpfreportInfo');
