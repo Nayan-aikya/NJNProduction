@@ -9,12 +9,8 @@
         </div>
         <!-- main content -->
         <div id="targetcontent" class="col-md-9">
-        <div class="flash-message">           
-        </div>
         @if(Session::has('success'))
-        <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span><em> {!! session('success') !!}
-        <button type="button" class="close" data-dismiss="alert">×</button></em>
-        </div>
+        <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span><em> {!! session('success') !!}<button type="button" class="close" data-dismiss="alert">×</button></em></div>
         @endif
     <center><h1 style="color: #b30000;"> Batch - Candidate List </h1></center>
     <!-- <form action="" method="post"> -->
@@ -77,14 +73,14 @@
         <th>Training Subject:<span data-field="mappingtsubject" id="mappingtsubject" name="mappingtsubject"></th>
     </tr>    
 </table> <br><br>
+<div id="myview">@include('candidate.blade.php')</div>
 <div id="view"></div>
 <!-- <button type="submit" class="btn btn-primary" style="margin-left: 70%;width: 30%;">Submit</button> -->
 <!-- </form> -->
 </div>
 </div>    
 <script type="text/javascript">
-    $(document).ready(function() {  
-    var batch;      
+    $(document).ready(function() {        
         $('select[name="mappingsubject"]').on('change', function() {
             var fy=$('select[name="mappingfiscalyear"]').val();
             var subject = $(this).val();
@@ -112,7 +108,7 @@
             }
         });
         $('select[name="mappingbatch"]').on('change', function() {
-             batch = $(this).val();
+            var batch = $(this).val();
             // alert(batch);
             $("input[name='mappingtiming']").val("From: "+" To: ");
                     $("[data-field='mappingtsubject']").text("");
@@ -120,6 +116,7 @@
                     $("[data-field='mappingdistrict']").text("");
                     $("[data-field='mappingdivision']").text("");
                     $("input[name='mappingdistrictcode']").val("");
+
                     var row = '<meta name="csrf-token" content="{{ csrf_token() }}" /><table class="table table-bordered"><tr><th>Candidate ID</th><th>First Name</th><th>Last Name</th><th>Gender</th><th>Category</th><th>Education</th><th>Skill</th><th>Candidate Image</th><th></th></tr>';
             if(batch) {
                 $.ajax({
@@ -127,7 +124,7 @@
                     type: "GET",
                     dataType: "json",
                     success:function(data) { 
-                    // console.log(data[0].candidate); 
+                    console.log(data[0].candidate); 
                         // alert('success');
                     $("input[name='mappingtiming']").val("From: "+ data[0].start_date+" To: "+data[0].end_date);
                     $("[data-field='mappingtsubject']").text(data[0].batch_type);
@@ -135,9 +132,10 @@
                     $("[data-field='mappingdistrict']").text(data[0].district_name);
                     $("[data-field='mappingdivision']").text(data[0].division);
                     $("input[name='mappingdistrictcode']").val(data[0].district_id);
+
                     // row = '<meta name="csrf-token" content="{{ csrf_token() }}" /><table class="table table-bordered"><tr><th>Candidate ID</th><th>First Name</th><th>Last Name</th><th>Gender</th><th>Category</th><th>Education</th><th>Skill</th><th></th></tr>';
                     $.each(data[0].candidate, function (i, item) {
-                    row += '<tr><td>' + item.candidate_id + '</td><td>' + item.first_name + '</td><td>' + item.last_name + '</td><td>' + item.gender + '</<td><td>' + item.category + '</td><td>' + item.education + '</td><td>' + item.skill + '</td><td><input type="file" name="photo" class="form-control" id="photo'+item.candidate_id+'" /><button class="btn  btn-success uploadTest" style="margin-left: 22%;margin-top: 5%;" data-toggle="modal" data-target="#myModal" data-id="' + item.candidate_id+ '">Upload</button></td><td><button class="btn  btn-danger saveTest"  data-toggle="modal" data-target="#myModal" data-id="' + item.candidate_id+ '">Remove</button></td></tr>';
+                    row += '<tr><td>' + item.candidate_id + '</td><td>' + item.first_name + '</td><td>' + item.last_name + '</td><td>' + item.gender + '</<td><td>' + item.category + '</td><td>' + item.education + '</td><td>' + item.skill + '</td><td><input type="file" name="image'+item.candidate_id+'" class="form-control" id="file'+item.candidate_id+'"><button class="btn  btn-danger uploadTest"  data-toggle="modal" data-target="#myModal" data-id="' + item.candidate_id+ '">Submit</button></td><td><button class="btn  btn-danger saveTest"  data-toggle="modal" data-target="#myModal" data-id="' + item.candidate_id+ '">Remove</button></td></tr>';
                 });
                 row+='</table>';
                 $('#view').html('');
@@ -160,12 +158,11 @@
             $.ajax({
                 url: '/batchcandidatedelete',
                 type: "POST",
-                data: {_token: CSRF_TOKEN ,'candidateid': $(this).attr('data-id'),'batchid': batch},
+                data: {_token: CSRF_TOKEN ,candidateid: $(this).attr('data-id')},
                 dataType: "json",
                 success: function (data) {
                     // alert('success'+data.msg);
-                    // alert('Removed successfully!!');
-                    $('div.flash-message').html(data);
+                    alert('Removed successfully!!');
                 }
             });
         });
@@ -173,32 +170,22 @@
          $(document).on('click', '.uploadTest', function () {
             var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
             var id = $(this).attr('data-id');
-            // alert('calling...'+id);
-            var file_data = $('#photo'+id).prop('files')[0];
-            // alert(file_data);
-            var form_data = new FormData();
-            
-            form_data.append('candidateid', id);
-            form_data.append('batchid', batch);
-            form_data.append('file', file_data);
-            // alert(JSON.stringify(form_data));
-            $.ajaxSetup({
-            headers: {
-                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-            }
-            });
+            var photo=$('input[name="image'+id+'"]').val();
+            var file = document.getElementById('file'+id).files[0];
+            alert(file);
             $.ajax({
-                url: '/candidatePhoto',
-                type: "post",
-                // data: {'candidateid': id,'batchid':batch,'photo': ''},
-                data :form_data,
-                contentType: false,       
-                cache: false,             
-                processData: false,
+                url: '/candidatephotoupload',
+                type: "POST",
+                data: {_token: CSRF_TOKEN ,'candidateid': $(this).attr('data-id'),'photo': $('input[name="image'+id+'"]')},
+                mimeType: "multipart/form-data",
                 success: function (data) {
-                    $('div.flash-message').html(data);
+                    // alert('success'+data.msg);
+                    alert('Uploaded successfully!!');
                 }
             });
+            // alert(id);
+            // var image = $("#file"+id)[0].files[0];
+            // alert(image);
         });
     });
 </script>
