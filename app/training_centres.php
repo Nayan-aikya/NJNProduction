@@ -80,5 +80,10 @@ class training_centres extends Model
         return $tc;
     }
 
+    public function fetchTcName($centre_id){
+        $tc = training_centres::where('centre_id',$centre_id)->value('centre_name');        
+        return $tc;
+    }
+
 
 }

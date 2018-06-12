@@ -25,6 +25,8 @@ use App\financial_target;
 use App\batch_employment_expenses;
 use App\academicyear;
 use App\batch_candidates;
+use App\batch_employment_expense;
+
 
 
 use Hash;
@@ -476,14 +478,17 @@ class TdController extends Controller
         return Redirect::back();
     } 
     public function approveemploymentExpense(){
-        $info = DB::table('training_batches as t')->join('batch_employment_expenses as e','e.batch_id','=','t.batch_id')->join('training_centres as c','c.centre_id','=','t.centre_id')->where('t.employment_expense_status',null)->select('c.centre_id','c.centre_name','c.district','t.batch_id','t.batch_name','t.batch_type','t.action','e.expense')->get();
+        $info = DB::table('training_batches as t')->join('batch_employment_expenses as e','e.batch_id','=','t.batch_id')->join('training_centres as c','c.centre_id','=','t.centre_id')->where('e.status',"Created")->select('c.centre_id','c.centre_name','c.district','t.batch_id','t.batch_name','t.batch_type','t.action','e.expense')->get();
         return view('tdview.approveemploymentexpense')->with(array('info'=>$info));
     }
     public function approveExpense($batchid,$centreid)
     {  
        $tccall =new training_batches();
-       $new_data =array('employment_expense_status'=>"Approved");
-       $tc=$tccall->approveExpense($batchid,$centreid,$new_data);
+       $btcall =new batch_employment_expense();
+       $data =array('employment_expense_status'=>"Approved");
+       $data1 =array('status'=>"Approved");
+       $tccall->approveExpense($batchid,$centreid,$data);
+       $btcall->approveExpense($batchid,$centreid,$data1);
        Session::flash("message", "Expense approved!!");
        return Redirect::back(); 
     }

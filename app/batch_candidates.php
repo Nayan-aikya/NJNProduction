@@ -13,7 +13,7 @@ class batch_candidates extends Model
 							'batch_type',
 							'candidate_id',
                             'employment_status',
-                            'employed_industry'
+                            'employed_industry_type'
 							];
 	public function createbatchCandidate($array){
     	$candidates = batch_candidates::insert($array);     
@@ -33,7 +33,7 @@ class batch_candidates extends Model
         return $candidates;
     }	
     public function employmentstatusUpdate($tc,$batch,$candidateid,$industry,$status){
-        $candidates = batch_candidates::where('candidate_id',$candidateid)->where('centre_id',$tc)->where('batch_id',$batch)->update(array('employment_status' => $status , 'employed_industry' => $industry));     
+        $candidates = batch_candidates::where('candidate_id',$candidateid)->where('centre_id',$tc)->where('batch_id',$batch)->update(array('employment_status' => $status , 'employed_industry_type' => $industry));     
         return $candidates;
     }
     				

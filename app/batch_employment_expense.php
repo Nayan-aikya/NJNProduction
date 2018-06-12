@@ -18,12 +18,16 @@ class batch_employment_expense extends Model
     	$expense = batch_employment_expense::insert($expense);     
         return $expense;
     }
-    public function checkExpense($fiscalyear,$tc,$batch,$type){
-        $expense = batch_employment_expense::where('academic_year',$fiscalyear)->where('centre_id',$tc)->where('batch_id',$batch)->where('batch_type',$type)->get();     
+    public function checkExpense($fiscalyear,$tc,$batch){
+        $expense = batch_employment_expense::where('academic_year',$fiscalyear)->where('centre_id',$tc)->where('batch_id',$batch)->get();     
         return $expense;
     }
-    public function updateExpense($fiscalyear,$tc,$batch,$type,$expense){
-        $expense = batch_employment_expense::where('academic_year',$fiscalyear)->where('centre_id',$tc)->where('batch_id',$batch)->where('batch_type',$type)->update($expense);     
+    public function updateExpense($fiscalyear,$tc,$batch,$expense){
+        $expense = batch_employment_expense::where('academic_year',$fiscalyear)->where('centre_id',$tc)->where('batch_id',$batch)->update($expense);     
         return $expense;
+    }
+     public function approveExpense($batchid,$centreid,$data){
+        $batchinfo = batch_employment_expense::where('batch_id', $batchid)->where('centre_id', $centreid)->update($data); 
+        return $batchinfo;
     }
 }
