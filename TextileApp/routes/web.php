@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /*
 |--------------------------------------------------------------------------
@@ -41,10 +41,6 @@ Route::get('tchome', function()
 });
 Route::post('/login', 'loginController@login');
 Route::get('/logout', 'loginController@logout');
-Route::get('/login', function()
-{
-   return View::make('pages.login');
-});
 
 Route::get('/pftarget/ajax/{id}','TcController@getBatchList');
 Route::get('/pftarget/batchajax/{id}','TcController@getBatchInfo');
@@ -52,11 +48,6 @@ Route::get('/pftarget', 'TcController@pftargetfetch');
 Route::post('/pftargetapproval', 'TcController@pftargetapproval');
 Route::post('insertpftarget', 'TcController@insertpf');
 Route::get('/batchexpense', 'TcController@batchexpenseview');
-Route::get('/employementexpense', 'TcController@getemploymentExpense');
-Route::post('/employementexpense', 'TcController@postemploymentExpense');
-Route::get('/getcandidates/{id}', 'TcController@getBatchCandidates');
-
-
 // Route::get('/employementexpense', 'TcController@employmentExpense');
 
 Route::post('batchexpensetotal/{id}', 'TcController@insertbatchexpense');
@@ -124,14 +115,6 @@ Route::post('/batchcandidatedelete/{candidateid}/{batchid}', 'TcController@batch
 
 Route::post('/importExcel/{id}', 'TcController@importExcel');
 
-// Power subsidy
-Route::get('weavers/powersubsidy-apply', 'WeaverController@psNewForm');
-Route::post('weavers/powersubsidy-apply', 'WeaverController@psApplyForm');
-// Electronic jaq
-Route::get('weavers/ej-2loom-apply', 'WeaverController@ejTlNewForm');
-Route::post('weavers/ej-2loom-apply', 'WeaverController@ejTlApply');
-
-
 Route::get('/employmentexpense', 'TcController@employmentexpensefetch');
 Route::get('/employmentexpense/ajax/{id}','TcController@employmentexpenseBatchList');
 Route::get('/employmentexpense/batchajax/{id}','TcController@employmentexpenseBatchInfo');
@@ -143,7 +126,6 @@ Route::get('/approveemploymentexpense','TdController@approveemploymentExpense');
 Route::post('/approveexpense/{batchid}/{centreid}','TdController@approveExpense');
 Route::post('/rejectexpense/{batchid}/{centreid}','TdController@rejectExpense');
 
-
 Route::post('/uploadcandidatephoto/{candidateid}/{batchid}','TcController@uploadPhoto');
 
 Route::get('/candidatelistinfo','TcController@candidateInfo');
@@ -151,28 +133,5 @@ Route::get('/candidatelistinfo','TcController@candidateInfo');
 Route::get('/dashboard','TdController@fetchDashboardInfo');
 Route::get('/dashboard/{tc}/{fiscalyear}','TdController@fetchSpecDashboardInfo');
 Route::get('/tcdashboard','TcController@fetchTcDashboardInfo');
-
-Route::get('/printcertification','TdController@printCertification');
-
-// Power subsidy private
-Route::get('weavers/powersubsidy-list', 'WeaverController@psList');
-Route::get('weavers/powersubsidy-app/details/{id}', 'WeaverController@psDetails');
-Route::get('weavers/powersubsidy-getfile/{type}/{id}', 'WeaverController@psGetfile');
-Route::get('weavers/powersubsidy-adminaction/{action}/{id}', 'WeaverController@psAdminaction');
-Route::get('weavers/powersubsidy-getzip/{id}', 'WeaverController@psGetzip');// Electronic jaq private
-Route::get('weavers/ej-2loom-list', 'WeaverController@ejTlList');
-Route::get('weavers/ej-2loom-app/details/{id}', 'WeaverController@ejTlDetails');
-Route::get('weavers/ej-2loom-getfile/{type}/{id}', 'WeaverController@ejTlGetfile');
-Route::get('weavers/ej-2loom-adminaction/{action}/{id}', 'WeaverController@ejTlAdminaction');
-Route::get('weavers/ej-2loom-getzip/{id}', 'WeaverController@ejTlGetzip');
-// weaver investment form
-Route::post('weavers/invest-apply', 'WeaverController@investApply');
-Route::get('weavers/invest-apply', function()
-{
-   return View::make('weavers.invest_apply');
-});
-Route::get('weavers/invest-list','WeaverController@investList');
-
-
 
 

@@ -6,7 +6,6 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
-use Illuminate\Support\Facades\Auth;
 use DB;
 use Session;
 use App\batches;
@@ -24,11 +23,6 @@ use App\physical_target;
 use App\financial_target;
 use App\batch_employment_expenses;
 use App\academicyear;
-use App\batch_candidates;
-use App\batch_employment_expense;
-
-
-
 use Hash;
 use Illuminate\Support\Facades\Input;
 
@@ -153,8 +147,7 @@ class TdController extends Controller
     public function fetchtclist(Request $obj)
     {
       $tccall=new training_centres();
-      $district = Auth::user()->district;
-      $tcinfo = $tccall->fetchTcListByDistrict($district); 
+      $tcinfo = $tccall->fetchTcList();  
       return view('tdview.viewtc')->with(array('tcinfo'=>$tcinfo));
     }
     public function deletetcview($centreid)
@@ -167,34 +160,20 @@ class TdController extends Controller
     }
     public function fetchbatchlistview(Request $obj)
     {
-        $centerid = Auth::user()->centre_id;
         $batchcall = new batches();
-
-        $batchinfo = DB::table('batches')
-            ->leftJoin('physical_targets', 'physical_targets.batch_id', '=', 'batches.batch_id')
-            ->leftJoin('financial_targets', 'financial_targets.batch_id', '=', 'batches.batch_id')
-            ->leftJoin('training_batches', 'training_batches.batch_id', '=', 'batches.batch_id')
-            ->where('batches.centre_id',$centerid)
-            ->select('batches.*', 'physical_targets.status as phystatus', 'financial_targets.status as finstatus','training_batches.action')
-            ->get();
-
-        //$batchinfo=$batchcall->fetchBatchListByTc($centerid); 
+        $batchinfo=$batchcall->fetchBatchList(); 
         return view('tcview.viewbatchlist')->with(array('batchinfo'=>$batchinfo));
     }
     public function fetchbatchlist(Request $obj)
     {
         $batchcall = new batches();
-        $district = Auth::user()->district;
-        $districts = new districts();
-        $dist_code = $districts->pluckDistrictCode($district);
-        $batchinfo = $batchcall->fetchPendingBatchList($dist_code);
+        $batchinfo = $batchcall->fetchPendingBatchList();
         return view('tdview.viewbatch')->with(array('batchinfo'=>$batchinfo));
     }
     public function fetchTrainingCentreList(Request $obj)
     {
         $tccall =new training_centres();
-        $district = Auth::user()->district;
-        $tcinfo =$tccall->fetchPendingTcListByDistrict($district);
+        $tcinfo =$tccall->fetchPendingTcList();
         return view('tdview.approvetcview')->with(array('tcinfo'=>$tcinfo));
     }
 
@@ -217,8 +196,7 @@ class TdController extends Controller
     public function approveBatchtarget()
     {
         $tc = new training_centres();
-        $district = Auth::user()->district;
-        $tcs =  $tc->fetchtcforList($district);
+        $tcs =  $tc->fetchtcforList();
         return view('tcview.apppftarget',compact('tcs'));
     }
         
@@ -297,19 +275,12 @@ class TdController extends Controller
 
     public function credentialCreation()
     {  
-       $districts=districts::all();
+       $districts=districts::all(); 
        $ayobj = new academicyear();
-	       $academicyear = $ayobj->fetchAcademicyear();
-	       return view('tdview.credential',compact('districts','academicyear'));
-	}
-	//------------------------
-	// public function getDistrictwiseTCList($id)
- //       $districts=districts::all(); 
- //       $ayobj = new academicyear();
- //       $academicyear = $ayobj->fetchAcademicyear();
- //       return view('tdview.credential',compact('districts','academicyear'));  
- //        // return view('tdview.credential');
- //    }
+       $academicyear = $ayobj->fetchAcademicyear();
+       return view('tdview.credential',compact('districts','academicyear'));  
+        // return view('tdview.credential');
+    }
 
     public function getDistrictwiseTCList($id)
     {
@@ -410,9 +381,7 @@ class TdController extends Controller
  public function viewpftargetfetch(Request $req)
     {
         $tc = new training_centres();
-        $district = Auth::user()->district;
-        $tcs =  $tc->fetchtcforList($district);
-
+        $tcs =  $tc->fetchtcforList();
         $ayobj = new academicyear();
         $academicyear = $ayobj->fetchAcademicyear();
         return view('tdview.approvepftarget',compact('tcs','academicyear'));
@@ -478,17 +447,14 @@ class TdController extends Controller
         return Redirect::back();
     } 
     public function approveemploymentExpense(){
-        $info = DB::table('training_batches as t')->join('batch_employment_expenses as e','e.batch_id','=','t.batch_id')->join('training_centres as c','c.centre_id','=','t.centre_id')->where('e.status',"Created")->select('c.centre_id','c.centre_name','c.district','t.batch_id','t.batch_name','t.batch_type','t.action','e.expense')->get();
+        $info = DB::table('training_batches as t')->join('batch_employment_expenses as e','e.batch_id','=','t.batch_id')->join('training_centres as c','c.centre_id','=','t.centre_id')->where('t.employment_expense_status',null)->select('c.centre_id','c.centre_name','c.district','t.batch_id','t.batch_name','t.batch_type','t.action','e.expense')->get();
         return view('tdview.approveemploymentexpense')->with(array('info'=>$info));
     }
     public function approveExpense($batchid,$centreid)
     {  
        $tccall =new training_batches();
-       $btcall =new batch_employment_expense();
-       $data =array('employment_expense_status'=>"Approved");
-       $data1 =array('status'=>"Approved");
-       $tccall->approveExpense($batchid,$centreid,$data);
-       $btcall->approveExpense($batchid,$centreid,$data1);
+       $new_data =array('employment_expense_status'=>"Approved");
+       $tc=$tccall->approveExpense($batchid,$centreid,$new_data);
        Session::flash("message", "Expense approved!!");
        return Redirect::back(); 
     }
@@ -500,129 +466,85 @@ class TdController extends Controller
         Session::flash("message", "Expense rejected!!");
         return Redirect::back();  
     }
+    public function fetchDashboardInfo(Request $req)
+    {         
+        $now = new DateTime();
+        $year1 = $now->format("Y");
+        $year2 = (int)$year1+1;
+        $year = $year1.'-'.$year2;
 
-    
-    public function fetchDashboardInfo()
-    {
-        $year = NULL;
-        $tc= "All";
-        if(!empty(Input::get('fiscalyear'))){
-            $year = Input::get('fiscalyear');
-        }
-        if(!empty(Input::get('tcid'))){
-            $tc = Input::get('tcid');
-        }
-        if($year == NULL){
-            $now = new DateTime();
-            $year1 = $now->format("Y");
-            $year2 = (int)$year1+1;
-            $year = $year1.'-'.$year2;
-        }
+        $academicyear=academicyear::all();
+        $tc=training_centres::where('academic_year',$year)->get();
 
-        $data['tc'] = $tc;
-        $data['acyear'] = $year;
+        $tcapproved = DB::table('training_centres')->where('academic_year',$year)->where('centre_status','Approved')->count();
+        $tcactive = DB::table('training_centres')->where('academic_year',$year)->where('centre_status','Approved')->count();
+        $tcidle = DB::table('training_centres')->where('academic_year',$year)->where('centre_status','Created')->count();
+        $tcdefunct = DB::table('training_centres')->where('academic_year',$year)->where('centre_status','Rejected')->count();
 
-        $data['academicyear']=$academicyear=academicyear::all();
-
-        $tccall=new training_centres();
-        $district = Auth::user()->district;
-        $dis=new districts();
-        $dis_code = $dis->pluckDistrictCode($district);
-        $data['tcinfo'] = $tccall->fetchTcListByDistrict($district);
-
-        if($tc == "All")
-        {
-            $data['info'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->select('training_batches.batch_id','training_batches.batch_name','training_batches.status','batches.start_date','batches.end_date','batches.no_of_stud','training_batches.action')->get();
-
-            $data['status']=$tcactive = DB::table('training_centres')->where('district',$district)->count();
-
-            $data['active']= DB::table('training_centres')->where('district',$district)->where('centre_status','Approved')->count();
-
-            $data['idle']= DB::table('training_centres')->where('district',$district)->where('centre_status','created')->count();
-
-            $data['defunt']= DB::table('training_centres')->where('district',$district)->where('centre_status','Rejected')->count();
-
-            $data['nobatch'] = DB::table('batches')->where('district_id',$dis_code)->where('academic_year',$year)->count();
-
-            $data['nocandidate'] = DB::table('batch_candidates')->join('batches','batch_candidates.batch_id','=','batches.batch_id')
-            ->where('batches.district_id',$dis_code)
-            ->where('batch_candidates.academic_year',$year)->count();
-
-            $data['stipend'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->sum('stipend');
-
-             $data['inst_exp'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->sum('inst_exp');
-
-             $data['rawmaterial'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->sum('raw_material');
-
-        
-            $data['total_exp'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->sum('total_expense');
-
-            $data['candidateplaced'] = DB::table('batch_candidates')->join('batches','batch_candidates.batch_id','=','batches.batch_id')
-            ->where('batches.district_id',$dis_code)
-            ->where('batch_candidates.academic_year',$year)->where('batch_candidates.employment_status','Yes')->count();
-
-            $data['placementexpense'] = DB::table('batch_employment_expenses')->join('batches','batches.batch_id','=','batch_employment_expenses.batch_id')->where('batch_employment_expenses.academic_year',$year)->where('batches.district_id',$dis_code)->sum('expense');
-        }
-        else
-        {
-            $data['info'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->select('training_batches.batch_id','training_batches.batch_name','training_batches.status','batches.start_date','batches.end_date','batches.no_of_stud','training_batches.action')->get();
-
-            $data['active']= DB::table('training_centres')->where('centre_id',$tc)->where('centre_status','Approved')->count();
-
-            $data['idle']= DB::table('training_centres')->where('centre_id',$tc)->where('centre_status','created')->count();
-
-            $data['defunt']= DB::table('training_centres')->where('centre_id',$tc)->where('centre_status','Rejected')->count();
-
-            $data['status']=$tcactive = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->value('status');
-
-            $data['nobatch'] = DB::table('batches')->where('centre_id',$tc)->where('academic_year',$year)->count();
-
-            $data['nocandidate'] = DB::table('batch_candidates')->where('centre_id',$tc)->where('academic_year',$year)->count();
-
-            $data['stipend'] = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('stipend');
-
-            $data['inst_exp'] = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('inst_exp');
-
-            $data['rawmaterial'] = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('raw_material');
-
-        
-            $data['total_exp'] = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('total_expense');
-
-            $data['candidateplaced'] = DB::table('batch_candidates')->where('centre_id',$tc)->where('academic_year',$year)->where('employment_status','Yes')->count();
-
-            $data['placementexpense'] = DB::table('batch_employment_expenses')->where('centre_id',$tc)->where('academic_year',$year)->sum('expense');
-        }
-        
-      
-      return view('reports.dashboard')->with('data',$data);
-
-     
+        $curryearbatch = DB::table('training_batches')->where('batch_academic_year',$year)->count();
+        $curryearcandidate = DB::table('batch_candidates')->where('academic_year',$year)->count();
+        $stipend = DB::table('training_batches')->where('batch_academic_year',$year)->sum('stipend');
+        $rawmaterial = DB::table('training_batches')->where('batch_academic_year',$year)->sum('raw_material');
+        $expense = DB::table('training_batches')->where('batch_academic_year',$year)->sum('inst_exp');
+        $total = DB::table('training_batches')->where('batch_academic_year',$year)->sum('total_expense');
+        $candidateplaced = DB::table('batch_candidates')->where('employment_status','Yes')->count();
+        $placementexpense = DB::table('batch_employment_expenses')->where('academic_year',$year)->sum('expense');
+        $trainingbacthes = DB::table('training_batches')->whereIn('action',  ['Start','Hold',''])->orWhereNull('action')->where('batch_academic_year',$year)->count();
+        $trainingcandidates =  DB::select("SELECT count(candidate_id) as count FROM batch_candidates where batch_id not in(select batch_id from training_batches where action='Completed') and academic_year=?",[$year]);
+        return view('reports.dashboard',compact('academicyear','tc'))->with('acyear',$year)->with('tcapproved',$tcapproved)->with('tcactive' , $tcactive)->with('tcidle' , $tcidle)->with('tcdefunct' , $tcdefunct)->with('curryearbatch' , $curryearbatch)->with('curryearcandidate' , $curryearcandidate)->with('stipend' , $stipend)->with('rawmaterial' , $rawmaterial)->with('expense' , $expense)->with('total' , $total)->with('candidateplaced' , $candidateplaced)->with('placementexpense' , $placementexpense)->with('trainingbacthes' , $trainingbacthes)->with('trainingcandidates',$trainingcandidates[0]->count);
     }
-
- public function printCertification()
+    public function fetchSpecDashboardInfo($tc,$fiscalyear)
     {
-        $input = Input::all();
-        $data['tc'] = "";
-            $data['acyear'] = "";
-            $data['batchid'] = "";
-        if(!empty($input)){
-            $data['tc'] = $input['vtc'];
-            $data['acyear'] = $input['vfiscalyear'];
-            $data['batchid'] = $input['vbatch'];
+        $year = $fiscalyear;
+        // $academicyear=academicyear::all();
+        // $tc=training_centres::where('academic_year',$year)->get();
+
+        if($tc=='all'){
+        $tcapproved = DB::table('training_centres')->where('academic_year',$year)->where('centre_status','Approved')->count();
+        $tcactive = DB::table('training_centres')->where('academic_year',$year)->where('centre_status','Approved')->count();
+        $tcidle = DB::table('training_centres')->where('academic_year',$year)->where('centre_status','Created')->count();
+        $tcdefunct = DB::table('training_centres')->where('academic_year',$year)->where('centre_status','Rejected')->count();
+
+        $curryearbatch = DB::table('training_batches')->where('batch_academic_year',$year)->count();
+        $curryearcandidate = DB::table('batch_candidates')->where('academic_year',$year)->count();
+        $stipend = DB::table('training_batches')->where('batch_academic_year',$year)->sum('stipend');
+        $rawmaterial = DB::table('training_batches')->where('batch_academic_year',$year)->sum('raw_material');
+        $expense = DB::table('training_batches')->where('batch_academic_year',$year)->sum('inst_exp');
+        $total = DB::table('training_batches')->where('batch_academic_year',$year)->sum('total_expense');
+        $candidateplaced = DB::table('batch_candidates')->where('employment_status','Yes')->count();
+        $placementexpense = DB::table('batch_employment_expenses')->where('academic_year',$year)->sum('expense');
+        $trainingbacthes = DB::table('training_batches')->whereIn('action',  ['Start','Hold',''])->orWhereNull('action')->where('batch_academic_year',$year)->count();
+        $trainingcandidates =  DB::select("SELECT count(candidate_id) as count FROM batch_candidates where batch_id not in(select batch_id from training_batches where action='Completed') and academic_year =?",[$year]);
+        $info = array('tcapproved'=>$tcapproved , 'tcactive'=>$tcactive, 'tcidle'=>$tcidle ,
+            'tcdefunct'=>$tcdefunct , 'curryearbatch'=>$curryearbatch , 'curryearcandidate'=>$curryearcandidate , 'stipend'=>$stipend , 'rawmaterial'=>$rawmaterial , 'expense'=>$expense ,
+            'total'=>$total , 'candidateplaced'=>$candidateplaced , 'placementexpense'=>$placementexpense , 
+            'trainingbacthes'=>$trainingbacthes , 'trainingcandidates'=>$trainingcandidates[0]->count
+            );
         }
-        $batchcall = new batches();
-        $data['batchlist'] = $batchcall->fetchBatchListByTc($data['tc']);
-        $bccall = new batch_candidates();
-        $data['candidate'] = $bccall->batchCandidate($data['batchid']);
+        else{       
 
-        $data['candidate'] = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('batches','batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=', $data['tc'])->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','batches.batch_id','batches.batch_name')->get();
+        $tcapproved = DB::table('training_centres')->where('centre_id',$tc)->where('academic_year',$year)->where('centre_status','Approved')->count();
+        $tcactive = DB::table('training_centres')->where('centre_id',$tc)->where('academic_year',$year)->where('centre_status','Approved')->count();
+        $tcidle = DB::table('training_centres')->where('centre_id',$tc)->where('academic_year',$year)->where('centre_status','Created')->count();
+        $tcdefunct = DB::table('training_centres')->where('centre_id',$tc)->where('academic_year',$year)->where('centre_status','Rejected')->count();
 
-        $tc = new training_centres();
-        $district = Auth::user()->district;
-        $data['tcs'] =  $tc->fetchtcforList($district);
-        $ayobj = new academicyear();
-        $data['academicyear'] = $ayobj->fetchAcademicyear();
-        return view('tdview.printcertificate')->with('data',$data);
+        $curryearbatch = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->count();
+        $curryearcandidate = DB::table('batch_candidates')->where('centre_id',$tc)->where('academic_year',$year)->count();
+        $stipend = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('stipend');
+        $rawmaterial = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('raw_material');
+        $expense = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('inst_exp');
+        $total = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('total_expense');
+        $candidateplaced = DB::table('batch_candidates')->where('centre_id',$tc)->where('employment_status','Yes')->count();
+        $placementexpense = DB::table('batch_employment_expenses')->where('centre_id',$tc)->where('academic_year',$year)->sum('expense');
+        $trainingbacthes = DB::table('training_batches')->whereIn('action',  ['Start','Hold',''])->orWhereNull('action')->where('centre_id',$tc)->where('batch_academic_year',$year)->count();
+        $trainingcandidates =  DB::select("SELECT count(candidate_id) as count FROM batch_candidates where batch_id not in(select batch_id from training_batches where action='Completed') and centre_id=? and academic_year= ?",[$tc,$year]);
+
+        $info = array('tcapproved'=>$tcapproved , 'tcactive'=>$tcactive, 'tcidle'=>$tcidle ,
+            'tcdefunct'=>$tcdefunct , 'curryearbatch'=>$curryearbatch , 'curryearcandidate'=>$curryearcandidate , 'stipend'=>$stipend , 'rawmaterial'=>$rawmaterial , 'expense'=>$expense ,
+            'total'=>$total , 'candidateplaced'=>$candidateplaced , 'placementexpense'=>$placementexpense , 
+            'trainingbacthes'=>$trainingbacthes , 'trainingcandidates'=>$trainingcandidates[0]->count
+            );
+        }
+        return json_encode([$info]);        
     }
-    
 }

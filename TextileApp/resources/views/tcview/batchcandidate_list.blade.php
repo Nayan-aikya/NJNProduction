@@ -116,7 +116,6 @@
                     $("[data-field='mappingdistrict']").text("");
                     $("[data-field='mappingdivision']").text("");
                     $("input[name='mappingdistrictcode']").val("");
-
                     var row = '<meta name="csrf-token" content="{{ csrf_token() }}" /><table class="table table-bordered"><tr><th>Candidate ID</th><th>First Name</th><th>Last Name</th><th>Gender</th><th>Category</th><th>Education</th><th>Skill</th><th>Candidate Image</th><th></th></tr>';
             if(batch) {
                 $.ajax({
@@ -132,7 +131,6 @@
                     $("[data-field='mappingdistrict']").text(data[0].district_name);
                     $("[data-field='mappingdivision']").text(data[0].division);
                     $("input[name='mappingdistrictcode']").val(data[0].district_id);
-
                     // row = '<meta name="csrf-token" content="{{ csrf_token() }}" /><table class="table table-bordered"><tr><th>Candidate ID</th><th>First Name</th><th>Last Name</th><th>Gender</th><th>Category</th><th>Education</th><th>Skill</th><th></th></tr>';
                     $.each(data[0].candidate, function (i, item) {
                     row += '<tr><td>' + item.candidate_id + '</td><td>' + item.first_name + '</td><td>' + item.last_name + '</td><td>' + item.gender + '</<td><td>' + item.category + '</td><td>' + item.education + '</td><td>' + item.skill + '</td><td><input type="file" name="image'+item.candidate_id+'" class="form-control" id="file'+item.candidate_id+'"><button class="btn  btn-danger uploadTest"  data-toggle="modal" data-target="#myModal" data-id="' + item.candidate_id+ '">Submit</button></td><td><button class="btn  btn-danger saveTest"  data-toggle="modal" data-target="#myModal" data-id="' + item.candidate_id+ '">Remove</button></td></tr>';

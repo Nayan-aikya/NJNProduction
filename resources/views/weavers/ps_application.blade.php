@@ -415,9 +415,7 @@
         var mc_details_D = $("input[name='mc_details_D']").val();
         var app_date = $("input[name='app_date']").val();
         var app_place = $("input[name='app_place']").val();
-
-        //Validator regular expressions.
-        var req_reg = /^[\w\.\-\'\(\)\#][\w\.\-\'\(\)\s\#]*$/;
+        var req_reg = /^([a-zA-Z0-9\_\-\#\.\,\(\)\/]){1,}$/;
         var mob_reg = /^\d{10}$/;
         var name_reg = /^([a-zA-Z\.\s]){1,}$/;
         var pin_reg = /^\d{6}$/;

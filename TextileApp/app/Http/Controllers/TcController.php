@@ -6,8 +6,6 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
-use Illuminate\Support\Facades\Auth;
-
 use DB;
 use Session;
 use App\batches;
@@ -229,24 +227,6 @@ class TcController extends Controller
 
      public function insertpf(Request $req)
     {
-        $batchcandidate = Input::get('batchcandidate');
-
-        $items = $req->validate([
-          'totpt'=> 'required|numeric|min:1|max:{{$batchcandidate}}',
-          'totft'=> 'required|numeric|min:1'
-
-        ], [
-
-
-            'totpt.required' => 'Total Physical target is required',
-            'totpt.min' => 'Total Physical target should be greater than 1 less or equal to {{ $batchcandidate }}',
-
-
-            'totft.required' => 'Total financial target is required',
-            'totft.min' => 'Total financial target is required'
-
-            ]);
-
         $districtid = $req->input('districtcode');
         $year = $req->input('fiscalyear');
         $tc = $req->input('tc');
@@ -426,7 +406,6 @@ class TcController extends Controller
         // echo $id;
         $batchcall = new batches();
         $batchres = $batchcall -> fetchBatchSpecInfo($id);
-
         $noofcandidate=$batchres[0]->no_of_stud;
         $status=$batchres[0]->status;
         if($status=="Approved"){
@@ -517,21 +496,10 @@ class TcController extends Controller
 
         return redirect()->back()->with('message', 'Success!!');
     }
-    public function getemploymentExpense()
+    public function employmentExpense()
     {
         $tcs = DB::table("training_centres")->pluck("centre_name","centre_id");
-        $tc = new training_centres();
-        $centreid = session()->get('centreid');
-        // echo $centreid;
-        $tcname =  $tc->fetchTcSpecInfo($centreid);
-        // $tcs =  $tc->fetchtcforList();
-        $candidatecall = new candidates();
-        $candidatelist = $candidatecall->fetchCandidateList();
-        $tb = new training_batches();
-        $batches=$tb->fetchtrainingBatch($centreid);
-        return view('tcview.employment_expense',compact('tcs','tcname','batches','candidatelist'));
-        
-
+        return view('tcview.employment_expense',compact('tcs'));
     }    
     public function pftargetapproval(Request $req)
     {
@@ -551,36 +519,17 @@ class TcController extends Controller
         Session::flash("success", $message);
         return Redirect::back();
     }
-    public function postemploymentExpense()
-    {
-         Session::flash("success", "Uploaded successfully!!");
-                    return Redirect::back();
-    }
-
 
     public function employmentexpensefetch(Request $req)
     {
-        $input = Input::all();
-        $data['tc'] = Auth::user()->centre_id;
-            $data['acyear'] = "";
-            $data['batchid'] = "";
-        if(!empty($input)){
-           $data['batchid'] = $input['vbatch'];
-            $data['acyear'] = $input['vfiscalyear'];
-        }
-        $batchcall = new training_batches();
-        $data['batchlist'] = $batchcall->fetchcompletedtrainingBatch($data['tc'],$data['acyear']);
-
-        $bccall = new batch_candidates();
-        $data['candidate'] = $bccall->batchCandidate($data['batchid']);
-
-        $data['candidate'] = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->where('batch_candidates.batch_id','=', $data['batchid'])->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill')->get();
-
         $tc = new training_centres();
-        $data['tcs'] =  $tc->fetchTcName($data['tc']);
+        $centreid = session()->get('centreid');
+        $tcname =  $tc->fetchTcSpecInfo($centreid);
+        // $tb = new training_batches();
+        // $batches=$tb->fetchtrainingBatch($centreid);
         $ayobj = new academicyear();
-        $data['academicyear'] = $ayobj->fetchAcademicyear();
-        return view('tcview.employment_expense')->with('data',$data);
+        $academicyear = $ayobj -> fetchAcademicyear();
+        return view('tcview.employment_expense',compact('tcname','batches','academicyear'));
     }
     public function employmentexpenseBatchList($id)
     {
@@ -591,7 +540,7 @@ class TcController extends Controller
     } 
     public function employmentexpenseBatchInfo($id){
         session()->put('batchid',$id);
-        $info = DB::table('training_batches')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('districts','districts.district_code','=','training_centres.district_id')->where('training_batches.batch_id','=',$id)->where('training_batches.action','=',"Completed")->select('training_batches.batch_type','training_centres.centre_type','batches.start_date','batches.end_date','districts.district_name','districts.division',
+        $info = DB::table('training_batches')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('districts','districts.district_code','=','training_centres.district_id')->where('training_batches.batch_id','=',$id)->select('training_batches.batch_type','training_centres.centre_type','batches.start_date','batches.end_date','districts.district_name','districts.division',
             'districts.district_code')->get();
         $centreid = session()->get('centreid');
         $type = session()->get('batchtype');
@@ -602,48 +551,40 @@ class TcController extends Controller
         return json_encode($info);
     }   
     public function employmentexpenseUpdate(Request $req){
-        $input = Input::all();
-        //echo "<pre>";print_r($input);die;
-        $candidatearr = $input['cand_id'];
+        $candidatearr = $req->input('candidatearr');
         // echo $candidatearr;
-        $indus_type = $input['indus_type'];
         for($i=0;$i<count($candidatearr);$i++)
         {
-        
-
-        $industry = $indus_type[$i];
-        $candidateid = $candidatearr[$i];
-        $k = 'employ'.$i;
-        $status = $input[$k];
-
-        $tc = $input['tcid'];
-        $batch = $input['baid'];
-
+        echo $candidatearr[$i]['candidateid']."  ".$candidatearr[$i]['status']."  ".$candidatearr[$i]['industry'];
+        $industry = $candidatearr[$i]['industry'];
+        $status = $candidatearr[$i]['status'];
+        $candidateid = $candidatearr[$i]['candidateid'];
+        $tc = $candidatearr[$i]['tc'];
+        $batch = $candidatearr[$i]['batch'];
         $batchcandidatecall = new batch_candidates();
         $batchcandidatecall->employmentstatusUpdate($tc,$batch,$candidateid,$industry,$status);
         }
 
-        
-        $expense = $input['batch_expense'];
-        $fiscalyear = $input['acyear'];
+        $tc = $req->input('tc');
+        $batch = $req->input('batch');
+        $fiscalyear = $req->input('fiscalyear');
+        $expense = $req->input('expense');
+        $type = $req->input('type');
         $status = "Created";
-        $data = array('centre_id' => $input['tcid'],'batch_id' => $batch,'expense' => $expense,'status' => $status,'academic_year' =>  $fiscalyear,'created_at' => date('Y-m-d H:i:s'),'updated_at' => date('Y-m-d H:i:s'));
+        $data = array('centre_id' => $tc,'batch_id' => $batch,'expense' => $expense,'batch_type' => $type,'status' => $status,'academic_year' => $fiscalyear );
         $expensecall = new batch_employment_expense();
-
-        $expinfo = $expensecall -> checkExpense($fiscalyear,$tc,$batch);
-
+        $expinfo = $expensecall -> checkExpense($fiscalyear,$tc,$batch,$type);
         if(count($expinfo)>0){
         $expdata = array('expense' => $expense);
-        $expensecall -> updateExpense($fiscalyear,$tc,$batch,$expdata);
+        $expensecall -> updateExpense($fiscalyear,$tc,$batch,$type,$expdata);
         }
         else
         {
-        $expensecall -> insertExpense($data);
+        $expensecall -> insertExpense($expense);
         }
-        Session::flash("success", "Successfully Updated!!");
-        return redirect::back();
+        Session::flash("success", "Successfully updated!!");
+        return Redirect::back();
     }
-
     
     public function candidateInfo(Request $req)
     {
@@ -662,45 +603,32 @@ class TcController extends Controller
         return Redirect::back();
     } 
     public function fetchTcDashboardInfo(){
-        $year = NULL;
-        if(!empty(Input::get('fiscalyear'))){
-            $year = Input::get('fiscalyear');
-        }
-        if($year == NULL){
-            $now = new DateTime();
-            $year1 = $now->format("Y");
-            $year2 = (int)$year1+1;
-            $year = $year1.'-'.$year2;
-        }
+        $tc = session()->get('centreid');
+        $now = new DateTime();
+        $year1 = $now->format("Y");
+        $year2 = (int)$year1+1;
+        $year = $year1.'-'.$year2;
 
-        $data['tc'] = $tc = Auth::user()->centre_id;
-        $data['acyear'] = $year;
+        $academicyear=academicyear::all();
+        // $tc=training_centres::where('academic_year',$year)->get();
 
-        $data['academicyear']=$academicyear=academicyear::all();
+        $tcapproved = DB::table('training_centres')->where('centre_id',$tc)->where('academic_year',$year)->where('centre_status','Approved')->count();
+        $tcactive = DB::table('training_centres')->where('centre_id',$tc)->where('academic_year',$year)->where('centre_status','Approved')->count();
+        $tcidle = DB::table('training_centres')->where('centre_id',$tc)->where('academic_year',$year)->where('centre_status','Created')->count();
+        $tcdefunct = DB::table('training_centres')->where('centre_id',$tc)->where('academic_year',$year)->where('centre_status','Rejected')->count();
 
-        $data['info'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->select('training_batches.batch_id','training_batches.batch_name','training_batches.status','batches.start_date','batches.end_date','batches.no_of_stud','training_batches.action')->get();
-      
-        $data['status']=$tcactive = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->value('status');
-       
+        $curryearbatch = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->count();
+        $curryearcandidate = DB::table('batch_candidates')->where('centre_id',$tc)->where('academic_year',$year)->count();
+        $stipend = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('stipend');
+        $rawmaterial = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('raw_material');
+        $expense = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('inst_exp');
+        $total = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('total_expense');
+        $candidateplaced = DB::table('batch_candidates')->where('centre_id',$tc)->where('employment_status','Yes')->count();
+        $placementexpense = DB::table('batch_employment_expenses')->where('centre_id',$tc)->where('academic_year',$year)->sum('expense');
+        $trainingbacthes = DB::table('training_batches')->whereIn('action',  ['Start','Hold',''])->orWhereNull('action')->where('centre_id',$tc)->where('batch_academic_year',$year)->count();
+        $trainingcandidates =  DB::select("SELECT count(candidate_id) as count FROM batch_candidates where batch_id not in(select batch_id from training_batches where action='Completed') and centre_id=? and academic_year= ?",[$tc,$year]);
 
-        $data['nobatch'] = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->count();
-        $data['nocandidate'] = DB::table('batch_candidates')->where('centre_id',$tc)->where('academic_year',$year)->count();
-
-        $data['stipend'] = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('stipend');
-
-        $data['inst_exp'] = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('inst_exp');
-
-        $data['rawmaterial'] = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('raw_material');
-
-        
-        $data['total_exp'] = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->sum('total_expense');
-
-        $data['candidateplaced'] = DB::table('batch_candidates')->where('centre_id',$tc)->where('academic_year',$year)->where('employment_status','Yes')->count();
-
-        $data['placementexpense'] = DB::table('batch_employment_expenses')->where('centre_id',$tc)->where('academic_year',$year)->sum('expense');
-
-        
-        return view('reports.tcdashboard')->with('data',$data);
+        return view('reports.tcdashboard',compact('academicyear'))->with('tc',$tc)->with('acyear',$year)->with('tcapproved',$tcapproved)->with('tcactive' , $tcactive)->with('tcidle' , $tcidle)->with('tcdefunct' , $tcdefunct)->with('curryearbatch' , $curryearbatch)->with('curryearcandidate' , $curryearcandidate)->with('stipend' , $stipend)->with('rawmaterial' , $rawmaterial)->with('expense' , $expense)->with('total' , $total)->with('candidateplaced' , $candidateplaced)->with('placementexpense' , $placementexpense)->with('trainingbacthes' , $trainingbacthes)->with('trainingcandidates',$trainingcandidates[0]->count);
     }
    
 }
