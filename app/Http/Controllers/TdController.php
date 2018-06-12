@@ -577,6 +577,7 @@ class TdController extends Controller
             'trainingbacthes'=>$trainingbacthes , 'trainingcandidates'=>$trainingcandidates[0]->count
             );
         }
+
         return json_encode([$info]);        
     }
 
