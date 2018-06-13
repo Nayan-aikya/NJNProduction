@@ -597,7 +597,7 @@ class TcController extends Controller
         // echo $candidatearr;
         for($i=0;$i<count($candidatearr);$i++)
         {
-        echo $candidatearr[$i]['candidateid']."  ".$candidatearr[$i]['status']."  ".$candidatearr[$i]['industry'];
+        // echo $candidatearr[$i]['candidateid']."  ".$candidatearr[$i]['status']."  ".$candidatearr[$i]['industry'];
         $industry = $candidatearr[$i]['industry'];
         $status = $candidatearr[$i]['status'];
         $candidateid = $candidatearr[$i]['candidateid'];
@@ -622,9 +622,11 @@ class TcController extends Controller
         }
         else
         {
-        $expensecall -> insertExpense($expense);
+        $expensecall -> insertExpense($data);
         }
-        return json_encode($expensecall);
+        // return json_encode($expensecall);
+        Session::flash("success", "Successfully uploaded!!");
+        return view('pages.message');
     }
 
     
@@ -746,5 +748,52 @@ class TcController extends Controller
         $academicyear = $ayobj -> fetchAcademicyear();
         return view('reports.tcpfreport',compact('tcname','academicyear'));
     }
-    
+
+    public function certificateuploadView(){
+        $username = session()->get('username');
+        $password = session()->get('password');
+        // echo $username."   ".$password;
+        $usercall = new users();
+        $info=$usercall->fetchTrainingCentreId($username,$password);
+        // echo "string".$info[0]->centre_id;
+        session()->put('centreid',$info[0]->centre_id);
+        $tbcall = new training_batches();
+        $tbinfo = $tbcall->fetchtrainingType($info[0]->centre_id);
+        $ayobj = new academicyear();
+        $academicyear = $ayobj -> fetchAcademicyear();
+        return view('tcview.certificateupload',compact('tbinfo','academicyear'));
+    }
+
+    public function certificateuploadTrainingSubjectList($id,$year){
+        $centreid = session()->get('centreid');
+        $tbcall = new training_batches();
+        session()->put('batchtype',$id);
+        $info=$tbcall->fetchTypeBatch($centreid,$id,$year);
+        return json_encode($info);    
+    }
+   
+    public function certificateuploadSubjectBatchList($id){
+        session()->put('batchid',$id);
+        $centreid = session()->get('centreid');
+        $info = DB::table('training_batches')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('districts','districts.district_code','=','training_centres.district_id')->where('training_centres.centre_id','=',$centreid)->where('training_batches.centre_id','=',$centreid)->where('training_batches.batch_id','=',$id)->where('batches.batch_id','=',$id)->select('training_batches.batch_type','training_centres.centre_type','batches.start_date','batches.end_date','districts.district_name','districts.division',
+            'districts.district_code')->get();
+        $centreid = session()->get('centreid');
+        $type = session()->get('batchtype');
+        $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->where('batch_candidates.centre_id','=',$centreid)->where('batch_candidates.batch_id','=',$id)->where('batch_candidates.employment_status','=','Yes')->select('batch_candidates.centre_id','batch_candidates.employment_status','batch_candidates.candidate_id','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill')->get();
+        $info[0]->candidate = $candidate;
+        return json_encode($info);
+    }
+    public function candidateCertificate(Request $req)
+    {
+        $file = $req->file('file');
+        $candidateid = $req->input('candidateid');
+        $batchid = $req->input('batchid');
+        // echo $candidateid."  ".$batchid."  ".$file;
+        $filename = $candidateid. '-' .time(). '.' .$req->file('file')->getClientOriginalExtension();
+        $file = $file->move(public_path().'/certificate/', $filename);
+        $candidatecall = new candidates();
+        $candidatecall -> uploadImage($candidateid,$batchid,$filename);
+        Session::flash("success", "Successfully uploaded!!");
+        return view('pages.message');
+    } 
 }

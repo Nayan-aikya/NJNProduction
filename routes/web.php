@@ -167,6 +167,11 @@ Route::get('/pfreport/ajax/{id}/{year}','TdController@pfreportviewgetBatchList')
 Route::get('/pfreport/batchajax/{id}','TdController@pfreportviewgetBatchInfo');
 Route::get('/pftargetreport/{batch}/{tc}/{year}','TdController@pftargetReport');
 
+Route::get('/certificateupload', 'TcController@certificateuploadView');
+Route::get('/certificateupload/ajax/{id}/{year}','TcController@certificateuploadTrainingSubjectList');
+Route::get('/certificateupload/batchajax/{id}','TcController@certificateuploadSubjectBatchList');
+Route::post('/candidateCertificate','TcController@candidatecertificate');
+
 // Power subsidy private
 Route::get('weavers/powersubsidy-list', 'WeaverController@psList');
 Route::get('weavers/powersubsidy-app/details/{id}', 'WeaverController@psDetails');
