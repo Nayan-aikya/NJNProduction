@@ -1,7 +1,6 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" >
 @extends('layouts.sidebar')
 @section('content')
-
  <div class="row" id="viewtargetcontainer">
         <!-- sidebar content -->
         <div id="sidebar" class="col-md-3">
@@ -23,7 +22,7 @@
     <td>
     <div class="form-group">
         <label>Financial Year:</label><br>
-        <select class="form-control" id="vsel1" name="vfiscalyear" required>
+        <select onchange="this.form.submit()" class="form-control" id="vsel1" name="vfiscalyear" required>
         <option value="">-----Select Academic Year-----</option>
         @foreach ($data['academicyear'] as $key )
         <option value="{{ $key->academic_year }}" {{( $key->academic_year == $data['acyear'] ) ? 'selected' : ''}}>{{ $key->academic_year }}</option>
@@ -48,10 +47,10 @@
     <input type="hidden" name="vdistrictcode" hidden>
             <div class="form-group">
                 <label>Select Batch:</label><br>
-                <select onchange="this.form.submit()" name="vbatch" class="form-control" style="width:350px" required>
+                <select  name="vbatch" onchange="this.form.submit()" class="form-control" style="width:350px" required>
                 <option value="">--- Select Batch ---</option>
-                    @foreach ($data['batchlist'] as $key)
-                    <option value="{{ $key->batch_id }}"  {{( $key->batch_id == $data['batchid'] ) ? 'selected' : ''}}>{{ $key->batch_name }}</option>
+                    @foreach ($data['batchlist'] as $key => $value)
+                    <option value="{{ $key }}"  {{( $key == $data['batchid'] ) ? 'selected' : ''}}>{{ $value }}</option>
                     @endforeach
                    
                 </select>
@@ -125,14 +124,14 @@
     $(document).ready(function() {
         $('select[name="vfiscalyear"]').on('change', function() {
             var fy = $('select[name="vfiscalyear"]').val();
-            alert(fy);
             if(fy) {
                 $.ajax({
-                    url: '/approvepftarget/ajax/'+tc+'/'+fy,
+                    url: '/approvepftarget/ajax/'+fy,
                     type: "GET",
                     dataType: "json",
                     success:function(data) {                       
-                       
+                                       alert(fy);
+
                     }
 
                 });
