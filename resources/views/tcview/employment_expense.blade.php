@@ -43,7 +43,7 @@
     </tr>
     <tr>
         <td>
- <input type="hidden" name="_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <input type="hidden" name="vdistrictcode" hidden>
             <div class="form-group">
                 <label>Select Batch:</label><br>
@@ -57,11 +57,17 @@
             </div>
             </form>
         </td>
-        <td></td>
+        <td>
+            
+        </td>
         
     </tr>
    
-</table> <br><br>
+</table> <br>
+@if(!empty($data['employmentdata']))
+    <div ><b>Status : {{ $data['employmentdata'][0]['status'] }}</b></div>
+@endif 
+<br><br>
  <form method="Post" action="/employmentexpenseupdate">
 
 @if(!$data['candidate']->isEmpty())
@@ -96,6 +102,7 @@
             <input type="radio" name="employ{{ $key }}" value="NO" checked="checked"> No<br></td>
             <td>
                 <select name="indus_type[]">
+                    <option value="">Select Industry</option>
                   <option value="Industries">Industries</option>
                   <option value="Own">Own</option>
                   <option value="Group Activity">Group Activity</option>
@@ -112,8 +119,13 @@
 </div>
  <div> 
     <label>Employment Expense : </label>
-    <input type="number" name="batch_expense" value="">
+    <input type="number" name="batch_expense" <?php if(isset($data['employmentdata'][0]['expense']) && !empty($data['employmentdata'][0]['expense'])) { ?> disabled value="{{ $data['employmentdata'][0]['expense'] }}" <?php } ?>>
+    @if(isset($data['employmentdata'][0]['status']) && $data['employmentdata'][0]['status'] == "Approved")
+    <b style="color: green">{{ $data['employmentdata'][0]['status']}}<b>
+    @else
     <button type="submit" class="btn btn-primary" >Submit</button></td>
+    @endif
+    
 </div>
  @endif
 </form>

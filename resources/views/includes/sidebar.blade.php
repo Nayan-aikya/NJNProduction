@@ -13,5 +13,6 @@
   <!-- <a href="{{ URL::to('candidatelist') }}">Candidate List</a> -->
   <a href="{{ URL::to('candidatelistinfo') }}">Candidate List</a>
   <a href="{{ URL::to('employmentexpense') }}"">Employment Status and Expenses</a>
-  
+
+  <a href="{{ URL::to('tcpfreport') }}">Physical & Financial Target Report</a>
 </div>

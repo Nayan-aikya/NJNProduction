@@ -37,6 +37,11 @@
                 <span style="float:left;margin-top: 4%;"><input type="file" name="import_file" /></span><br>
                 <span style="float:right;margin-top: -10%;"><button class="btn btn-primary">Import</button></span>
                 </form>
+                 <form  action="{{ url('test') }}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <span style="float:left;margin-top: 4%;"><input type="file" name="import_file" /></span><br>
+                <span style="float:right;margin-top: -10%;"><button class="btn btn-primary">Import</button></span>
+                </form>
                 </td>
                 <td>
                      <form id="editform.{{$row->batch_id}}" action="{{ url('batch/'.$row->batch_id) }}" method="POST">

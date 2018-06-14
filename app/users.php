@@ -38,6 +38,11 @@ class users extends Authenticatable
         $user = users::where('username', $username)->where('centre_id', $centreid)->update($array);     
         return $user;
     }
+    public function updateuserdd($district,$division){
+        $user = users::where('district', $district)->update(array('division' =>$division));     
+        return $user;
+    }
+
     public function fetchTrainingCentreId($username,$password){
         $tcid = users::where('username', $username)->get();     
         return $tcid;

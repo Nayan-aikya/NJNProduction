@@ -13,6 +13,7 @@ use Session;
 use App\users;
 use Hash;
 use App\user_roles;
+use Illuminate\Support\Facades\Redirect;
 
 
 
@@ -46,9 +47,12 @@ class loginController extends BaseController
             $role=$userrole->fetchRole($userinfo[0]->user_id);            
             
             if($role[0]->role_id =='TD')  
-                return view('pages.tdhome');       
+                 return Redirect::to('dashboard');      
             if($role[0]->role_id =='TC')  
-                return view('pages.tchome');
+                 return Redirect::to('tcdashboard');
+            if($role[0]->role_id =='DD')  
+                return Redirect::to('dcdashboard');
+
          }
          else{
              return view('pages.loginfail');

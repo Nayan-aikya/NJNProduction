@@ -19,7 +19,7 @@ class batch_employment_expense extends Model
         return $expense;
     }
     public function checkExpense($fiscalyear,$tc,$batch){
-        $expense = batch_employment_expense::where('academic_year',$fiscalyear)->where('centre_id',$tc)->where('batch_id',$batch)->get();     
+        $expense = batch_employment_expense::where('academic_year',$fiscalyear)->where('centre_id',$tc)->where('batch_id',$batch)->get(array('status','expense'))->toArray();     
         return $expense;
     }
     public function updateExpense($fiscalyear,$tc,$batch,$expense){

@@ -17,4 +17,5 @@
   <a href="{{ URL::to('subject') }}">Training Subject</a>
   <a href="{{ URL::to('approveemploymentexpense')}}">Approve Employment Expense</a>
   <a href="{{ URL::to('printcertification')}}">Print Candidate Certificate</a>
+  <a href="{{ URL::to('pfreport') }}">Physical & Financial Target Report</a>
 </div>

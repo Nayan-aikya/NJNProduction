@@ -118,9 +118,10 @@ Route::get('/candidate/batchajax/{id}','TcController@getSubjectBatch');
 Route::post('/batchcandidatemapping', 'TcController@batchCandidateMapping');
 
 Route::get('/candidatelist', 'TcController@candidateListView');
+// Route::get('/candidatelist', 'TcController@candidateInfo');
 Route::get('/candidatelist/ajax/{id}/{year}','TcController@getTrainingSubjectList');
 Route::get('/candidatelist/batchajax/{id}','TcController@getSubjectBatchList');
-Route::post('/batchcandidatedelete/{candidateid}/{batchid}', 'TcController@batchCandidateDelete');
+// Route::post('/batchcandidatedelete/{candidateid}/{batchid}', 'TcController@batchCandidateDelete');
 
 Route::post('/importExcel/{id}', 'TcController@importExcel');
 
@@ -151,8 +152,23 @@ Route::get('/candidatelistinfo','TcController@candidateInfo');
 Route::get('/dashboard','TdController@fetchDashboardInfo');
 Route::get('/dashboard/{tc}/{fiscalyear}','TdController@fetchSpecDashboardInfo');
 Route::get('/tcdashboard','TcController@fetchTcDashboardInfo');
+Route::get('/dcdashboard','TdController@fetchDCDashboardInfo');
+
+Route::post('test','TcController@test');
+
+Route::post('/candidatePhoto','TcController@candidatePhoto');
+Route::post('/batchcandidatedelete', 'TcController@batchCandidateDelete');
 
 Route::get('/printcertification','TdController@printCertification');
+
+Route::get('/pfreport','TdController@pfreportInfo');
+Route::get('/pfreport/{tc}/{fiscalyear}','TdController@specpfReport');
+Route::get('/tcpfreport','TcController@pftargetreportfetch');
+
+Route::get('/pfreport', 'TdController@pfreportfetch');
+Route::get('/pfreport/ajax/{id}/{year}','TdController@pfreportviewgetBatchList');
+Route::get('/pfreport/batchajax/{id}','TdController@pfreportviewgetBatchInfo');
+Route::get('/pftargetreport/{batch}/{tc}/{year}','TdController@pftargetReport');
 
 // Power subsidy private
 Route::get('weavers/powersubsidy-list', 'WeaverController@psList');
