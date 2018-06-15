@@ -791,9 +791,20 @@ class TcController extends Controller
         // echo $candidateid."  ".$batchid."  ".$file;
         $filename = $candidateid. '-' .time(). '.' .$req->file('file')->getClientOriginalExtension();
         $file = $file->move(public_path().'/certificate/', $filename);
-        $candidatecall = new candidates();
+        $candidatecall = new batch_candidates();
         $candidatecall -> uploadImage($candidateid,$batchid,$filename);
         Session::flash("success", "Successfully uploaded!!");
         return view('pages.message');
     } 
+    public function certificatedownloadView($candidateid,$batchid){
+        $candidatecall = new batch_candidates();
+        $info = $candidatecall->viewFile($candidateid,$batchid);
+        $file_name = $info[0]->certificate;
+        // echo $file_name;
+        // $file_path = public_path('certificate/'.$file_name);
+        $file_path = 'certificate/'.$file_name;
+        // return json_encode([$file_path]);
+        return json_encode([$file_path]);
+        // return response()->download($file_path);
+    }
 }

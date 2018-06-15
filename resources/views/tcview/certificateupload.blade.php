@@ -120,7 +120,7 @@
                     $("[data-field='mappingdistrict']").text("");
                     $("[data-field='mappingdivision']").text("");
                     $("input[name='mappingdistrictcode']").val("");
-                    var row = '<meta name="csrf-token" content="{{ csrf_token() }}" /><table class="table table-bordered"><tr><th>Candidate ID</th><th>First Name</th><th>Last Name</th><th>Gender</th><th>Category</th><th>Education</th><th>Skill</th><th>Certificate Upload</th></tr>';
+                    var row = '<meta name="csrf-token" content="{{ csrf_token() }}" /><table class="table table-bordered"><tr><th>Candidate ID</th><th>First Name</th><th>Last Name</th><th>Gender</th><th>Category</th><th>Education</th><th>Skill</th><th>Certificate Upload</th><th>Uploaded File</th></tr>';
             if(batch) {
                 $.ajax({
                     url: '/certificateupload/batchajax/'+batch,
@@ -137,7 +137,7 @@
                     $("input[name='mappingdistrictcode']").val(data[0].district_id);
                     // row = '<meta name="csrf-token" content="{{ csrf_token() }}" /><table class="table table-bordered"><tr><th>Candidate ID</th><th>First Name</th><th>Last Name</th><th>Gender</th><th>Category</th><th>Education</th><th>Skill</th><th></th></tr>';
                     $.each(data[0].candidate, function (i, item) {
-                    row += '<tr><td>' + item.candidate_id + '</td><td>' + item.first_name + '</td><td>' + item.last_name + '</td><td>' + item.gender + '</<td><td>' + item.category + '</td><td>' + item.education + '</td><td>' + item.skill + '</td><td><input type="file" name="photo" class="form-control" id="photo'+item.candidate_id+'" /><button class="btn  btn-success uploadTest" style="margin-left: 22%;margin-top: 5%;" data-toggle="modal" data-target="#myModal" data-id="' + item.candidate_id+ '">Upload</button></td></tr>';
+                    row += '<tr><td>' + item.candidate_id + '</td><td>' + item.first_name + '</td><td>' + item.last_name + '</td><td>' + item.gender + '</<td><td>' + item.category + '</td><td>' + item.education + '</td><td>' + item.skill + '</td><td><input type="file" name="photo" class="form-control" id="photo'+item.candidate_id+'" /><button class="btn  btn-success uploadTest" style="margin-left: 20%;margin-top: 5%;" data-toggle="modal" data-target="#myModal" data-id="' + item.candidate_id+ '">Upload</button></td><td><button class="btn  btn-danger downloadTest" style="margin-left: 5%;margin-top: 5%;" data-toggle="modal" data-target="#myModal" data-id="' + item.candidate_id+ '">View File</button></td></tr>';
                 });
                 row+='</table>';
                 $('#view').html('');
@@ -171,6 +171,23 @@
                 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             }
             });
+         $(document).on('click', '.uploadTest', function () {
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            var id = $(this).attr('data-id');
+            // alert('calling...'+id);
+            var file_data = $('#photo'+id).prop('files')[0];
+            // alert(file_data);
+            var form_data = new FormData();
+            
+            form_data.append('candidateid', id);
+            form_data.append('batchid', batch);
+            form_data.append('file', file_data);
+            // alert(JSON.stringify(form_data));
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+            }
+            });
             $.ajax({
                 url: '/candidateCertificate',
                 type: "post",
@@ -183,7 +200,38 @@
                     $('div.flash-message').html(data);
                 }
             });
+        });   $.ajax({
+                url: '/candidateCertificate',
+                type: "post",
+                // data: {'candidateid': id,'batchid':batch,'photo': ''},
+                data :form_data,
+                contentType: false,       
+                cache: false,             
+                processData: false,
+                success: function (data) {
+                    $('div.flash-message').html(data);
+                }
+            });
         });
+
+        $(document).on('click', '.downloadTest', function () {
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            var id = $(this).attr('data-id');
+            $.ajax({
+                    url: '/certificatedownload/'+id+'/'+batch,
+                    type: "GET",
+                    dataType: "json",
+                    success:function(data) {                      
+                       // alert(data);                       
+                       window.open("http://127.0.0.1:8000/"+data[0],"_blank");
+                    },
+                    error: function(e) {
+                        // alert('come'+e.responseText);
+                        window.open("http://127.0.0.1:8000/"+data[0],"_blank");
+                    // console.log(e.responseText);
+                    }
+                });
+        }); 
     });
 </script>
 @stop
