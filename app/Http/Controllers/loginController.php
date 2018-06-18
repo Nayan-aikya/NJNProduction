@@ -14,7 +14,7 @@ use App\users;
 use Hash;
 use App\user_roles;
 use Illuminate\Support\Facades\Redirect;
-
+use URL;
 
 
 class loginController extends BaseController
@@ -45,13 +45,9 @@ class loginController extends BaseController
             // echo $userinfo[0]->user_id;
             $userrole=new user_roles();
             $role=$userrole->fetchRole($userinfo[0]->user_id);            
+           echo  $previous = URL::previous();die;
             
-            if($role[0]->role_id =='TD')  
-                 return Redirect::to('dashboard');      
-            if($role[0]->role_id =='TC')  
-                 return Redirect::to('tcdashboard');
-            if($role[0]->role_id =='DD')  
-                return Redirect::to('dcdashboard');
+                return Redirect::to($previous);
 
          }
          else{

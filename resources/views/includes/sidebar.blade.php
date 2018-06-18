@@ -15,4 +15,5 @@
   <a href="{{ URL::to('employmentexpense') }}"">Employment Status and Expenses</a>
 
   <a href="{{ URL::to('tcpfreport') }}">Physical & Financial Target Report</a>
+  <a href="{{ URL::to('certificateupload') }}">Certificate Upload</a>
 </div>

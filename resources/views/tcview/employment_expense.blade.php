@@ -8,6 +8,7 @@
         </div>
         <!-- main content -->
         <div id="viewtargetcontent" class="col-md-9">
+
         @if(Session::has('success'))
         <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span><em> {!! session('success') !!}<button type="button" class="close" data-dismiss="alert">×</button></em></div>
         @endif
@@ -152,6 +153,7 @@
             }
         });
        
+
         });
     
 </script>

@@ -24,5 +24,12 @@ class districts extends Model
         
         return $district;
     } 
+    public function getDistrictByDivision($division){
+        $districts = districts::where('division',$division)->get();
+        
+        return $districts;
+    }
+
+    
     
 }

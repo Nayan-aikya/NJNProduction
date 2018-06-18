@@ -1,18 +1,14 @@
-<link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" >
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 @extends('layouts.sidebar')
 @section('content')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <style type="text/css">
     #viewbatchlistcontainer{
         margin-top: 5%;
         margin-bottom: 2%;
     }
 </style>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 
 <style type="  ">
   .wellbox {
@@ -26,37 +22,51 @@
 </style>
 <div class="row" id="viewbatchlistcontainer">
         <!-- sidebar content -->
-        <div id="sidebar" class="col-md-3">
-            @include('includes.tdsidebar')
-        </div>
+        
         <!-- main content -->
-<div id="viewtargetcontent" class="col-md-9">
+<div id="viewtargetcontent" class="col-md-12">
 <div class="row" >
-<form action="{{ URL::to('dashboard') }}" method="get">
-<div class="col-sm-5" style="margin-left:4%;">
-              <label for="usr">Academic Year</label>
-              <select onchange="this.form.submit()" class="form-control" id="sel1" name="fiscalyear" required>
-              <option value="">-----Select Academic Year-----</option>
-              @foreach ($data['academicyear'] as $key )
-              <option value="{{ $key->academic_year }}"  {{( $key->academic_year == $data['acyear'] ) ? 'selected' : ''}} >{{ $key->academic_year }}</option>
-              @endforeach
-              </select>
+<form action="{{ URL::to('dcdashboard') }}" method="get">
+<div class="col-sm-4">
+  <label for="usr">Academic Year</label>
+  <select onchange="this.form.submit()" class="form-control" id="sel1" name="fiscalyear" required>
+  <option value="">-----Select Academic Year-----</option>
+  @foreach ($data['academicyear'] as $key )
+  <option value="{{ $key->academic_year }}"  {{( $key->academic_year == $data['acyear'] ) ? 'selected' : ''}} >{{ $key->academic_year }}</option>
+  @endforeach
+  </select>
 </div>
-<div class="col-sm-5" style=" margin-left:5%;">
+
+<div class="col-sm-4" >
+  <label for="usr">Districts</label>
+  <select onchange="this.form.submit()" class="form-control" id="sel1" name="did" required>
+  <option value="all"> All</option>
+  @foreach ($data['districts'] as $key )
+  <option value="{{ $key->district_code }}"  {{( $key->district_code == $data['did'] ) ? 'selected' : ''}} >{{ $key->district_name }}</option>
+  @endforeach
+  </select>
+</div>
+
+<div class="col-sm-4">
   <label for="usr">Training Center: </label>
    <select onchange="this.form.submit()" class="form-control" id="sel1" name="tcid" required>
-    <option value="">-----All Training Centers-----</option>
+    <option value="all">-----All Training Centers-----</option>
     @foreach ($data['tcinfo'] as $key )
-    <option value="{{ $key->centre_id }}"  {{( $key->centre_id == $data['tc'] ) ? 'selected' : ''}} >{{ $key->centre_name }}</option>
+    <option value="{{ $key->centre_id }}" {{( $key->centre_id == $data['tcid'] ) ? 'selected' : ''}}  >{{ $key->centre_name }}</option>
     @endforeach
               </select>
  </div>
+
 </form>
 
 </div>
+  </div>
+  <br><br>
 
-<br><br>
+
 <div class="row">
+  <div class="col-sm-2 offset-sm-2">
+   </div>
   <div class="col-sm-5 well wellbox" >
      <h2 style="font-size: 15pt;text-align: left;">Training Center Status</h2>
      
@@ -68,7 +78,8 @@
     </div>
     
      <div class="col-sm-5 well wellbox" >
-     
+     <div class="col-sm-2 offset-sm-2">
+   </div>
      <h2 style="font-size:15pt;text-align: left;">No of batches</h2>
 
     <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:100%;height: 6px;background-color:#7cbc01;">
@@ -82,7 +93,8 @@
 
 
   <div class="row">
-  
+  <div class="col-sm-2 offset-sm-2">
+   </div>
 <div class="col-sm-5 well wellbox" >
      
      <h2 style="font-size:15pt;text-align: left;">No of candidates trained</h2>
@@ -94,7 +106,8 @@
     </div>
        
      <div class="col-sm-5 well wellbox" >
-     
+     <div class="col-sm-2 offset-sm-2">
+   </div>
      <h2 style="font-size:15pt;text-align: left;">No of candidates Placed</h2>
     <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:100%;height: 6px;background-color:#bb070e;">
       <span class="sr-only">70% Complete</span>
@@ -124,7 +137,8 @@
     
     
     <div class="row">
- 
+ <div class="col-sm-2 offset-sm-2">
+   </div>
       <div class="col-sm-5 well wellbox" >
      <h2 style="font-size:15pt;text-align: center;">Training Center Count</h2>
      
@@ -134,7 +148,8 @@
   
   <br> <h2 style="font-size: 28pt;text-align: center;">{{ $data['status'] }}</h2>
     </div>
-    
+    <div class="col-sm-2 offset-sm-2">
+   </div>
      <div class="col-sm-5 well wellbox" >
     <h2 style="font-size:15pt;text-align: left;">Expenditure incurred towards<br>providing employment</h2>
      
@@ -145,37 +160,9 @@
     <h2 style="font-size: 28pt;text-align: left;">{{ $data['placementexpense']}}</h2>
     </div>
   </div>
-  <h1 align="center">Batch Info</h1>   
-   <div class="row">
-  
-    <div class="col-sm-12 well wellbox"  style="height:auto;width: 748px;">
-     <table class="table">
-    <thead>
-      <tr>
-        <th>Batch ID</th>
-        <th>Batch Name</th>
-        <th>Batch Status</th>
-        <th>Batch Action</th>
-      </tr>
-    </thead>
-    <tbody>
-     <?php  $blog    = $data['info'];
-      ?>
-      @foreach($blog as $batchInfo)
-      <tr class="success">
-        <td>{{ $batchInfo->batch_id }}</td>
-        <td>{{ $batchInfo->batch_name }}</td>
-        <td>{{ $batchInfo->status }}</td>
-        <td>{{ $batchInfo->action }}</td>
-      </tr>
-     @endforeach
-    </tbody>
-  </table>
-    </div>
-    
-     
+ 
   </div>
 </div>
-</div>
+  
 
 @stop
