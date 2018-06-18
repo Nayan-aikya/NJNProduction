@@ -1,3 +1,4 @@
 .env
 public/uploads/
 user_files/*
+storage/user_files/*

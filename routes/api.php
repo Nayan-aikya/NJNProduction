@@ -20,3 +20,4 @@ Route::post('weaverinspector/showall', 'WeaverInspector@showLeads');
 Route::get('weaverinspector/districts', 'WeaverInspector@showdistricts');
 Route::post('weaverinspector/show', 'WeaverInspector@showOneLead');
 Route::post('weaverinspector/update', 'WeaverInspector@update');
+Route::post('weaverinspector/savefiles', 'WeaverInspector@saveFiles');

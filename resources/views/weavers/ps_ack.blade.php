@@ -1,13 +1,20 @@
-@extends('layouts.sidebar')
-@section('custom_style')
-<link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" >
-<style>
-    td{
-        padding: 6px;
-    }
-</style>
-@stop
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Success</title>
+    <style>
+        body {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body onload="window.print()">
     <table width="100%">
         <tr>
             <td style="border: 1px solid #ddd;">
@@ -21,12 +28,17 @@
                                         <center>
                                             <h4>Govt of Karnataka</h4>
                                             <h3>Department of Handlooms and Textiles</h3>
-                                            <h2>Application details</h2>
+                                            <h2>Acknowledgement</h2>
                                         </center>
                                     </td>
                                     <td><img src="{{asset('img/gov-logo.png')}}" alt=""></td>
                                 </tr>
                             </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p><center>Your application has been successfully submitted.</center></p>
                         </td>
                     </tr>
                     <tr>
@@ -288,40 +300,6 @@
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
                                     <tr>
-                                        <td>Attachments</td>
-                                        <td colspan="3">
-                                            <ul>
-                                                @if(!empty($psa->photograph))
-                                                <li>Photo</li>
-                                                @endif
-                                                @if(!empty($psa->cast_certificate))
-                                                <li>Cast certificate</li>
-                                                @endif
-                                                @if(!empty($psa->pow_sanc_letter))
-                                                <li>Power sanction letter</li>
-                                                @endif
-                                                @if(!empty($psa->trade_licence))
-                                                <li>Trade licence</li>
-                                                @endif
-                                                @if(!empty($psa->ssi_msme_cert))
-                                                <li>SSI/MSME certificate</li>
-                                                @endif
-                                                @if(!empty($psa->recent_bill))
-                                                <li>Recent power bill</li>
-                                                @endif
-                                                @if(!empty($psa->recent_receipt))
-                                                <li>Recent power recipt</li>
-                                                @endif
-                                                @if(!empty($psa->	building_docs))
-                                                <li>Building doccument</li>
-                                                @endif
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4">&nbsp;</td>
-                                    </tr>
-                                    <tr>
                                         <td>Application date</td>
                                         <td>{{$psa->app_date}}</td>
                                         <td>Pace</td>
@@ -330,58 +308,7 @@
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
-                                    <tr>
-                                        <td colspan="4"><center><b>Inspection details</b></center></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Inspection remarks</td>
-                                        <td colspan="3">&nbsp;</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Inspection attachments</td>
-                                        <td colspan="3">&nbsp;</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Inspection Location</td>
-                                        <td colspan="3">
-                                            <ul>
-                                                <li>Lattitude: </li>
-                                                <li>Longitude: </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Inspection Date</td>
-                                        <td colspan="3">&nbsp;</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4">&nbsp;</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4"><center><b>Actions</b></center></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4">
-                                        <center>
-                                            <a href="{{url('/weavers/ej-2loom-list')}}" class="btn btn-warning btn-md">Go back</a>
-                                            @if($psa->app_status == 'applied')
-                                            <a href="{{url('/weavers/ej-2loom-adminaction/rejected/'.$psa->id)}}" class="btn btn-danger btn-md" onclick="return confirm('Are you sure?')">Reject</a>
-                                            <a href="{{url('/weavers/ej-2loom-adminaction/approved/'.$psa->id)}}" class="btn btn-success btn-md" onclick="return confirm('Are you sure?')">Approve</a>
-                                            @endif
-                                        </center>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4">
-                                        <center>
-                                            <a href="#" class="btn btn-warning btn-md">Print applition<br><span class="glyphicon glyphicon-print" aria-hidden="true"></span></a>
-                                            <a href="{{url('/weavers/ej-2loom-list')}}" class="btn btn-info btn-md">Download all attachments<br><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
-                                        </center>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4">&nbsp;</td>
-                                    </tr>
+
                                 </tbody>
                             </table>
                         </td>
@@ -390,9 +317,6 @@
             </td>
         </tr>
     </table>
-@stop
-@section('custom_scripts')
-<script>
+</body>
 
-</script>
-@stop
+</html>

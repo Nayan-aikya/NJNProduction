@@ -125,13 +125,6 @@ Route::get('/candidatelist/batchajax/{id}','TcController@getSubjectBatchList');
 
 Route::post('/importExcel/{id}', 'TcController@importExcel');
 
-// Power subsidy
-Route::get('weavers/powersubsidy-apply', 'WeaverController@psNewForm');
-Route::post('weavers/powersubsidy-apply', 'WeaverController@psApplyForm');
-// Electronic jaq
-Route::get('weavers/ej-2loom-apply', 'WeaverController@ejTlNewForm');
-Route::post('weavers/ej-2loom-apply', 'WeaverController@ejTlApply');
-
 
 Route::get('/employmentexpense', 'TcController@employmentexpensefetch');
 Route::get('/employmentexpense/ajax/{id}','TcController@employmentexpenseBatchList');
@@ -173,25 +166,33 @@ Route::get('/certificateupload/batchajax/{id}','TcController@certificateuploadSu
 Route::post('/candidateCertificate','TcController@candidatecertificate');
 Route::get('/certificatedownload/{candidateid}/{batchid}', 'TcController@certificatedownloadView');
 
+// Power subsidy public
+Route::get('weavers/powersubsidy-apply', 'WeaverController@psNewForm');
+Route::post('weavers/powersubsidy-apply', 'WeaverController@psApplyForm');
+// Electronic jaqpublic
+Route::get('weavers/ej-2loom-apply', 'WeaverController@ejTlNewForm');
+Route::post('weavers/ej-2loom-apply', 'WeaverController@ejTlApply');
+
 // Power subsidy private
 Route::get('weavers/powersubsidy-list', 'WeaverController@psList');
 Route::get('weavers/powersubsidy-app/details/{id}', 'WeaverController@psDetails');
 Route::get('weavers/powersubsidy-getfile/{type}/{id}', 'WeaverController@psGetfile');
 Route::get('weavers/powersubsidy-adminaction/{action}/{id}', 'WeaverController@psAdminaction');
-Route::get('weavers/powersubsidy-getzip/{id}', 'WeaverController@psGetzip');// Electronic jaq private
+Route::get('weavers/powersubsidy-getzip/{id}', 'WeaverController@psGetzip');
+Route::get('weavers/powersubsidy-ack', 'WeaverController@psShowAck');
+
+// Electronic jaq private
 Route::get('weavers/ej-2loom-list', 'WeaverController@ejTlList');
 Route::get('weavers/ej-2loom-app/details/{id}', 'WeaverController@ejTlDetails');
 Route::get('weavers/ej-2loom-getfile/{type}/{id}', 'WeaverController@ejTlGetfile');
 Route::get('weavers/ej-2loom-adminaction/{action}/{id}', 'WeaverController@ejTlAdminaction');
 Route::get('weavers/ej-2loom-getzip/{id}', 'WeaverController@ejTlGetzip');
+Route::get('weavers/ej-2loom-ack', 'WeaverController@ejShowAck');
+
 // weaver investment form
 Route::post('weavers/invest-apply', 'WeaverController@investApply');
 Route::get('weavers/invest-apply', function()
 {
-   return View::make('weavers.invest_apply');
+    return View::make('weavers.invest_apply');
 });
 Route::get('weavers/invest-list','WeaverController@investList');
-
-
-
-
