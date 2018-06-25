@@ -161,6 +161,8 @@ Route::get('/certificateupload/batchajax/{id}','TcController@certificateuploadSu
 Route::post('/candidateCertificate','TcController@candidatecertificate');
 Route::get('/certificatedownload/{candidateid}/{batchid}', 'TcController@certificatedownloadView');
 
+// Get Taluks list
+Route::get('weavers/get_talukas/{id}', 'WeaverController@getTaluk');
 // Power subsidy public
 Route::get('weavers/powersubsidy-apply', 'WeaverController@psNewForm');
 Route::post('weavers/powersubsidy-apply', 'WeaverController@psApplyForm');

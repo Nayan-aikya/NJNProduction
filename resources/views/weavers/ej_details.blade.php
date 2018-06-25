@@ -8,6 +8,17 @@
 @stop
 @section('content')
 
+    @if(session()->has('error'))
+    <div class="alert alert-danger">
+        {{ session()->get('error') }}
+    </div>
+    @endif
+    @if(session()->has('success'))
+    <div class="alert alert-success">
+        {{ session()->get('success') }}
+    </div>
+    @endif
+
     <table id="print_view" width="100%">
         <tr>
             <td style="border: 1px solid #ddd;">
@@ -20,7 +31,9 @@
                                     <td>
                                         <center>
                                             <h4>Govt of Karnataka</h4>
-                                            <h3>Department of Handlooms and Textiles</h3>
+                                            <h4>Department of Handlooms and Textiles</h4>
+                                            <h4>Application details</h4>
+                                            <h5>2 loom, Elecronic Jacquard and Knotting machine scheme</h5>
                                         </center>
                                     </td>
                                     <td><img src="{{asset('img/gov-logo.png')}}" alt=""></td>
@@ -30,24 +43,29 @@
                     </tr>
                     <tr>
                         <td>
-                            <p>Application ID: <b>{{$app->id}}</b> District ID: <b>{{$app->app_district}}</b></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
                             <table border="1" cellpadding="4" style="border-collapse: collapse; border:1px solid #ccc;" width="100%">
                                 <tbody>
-                                <tr>
+                                    
+                                    <tr>
                                         <td>Name: </td>
                                         <td>{{$app->name}}</td>
                                         <td>Application number:</td>
                                         <td>{{$app->id}}</td>
                                     </tr>
                                     <tr>
+                                        <td colspan="4">&nbsp;</td>
+                                    </tr>
+                                    <tr>
                                         <td>Application district: </td>
-                                        <td>{{$app->app_district}}</td>
+                                        <td>{{$app->app_dist_name}} ({{$app->app_district}})</td>
+                                        <td>Applied Taluk</td>
+                                        <td>{{$app->app_taluk_name}} ({{$app->app_taluk}})</td>
+                                    </tr>
+                                    <tr>
                                         <td>Financialyear:</td>
                                         <td>{{$app->fin_year}}</td>
+                                        <td>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>House No:</td>
@@ -63,9 +81,9 @@
                                     </tr>
                                     <tr>
                                         <td>Taluk:</td>
-                                        <td>{{$app->resi_taluk}}</td>
+                                        <td>{{$app->resi_taluk_name}} ({{$app->resi_taluk}})</td>
                                         <td>District:</td>
-                                        <td>{{$app->resi_district}}</td>
+                                        <td>{{$app->user_dist_name}} ( {{$app->resi_district}} )</td>
                                     </tr>
                                     <tr>
                                         <td>PIN:</td>
@@ -126,6 +144,12 @@
                                         <td>{{$app->connect_load}}</td>
                                     </tr>
                                     <tr>
+                                        <td>Building ownership type</td>
+                                        <td>{{$app->building_own_type}}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
                                     <tr>
@@ -165,16 +189,35 @@
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
+                                    
                                     <tr>
-                                        <td>Inspection remarks</td>
-                                        <td colspan="3">{{$app->ins_remarks}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Inspection documents</td>
-                                        <td colspan="3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4">&nbsp;</td>
+                                        <td>Attachments</td>
+                                        <td colspan="3">
+                                            <ul>
+                                                @if(!empty($app->photo))
+                                                <li>Photo</li>
+                                                @endif
+                                                @if(!empty($app->aadhaar_file))
+                                                <li>Aadhaar copy</li>
+                                                @endif
+                                                @if(!empty($app->cast_cert))
+                                                <li>Cast certificate</li>
+                                                @endif
+                                                @if(!empty($app->ind_licence_copy))
+                                                <li>Industry licence copy</li>
+                                                @endif
+                                                @if(!empty($app->building_docs))
+                                                <li>Building doccument</li>
+                                                @endif
+                                                @if(!empty($app->training_cert))
+                                                <li>Training certificate</li>
+                                                @endif
+                                                @if(!empty($app->prepBank_sancLetter))
+                                                <li>Loan sanction copy</li>
+                                                @endif
+
+                                            </ul>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Place</td>
@@ -182,31 +225,69 @@
                                         <td>Application date</td>
                                         <td>{{$app->appdate}}</td>
                                     </tr>
-                                    <!-- <tr>
-                                        <div style="margin:10px;">
-                                        <td colspan="4" class="text-center">
-                                            <div style="margin:10px;">
-                                                <a href="{{url('weavers/ej-2loom-getzip/'.$app->id)}}" class="btn btn-info">Download all attachments.</a>
-                                                <button class="btn btn-info" id="printThis">Print application</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4" class="text-center">
-                                            <div style="margin:10px;">
-                                                <a href="{{url('/weavers/ej-2loom-list')}}" class="btn btn-warning btn-md">Go back</a>
-                                                @if($app->status == 'applied')
-                                                <a href="{{url('/weavers/ej-2loom-adminaction/rejected/'.$app->id)}}" class="btn btn-danger btn-md" onclick="return confirm('Are you sure?')">Reject</a>
-                                                <a href="{{url('/weavers/ej-2loom-adminaction/approved/'.$app->id)}}" class="btn btn-success btn-md" onclick="return confirm('Are you sure?')">Approve</a>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr> -->
-                                    
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
-                                    
+                                    <tr>
+                                        <td colspan="4"><center><b>Inspection details</b></center></td>
+                                    </tr>                                    
+                                    <tr>
+                                        <td>Inspection Status</td>
+                                        <td>{{$app->ins_status}}</td>
+                                        <td>Inspection date</td>
+                                        <td>{{$app->ins_date}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Inspection remarks</td>
+                                        <td colspan="3">{{$app->ins_remarks}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Inspection attachments</td>
+                                        <td colspan="3">
+                                            <ul>
+                                                @if(!empty($app->ins_build_picture))
+                                                <li>Building Image</li>
+                                                @endif
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Inspection Location</td>
+                                        <td colspan="3">
+                                            <ul>
+                                                <li>Lattitude: {{$app->ins_lat}}</li>
+                                                <li>Longitude: {{$app->ins_long}}</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4"><center><b>Actions</b></center></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                        <center>
+                                            <a href="{{url('/weavers/ej-2loom-list')}}" class="btn btn-warning btn-md">Go back</a>
+                                            @if($app->app_status == 'applied')
+                                            <a href="{{url('/weavers/ej-2loom-adminaction/rejected/'.$app->id)}}" class="btn btn-danger btn-md" onclick="return confirm('Are you sure?')">Reject</a>
+                                            <a href="{{url('/weavers/ej-2loom-adminaction/approved/'.$app->id)}}" class="btn btn-success btn-md" onclick="return confirm('Are you sure?')">Approve</a>
+                                            @endif
+                                        </center>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                        <center>
+                                            <a href="#" id="printThis" class="btn btn-warning btn-md">Print applition<br><span class="glyphicon glyphicon-print" aria-hidden="true"></span></a>
+                                            <!-- <a disabled href="#" class="btn btn-info btn-md">Download all attachments<br><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a> -->
+                                        </center>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">&nbsp;</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </td>

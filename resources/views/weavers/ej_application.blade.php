@@ -6,8 +6,9 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <style>
     input[type=text]{ width: 100%; height: 20px;}
-    #salutation,#name{ display: inline-block; width:auto; }
-    #name{ width:90%; }
+    select{ height: 20px;}
+    #salutation,#name{ display: inline-block; width:90px; }
+    #name{ width:calc(100% - 95px); }
     .app_title_text{
         font-size:18px;
     }
@@ -43,16 +44,16 @@
                         <div class="col-sm-2"><img src="{{asset('img/Karnataka_log.png')}}" alt="" srcset=""></div>
                         <div class="col-sm-8">
                             <h4 align="center" class="pad_top_10"><u>Government of Karnataka</u></h4>
-                            <h4 align="center" class="pad_top_10"><u>Handloom & Textile Department<br></u>Weaver special package Scheme</h4>
+                            <h4 align="center" class="pad_top_10"><u>Department of Handlooms & Textiles<br></u>Weaver special package Scheme</h4>
                         </div>
                         <div class="com-sm-8"><img src="{{asset('img/gov-logo.png')}}" alt="" srcset=""></div>
                     </div>
                 </div>
-                <p class="text-center pad_top_20 pad_bottom_20 app_title_text">Application for seeking financial assistance for purchasing of 2 loom, Elecronic Jacquard and Knotting machine from government.</p>
+                <p class="text-center pad_top_20 pad_bottom_20 app_title_text">Application for seeking financial assistance for purchasing of 2 loom, Elecronic Jacquard and Knotting machine from Government.</p>
                 <div class="row">
                     <div class="col-sm-8">
                         <p>To,<br>Deputy Director /Assistant Director,<br>Department of Handloom &amp; Textile<br>Zilla Panchayat,</p>
-                        <span>Name of district: </span>
+                        <span>District: </span>
                         <?php
                             $dval = array(''=>'Select district');
                             foreach ($dists as $data)
@@ -62,7 +63,27 @@
                         ?>
                         {{ Form::select('app_district', $dval,'null',['id'=>'app_district']) }}
                         <span class="error"></span>
-                        <p class="pad_top_20"><span>For the financial year </span>
+                    </div>
+                    <div class="col-sm-4">
+                        <ul class="list-unstyled text-right">
+                            <li><a target="_blank" href="{{asset('files/2PowerloomsGuidelines.pdf')}}">Download guidelines for 2 powerloom scheme</a></li>
+                            <li><a target="_blank" href="{{asset('files/15-Weavers-Special-Package-New-Components.pdf')}}">Download guidelines for elecronic jacquard scheme</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="pad_top_20 pad_bottom_22">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label>Taluk </label>
+                        {{ Form::select('app_taluk', [
+                            ''=>'Select',],
+                            'null',
+                            ['id'=>'app_taluk']
+                        ) }}
+                        <span class="error"></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <label>For the financial year </label>
                         {{ Form::select('fin_year', [
                             '2018-19'=>'2018-19',
                             '2017-18' => '2017-18',
@@ -78,13 +99,6 @@
                             ['id'=>'fin_year']
                         ) }}
                         <span class="error"></span>
-                        </p>
-                    </div>
-                    <div class="col-sm-4">
-                        <ul class="list-unstyled text-right">
-                            <li><a target="_blank" href="{{asset('files/2PowerloomsGuidelines.pdf')}}">Download guidelines for 2 powerloom scheme</a></li>
-                            <li><a target="_blank" href="{{asset('files/15-Weavers-Special-Package-New-Components.pdf')}}">Download guidelines for elecronic jacquard scheme</a></li>
-                        </ul>
                     </div>
                 </div>
                 <br>
@@ -107,7 +121,8 @@
                                             <td colspan="3">
                                             {{ Form::select('salutation', [
                                                 'Sri'=>'Sri',
-                                                'Smt' => 'Smt'],
+                                                'Smt' => 'Smt',
+                                                'Kumari' => 'Kumari'],
                                                 'null',
                                                 ['id'=>'salutation']
                                             ) }}
@@ -142,14 +157,9 @@
                                         </tr>
                                         
                                         <tr>
-                                            <td>Taluk:</td>
-                                            <td>
-                                                {{ Form::text('resi_taluk') }}
-                                                <span class="error"></span>
-                                            </td>
                                             <td>District:</td>
                                             <td>
-                                                <select name="resi_district" id="">
+                                                <select name="resi_district" id="resi_district">
                                                     <option value="">Select district</option>
                                                     @foreach($dists as $key => $dist)
                                                     <option value="{{$dist->id}}">{{$dist->district_name}}</option>
@@ -157,11 +167,19 @@
                                                 </select>
                                                 <span class="error"></span>
                                             </td>
+                                            <td>Taluk:</td>
+                                            <td>
+                                                {{ Form::select('resi_taluk', [''=>'Select',],
+                                                        'null',
+                                                        ['id'=>'resi_taluk']
+                                                    ) }}
+                                                <span class="error"></span>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>PIN:</td>
                                             <td>
-                                                {{ Form::text('resi_pin') }}
+                                                {{ Form::text('resi_pin','',['maxlength'=>'6']) }}
                                                 <span class="error"></span>
                                             </td>
                                             <td>Recent photo</td>
@@ -178,7 +196,7 @@
                                             </td>
                                             <td>Mobile No:</td>
                                             <td>
-                                                {{ Form::text('resi_mobile') }}
+                                                {{ Form::text('resi_mobile','',['maxlength'=>'10']) }}
                                                 <span class="error"></span>
                                             </td>
                                         </tr>
@@ -203,7 +221,7 @@
                                         <tr>
                                             <td>DOB:</td>
                                             <td>
-                                                {{ Form::text('dob','',['id'=>'dob']) }}
+                                                {{ Form::text('dob','',['id'=>'dob','autocomplete'=>'off']) }}
                                                 <span class="error"></span>
                                             </td>
                                             <td>Age:</td>
@@ -225,7 +243,7 @@
                                         <tr>
                                             <td>Aadhaar:</td>
                                             <td>
-                                                {{ Form::text('aadhaar') }}
+                                                {{ Form::text('aadhaar','',['maxlength'=>'12']) }}
                                                 <span class="error"></span>
                                             </td>
                                             <td>Aadhaar copy</td>
@@ -349,19 +367,27 @@
                         </tr>
                         <tr id="spc_avl">
                             <td>9</td>
-                            <td>Space available to setup the unit</td>
+                            <td>Space available for the unit</td>
                             <td>
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr>
-                                            <td>Space (in sft)</td>
+                                            <td>Built Up Area (in sft)</td>
                                             <td>
                                                 {{ Form::text('space_sqft') }}
                                                 <span class="error"></span>
                                             </td>
-                                            <td>Industrial License Copy</td>
+                                            <td>SSI/MSME License</td>
                                             <td>
                                                 {{ Form::file('ind_licence_copy') }}
+                                                <span class="error"></span>
+                                            </td>
+                                            
+                                        </tr>
+                                        <tr>
+                                            <td>General License Copy</td>
+                                            <td colspan="3">
+                                                {{ Form::file('general_licence_copy') }}
                                                 <span class="error"></span>
                                             </td>
                                         </tr>
@@ -371,10 +397,27 @@
                         </tr>
                         <tr>
                             <td>10</td>
-                            <td>Building documents/Rent agreement/Lease agreement</td>
+                            <td>Building Details</td>
                             <td>
-                            {{ Form::file('building_docs') }}
-                                <span class="error"></span>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td>Building&nbsp;type</td>
+                                            <td style="width: 100px;">
+                                                {{ Form::radio('building_own_type','Own', '', ['id'=>'own']) }}&nbsp;<label for="own">Own</label><br>
+                                                {{ Form::radio('building_own_type','Rent','',['id'=>'rent']) }}&nbsp;<label for="rent">Rent</label><br>
+                                                {{ Form::radio('building_own_type','Lease','',['id'=>'Lease']) }}&nbsp;<label for="Lease">Lease</label><br>
+                                                <span id="building_own_type" class="error"></span>
+                                            </td>
+                                            <td>Building documents/<br>Rent agreement/<br>Lease agreement</td>
+                                            <td>
+                                                {{ Form::file('building_docs') }}
+                                                <span class="error"></span>
+                                            </td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </td>
                             
                         </tr>
@@ -401,7 +444,7 @@
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr>
-                                            <td>R.R. No. (Meter number)</td>
+                                            <td>R.R/Meter Number</td>
                                             <td>
                                                 {{ Form::text('rr_number') }}
                                                 <span class="error"></span>
@@ -418,7 +461,7 @@
                         </tr>
                         <tr class="msme_ssi_tr">
                             <td>14</td>
-                            <td>MSME/SSI Registraion No<br>(Only for Jacquard and Knotting machine)</td>
+                            <td>MSME/SSI Registraion No</td>
                             <td>
                                 {{ Form::text('msme_number') }}
                                 <span class="error"></span>
@@ -475,7 +518,7 @@
                                         <tr>
                                             <td>Amount Sanctioned Date</td>
                                             <td>
-                                                {{ Form::text('prepBank_date') }}
+                                                {{ Form::text('prepBank_date','',['autocomplete'=>'off']) }}
                                                 <span class="error"></span>
                                             </td>
                                             <td>Sanction letter Copy</td>
@@ -490,7 +533,7 @@
                         </tr>
                         <tr>
                             <td>16</td>
-                            <td>Bank account details to receive credits</td>
+                            <td>Beneficiary Account Details</td>
                             <td>
                                 <table class="table table-bordered">
                                     <tbody>
@@ -547,7 +590,7 @@
                         <tr>
                             <td>Date: </td>
                             <td>
-                            {{ Form::text('appdate') }}
+                            {{ Form::text('appdate','',['autocomplete'=>'off']) }}
                             <span class="error"></span>
                             </td>
                         </tr>
@@ -566,7 +609,9 @@
                 <br>
                 <center>
                     <p id="errorsummer" class="error"></p>
-                    <input type="submit" name="submit" value="submit">
+                    <button class="btn btn-lg" type="submit" name="Submit" value="Submit"><b>Submit</b></button>
+                    &nbsp;&nbsp;
+                    <button class="btn btn-lg" type="reset" value="Reset"><b>Reset</b></button>
                 </center>
                 <div class="footer">
                 </div>

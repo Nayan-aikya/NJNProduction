@@ -44,57 +44,57 @@
                                 <tbody>
                                     <tr>
                                         <td>Name: </td>
-                                        <td>{{$e1->name}}</td>
+                                        <td>{{$app->name}}</td>
                                         <td>Application number:</td>
-                                        <td>{{$e1->id}}</td>
+                                        <td>{{$app->id}}</td>
                                     </tr>
                                     <tr>
                                         <td>Application district: </td>
-                                        <td>{{$e1->app_district}}</td>
+                                        <td>{{$app->app_dist_name}} ({{$app->app_district}})</td>
                                         <td>Financialyear:</td>
-                                        <td>{{$e1->fin_year}}</td>
+                                        <td>{{$app->fin_year}}</td>
                                     </tr>
                                     <tr>
                                         <td>House No:</td>
-                                        <td>{{$e1->resi_houseno}}</td>
+                                        <td>{{$app->resi_houseno}}</td>
                                         <td>Ward No:</td>
-                                        <td>{{$e1->resi_wardno}}</td>
+                                        <td>{{$app->resi_wardno}}</td>
                                     </tr>
                                     <tr>
                                         <td>Cross No:</td>
-                                        <td>{{$e1->resi_crossno}}</td>
+                                        <td>{{$app->resi_crossno}}</td>
                                         <td>Village:</td>
-                                        <td>{{$e1->resi_village}}</td>
+                                        <td>{{$app->resi_village}}</td>
                                     </tr>
                                     <tr>
                                         <td>Taluk:</td>
-                                        <td>{{$e1->resi_taluk}}</td>
+                                        <td>{{$app->resi_taluk}}</td>
                                         <td>District:</td>
-                                        <td>{{$e1->resi_district}}</td>
+                                        <td>{{$app->user_dist_name}} ({{$app->resi_district}})</td>
                                     </tr>
                                     <tr>
                                         <td>PIN:</td>
-                                        <td>{{$e1->resi_pin}}</td>
+                                        <td>{{$app->resi_pin}}</td>
                                         <td></td>
                                         <td></td>
                                     </tr>
                                     <tr>
                                         <td>Landline(including STD code):</td>
-                                        <td>{{$e1->resi_phone}}</td>
+                                        <td>{{$app->resi_phone}}</td>
                                         <td>Mobile No:</td>
-                                        <td>{{$e1->resi_mobile}}</td>
+                                        <td>{{$app->resi_mobile}}</td>
                                     </tr>
                                     <tr>
                                         <td>DOB:</td>
-                                        <td>{{$e1->dob}}</td>
+                                        <td>{{$app->dob}}</td>
                                         <td>Age:</td>
-                                        <td>{{$e1->age}}</td>
+                                        <td>{{$app->age}}</td>
                                     </tr>
                                     <tr>
                                         <td>Aadhaar:</td>
-                                        <td>{{$e1->aadhaar}}</td>
+                                        <td>{{$app->aadhaar}}</td>
                                         <td>Email:</td>
-                                        <td>{{$e1->email}}</td>
+                                        <td>{{$app->email}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
@@ -102,48 +102,54 @@
                                    
                                     <tr>
                                         <td>Category</td>
-                                        <td>{{$e1->castecategory}}</td>
+                                        <td>{{$app->castecategory}}</td>
                                         <td>Gender</td>
-                                        <td>{{$e1->gender}}</td>
+                                        <td>{{$app->gender}}</td>
                                     </tr>
                                     <tr>
                                         <td>Annual income</td>
-                                        <td>{{$e1->income}}</td>
+                                        <td>{{$app->income}}</td>
                                         <td>Application Status</td>
-                                        <td>{{$e1->status}}</td>
+                                        <td>{{$app->status}}</td>
                                     </tr>
                                     <tr>
                                         <td>Facility selected</td>
-                                        <td>{{$e1->facility_sel}}</td>
+                                        <td>{{$app->facility_sel}}</td>
                                         <td>Working capital assistance?</td>
-                                        <td>{{$e1->wka}}</td>
+                                        <td>{{$app->wka}}</td>
                                     </tr>
                                     <tr>
                                         <td>Expected Unit's address</td>
-                                        <td>{{$e1->plan_uadd}}</td>
+                                        <td>{{$app->plan_uadd}}</td>
                                         <td>Space available for unit</td>
-                                        <td>{{$e1->space_sqft}}</td>
+                                        <td>{{$app->space_sqft}}</td>
                                     </tr>
                                     <tr>
                                         <td>RR/Meter number</td>
-                                        <td>{{$e1->rr_number}}</td>
+                                        <td>{{$app->rr_number}}</td>
                                         <td>Connected load</td>
-                                        <td>{{$e1->connect_load}}</td>
+                                        <td>{{$app->connect_load}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Building ownership type</td>
+                                        <td>{{$app->building_own_type}}</td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
                                     <tr>
                                         <td>Prefered bank type</td>
-                                        <td>{{$e1->prepBank_type}}</td>
+                                        <td>{{$app->prepBank_type}}</td>
                                         <td>Prefered bank name</td>
-                                        <td>{{$e1->prepBank_bankname}}</td>
+                                        <td>{{$app->prepBank_bankname}}</td>
                                     </tr>
                                     <tr>
                                         <td>Loan ammount sanctioned</td>
-                                        <td>{{$e1->prepBank_loanamt}}</td>
+                                        <td>{{$app->prepBank_loanamt}}</td>
                                         <td>Date of loan sanction</td>
-                                        <td>{{$e1->prepBank_date}}</td>
+                                        <td>{{$app->prepBank_date}}</td>
                                     </tr>
                                     
                                     <tr>
@@ -151,21 +157,21 @@
                                     </tr>
                                     <tr>
                                         <td>User bank</td>
-                                        <td>{{$e1->ubank_name}}</td>
+                                        <td>{{$app->ubank_name}}</td>
                                         <td>User name as per bank</td>
-                                        <td>{{$e1->ubank_uname}}</td>
+                                        <td>{{$app->ubank_uname}}</td>
                                     </tr>
                                     <tr>
                                         <td>User bank branch</td>
-                                        <td>{{$e1->ubank_branch}}</td>
+                                        <td>{{$app->ubank_branch}}</td>
                                         <td>User bank account type</td>
-                                        <td>{{$e1->ubank_actype}}</td>
+                                        <td>{{$app->ubank_actype}}</td>
                                     </tr>
                                     <tr>
                                         <td>User bank ac number</td>
-                                        <td>{{$e1->ubank_acno}}</td>
+                                        <td>{{$app->ubank_acno}}</td>
                                         <td>User bank IFSC</td>
-                                        <td>{{$e1->ubank_ifsc}}</td>
+                                        <td>{{$app->ubank_ifsc}}</td>
                                     </tr>
                                     
                                     <tr>
@@ -173,9 +179,9 @@
                                     </tr>
                                     <tr>
                                         <td>Place</td>
-                                        <td>{{$e1->app_place}}</td>
+                                        <td>{{$app->app_place}}</td>
                                         <td>Applied date/time</td>
-                                        <td>{{$e1->created_at}}</td>
+                                        <td>{{$app->created_at}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
