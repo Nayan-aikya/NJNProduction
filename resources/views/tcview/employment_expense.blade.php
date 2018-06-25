@@ -120,7 +120,7 @@
 </div>
  <div> 
     <label>Employment Expense : </label>
-    <input type="number" name="batch_expense" <?php if(isset($data['employmentdata'][0]['expense']) && !empty($data['employmentdata'][0]['expense'])) { ?> disabled value="{{ $data['employmentdata'][0]['expense'] }}" <?php } ?>>
+    <input type="number" name="batch_expense" <?php if(isset($data['employmentdata'][0]['expense']) && !empty($data['employmentdata'][0]['expense'])) { ?> value="{{ $data['employmentdata'][0]['expense'] }}" <?php } ?>>
     @if(isset($data['employmentdata'][0]['status']) && $data['employmentdata'][0]['status'] == "Approved")
     <b style="color: green">{{ $data['employmentdata'][0]['status']}}<b>
     @else

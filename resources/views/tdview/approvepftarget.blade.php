@@ -95,7 +95,7 @@
         <td><input required class="tinf" type="number" name="vscppm" id="vfive" OnChange="av(this)" readonly></td>
         <td><input required class="tinf" type="number" name="vscppf" id="vsix" OnChange="av(this)" readonly></td>
         <td><input required class="tinf" type="number" name="vscppt" id="vavvy2" value="" readonly readonly></td>
-        <td><input required class="tinf" type="number" name="vscpfm" id="vseven" OnChange="av(this)"></td>
+        <td><input required class="tinf" type="number" name="vscpfm" id="vseven" OnChange="av(this)" readonly></td>
         <td><input required class="tinf" type="number" name="vscpff" id="veight" OnChange="av(this)" readonly></td>
         <td><input required class="tinf" type="number" name="vscpft" id="vavvy3" value="" readonly></td>        
     </tr>
@@ -162,7 +162,7 @@
         });
         $('select[name="vbatch"]').on('change', function() {
             var batch = $(this).val();
-            // alert(batch);
+            //alert(batch);
              $("input[name='vtiming']").val("");
                     $("[data-field='vsubject']").text("");
                     $("[data-field='vtype']").text("");

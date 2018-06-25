@@ -446,6 +446,7 @@
                 </tbody>
             </table>
             <div class="text-center">
+                <span id="errorsummer"></span>
                 <input class="btn btn-info" type="submit" value="Submit" name="Submit">
             </div>
         </form>
@@ -466,7 +467,120 @@ $( document ).ready(function() {
         changeYear: true,
         yearRange: "1908:2018",
         dateFormat: 'dd-mm-yy',
-    });    
+    });
+    $("#formThree").submit(function(e){
+    //Validator regular expressions.
+        var req_reg = /^[\w\.\-\'\(\)\#][\w\.\-\'\(\)\s\#]*$/;
+        var mob_reg = /^\d{10}$/;
+        var name_reg = /^([a-zA-Z\.\s]){1,}$/;
+        var pin_reg = /^\d{6}$/;
+        var uid_reg = /^\d{12}$/;
+        var date_reg = /^\d{2}-\d{2}-\d{4}$/;
+        var age_reg = /^\d{1,3}$/;
+        var num_reg = /^\d+$/;
+        var email_reg = /^([A-Z|a-z|0-9](\.|_|\-){0,1})+[A-Z|a-z|0-9]\@([A-Z|a-z|0-9])+((\.|_|\-){0,1}[A-Z|a-z|0-9]){2}\.[a-z]{2,3}$/;
+
+        // Read
+        var regno = $("input[name='regno']").val();
+        var unit_name = $("input[name='unit_name']").val();
+        var company_address = $("input[name='company_address']").val();
+        var unit_address = $("input[name='unit_address']").val();
+        var unit_city = $("input[name='unit_city']").val();
+        var unit_pin = $("input[name='unit_pin']").val();
+        // var zone_new = $("input[name='zone_new']:checked").length;
+        // var zone_old = $("input[name='zone_old']:checked").length;
+        var em_regno = $("input[name='em_regno']").val();
+        var em_regdate = $("input[name='em_regdate']").val();
+        var vat_regno = $("input[name='vat_regno']").val();
+        var vat_regdate = $("input[name='vat_regdate']").val();
+        var industry_nature = $("input[name='industry_nature']").val();
+        var products_man = $("input[name='products_man']").val();
+        var constitution_ind_type = $("input[name='constitution_ind_type']").val();
+        // var constitution_ind_val = $("input[name='constitution_ind_val']").val();
+        var ent_category = $("input[name='ent_category']").val();
+        var unit_park = $("input[name='unit_park']:checked").val() || '';
+        var ind_ex_type = $("input[name='ind_ex_type']").val();
+        var procost_land = $("input[name='procost_land']").val();
+        var procost_build = $("input[name='procost_build']").val();
+        var procost_machin = $("input[name='procost_machin']").val();
+        var other = $("input[name='other']").val();
+        var total = $("input[name='total']").val();
+        var loan_inst_name = $("input[name='loan_inst_name']").val();
+        var loan_date = $("input[name='loan_date']").val();
+        var loan_amount = $("input[name='loan_amount']").val();
+        var employment_newunit_a = $("input[name='employment_newunit_a']").text();
+        var employment_newunit_b = $("input[name='employment_newunit_b']").text();
+        var cont_name = $("input[name='cont_name']").val();
+        var cont_phone = $("input[name='cont_phone']").val();
+        var cont_email = $("input[name='cont_email']").val();
+        var bank_acname = $("input[name='bank_acname']").val();
+        var bank_name = $("input[name='bank_name']").val();
+        var bank_acno = $("input[name='bank_acno']").val();
+        var bank_ifsc = $("input[name='bank_ifsc']").val();
+        // var incentive_list = $("input[name='incentive_list']:checked").length;
+        // var form_list = $("input[name='form_list']").val();
+
+        // validate
+        var regno_check = validate_inputtext(regno, req_reg, 'regno');
+        var unit_name_check = validate_inputtext(unit_name, req_reg, 'unit_name');
+        var company_address_check = validate_inputtext(company_address, req_reg, 'company_address');
+        var unit_address_check = validate_inputtext(unit_address, req_reg, 'unit_address');
+        var unit_city_check = validate_inputtext(unit_city, req_reg, 'unit_city');
+        var unit_pin_check = validate_inputtext(unit_pin, req_reg, 'unit_pin');
+        // var zone_new_check = validate_inputtext(zone_new, req_reg, 'zone_new');
+        // var zone_old_check = validate_inputtext(zone_old, req_reg, 'zone_old');
+        var em_regno_check = validate_inputtext(em_regno, req_reg, 'em_regno');
+        var em_regdate_check = validate_inputtext(em_regdate, req_reg, 'em_regdate');
+        var vat_regno_check = validate_inputtext(vat_regno, req_reg, 'vat_regno');
+        var vat_regdate_check = validate_inputtext(vat_regdate, req_reg, 'vat_regdate');
+        var industry_nature_check = validate_inputtext(industry_nature, req_reg, 'industry_nature');
+        var products_man_check = validate_inputtext(products_man, req_reg, 'products_man');
+        var constitution_ind_type_check = validate_inputtext(constitution_ind_type, req_reg, 'constitution_ind_type');
+        // var constitution_ind_val_check = validate_inputtext(constitution_ind_val, req_reg, 'constitution_ind_val');
+        var ent_category_check = validate_inputtext(ent_category, req_reg, 'ent_category');
+        var unit_park_check = validate_inputtext(unit_park, req_reg, 'unit_park');
+        var ind_ex_type_check = validate_inputtext(ind_ex_type, req_reg, 'ind_ex_type');
+        var procost_land_check = validate_inputtext(procost_land, req_reg, 'procost_land');
+        var procost_build_check = validate_inputtext(procost_build, req_reg, 'procost_build');
+        var procost_machin_check = validate_inputtext(procost_machin, req_reg, 'procost_machin');
+        var other_check = validate_inputtext(other, req_reg, 'other');
+        var total_check = validate_inputtext(total, req_reg, 'total');
+        var loan_inst_name_check = validate_inputtext(loan_inst_name, req_reg, 'loan_inst_name');
+        var loan_date_check = validate_inputtext(loan_date, req_reg, 'loan_date');
+        var loan_amount_check = validate_inputtext(loan_amount, req_reg, 'loan_amount');
+        var employment_newunit_a_check = validate_inputtext(employment_newunit_a, req_reg, 'employment_newunit_a');
+        var employment_newunit_b_check = validate_inputtext(employment_newunit_b, req_reg, 'employment_newunit_b');
+        var cont_name_check = validate_inputtext(cont_name, req_reg, 'cont_name');
+        var cont_phone_check = validate_inputtext(cont_phone, req_reg, 'cont_phone');
+        var cont_email_check = validate_inputtext(cont_email, req_reg, 'cont_email');
+        var bank_acname_check = validate_inputtext(bank_acname, req_reg, 'bank_acname');
+        var bank_name_check = validate_inputtext(bank_name, req_reg, 'bank_name');
+        var bank_acno_check = validate_inputtext(bank_acno, req_reg, 'bank_acno');
+        var bank_ifsc_check = validate_inputtext(bank_ifsc, req_reg, 'bank_ifsc');
+        // var incentive_list_check = validate_inputtext(incentive_list, req_reg, 'incentive_list');
+        // var form_list_check  = validate_inputtext(form_list, req_reg, 'form_list');
+
+        if(regno_check && unit_name_check && company_address_check && unit_address_check && unit_city_check && unit_pin_check &&  em_regno_check && em_regdate_check && vat_regno_check && vat_regdate_check && industry_nature_check && products_man_check && constitution_ind_type_check && ent_category_check && unit_park_check && ind_ex_type_check && procost_land_check && procost_build_check && procost_machin_check && other_check && total_check && loan_inst_name_check && loan_date_check && loan_amount_check && employment_newunit_a_check && employment_newunit_b_check && cont_name_check && cont_phone_check && cont_email_check && bank_acname_check && bank_name_check && bank_acno_check && bank_ifsc_check && incentive_list_check && form_list_check){
+            $("#errorsummer").html('');
+            return true;
+        }
+        else{
+            $("#errorsummer").html('One or more errors found, please correct and try again!');
+            return false;
+        }
+
+        return false;
+    });
+    function validate_inputtext(strval, regex, parametername) {
+        if(strval.match(regex)){
+            $("input[name='"+parametername+"'] + .error").html('');
+            return true;
+        }
+        else{
+            $("input[name='"+parametername+"'] + .error").html('Please enter valid value.');
+            return false;
+        }
+    }
 });
 </script>
 @stop

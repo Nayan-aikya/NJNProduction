@@ -37,7 +37,7 @@ use DateTime;
 
 class TdController extends Controller
 {
-
+   
     public function show($centreid)
     {   
         
@@ -154,7 +154,7 @@ class TdController extends Controller
     {
       $tccall=new training_centres();
       $district = Auth::user()->district;
-      $tcinfo = $tccall->fetchTcListByDistrict($district); 
+      $tcinfo = $tccall->fetchTcListByDistrictPaginate($district); 
       return view('tdview.viewtc')->with(array('tcinfo'=>$tcinfo));
     }
     public function deletetcview($centreid)
@@ -183,12 +183,17 @@ class TdController extends Controller
     }
     public function fetchbatchlist(Request $obj)
     {
+        $tc = "";
+        if(Input::get('tcid'))
+            $tc = Input::get('tcid');
         $batchcall = new batches();
         $district = Auth::user()->district;
+        $tccall =new training_centres();
+        $tcinfo = $tccall->fetchTcListByDistrict($district);
         $districts = new districts();
         $dist_code = $districts->pluckDistrictCode($district);
-        $batchinfo = $batchcall->fetchPendingBatchList($dist_code);
-        return view('tdview.viewbatch')->with(array('batchinfo'=>$batchinfo));
+        $batchinfo = $batchcall->fetchPendingBatchListPaginate($dist_code,$tc);
+        return view('tdview.viewbatch')->with(array('batchinfo'=>$batchinfo,'tcinfo' => $tcinfo,'tc' =>$tc));
     }
     public function fetchTrainingCentreList(Request $obj)
     {
@@ -200,18 +205,29 @@ class TdController extends Controller
 
     public function approveBatch($id)
     {
+        $input = Input::all();
+        $id=$input['batchid'];
         $batchcall = new batches();
-        $new_batch_data = array('status'=>"Approved");
-        $batch = $batchcall->approveBatch($id,$new_batch_data);
 
-        $batchinfo = $batchcall->fetchBatchSpecInfo($id);
+        if($input['submit'] == "Approve"){
+            $new_batch_data = array('status'=>"Approved",'start_date'=>$input['start_date'],'end_date'=>$input['end_date']);
+            $batch = $batchcall->approveBatch($id,$new_batch_data);
 
-        $data1 = array("centre_id"=>$batchinfo[0]->centre_id,"batch_id"=>$batchinfo[0]->batch_id,"batch_name"=>$batchinfo[0]->batch_name,"status"=>$batchinfo[0]->status,"created_by"=>$batchinfo[0]->created_by,"batch_type"=>$batchinfo[0]->training_type,"batch_academic_year"=>$batchinfo[0]->academic_year);
+            $batchinfo = $batchcall->fetchBatchSpecInfo($id);
 
-        $trainingbatchcall = new training_batches();
-        $tb=$trainingbatchcall->insertTrainingBatch($data1);
-        // return view('pages.success');
-        Session::flash("success", "Batch approved successfully!!");
+            $data1 = array("centre_id"=>$batchinfo[0]->centre_id,"batch_id"=>$batchinfo[0]->batch_id,"batch_name"=>$batchinfo[0]->batch_name,"status"=>$batchinfo[0]->status,"created_by"=>$batchinfo[0]->created_by,"batch_type"=>$batchinfo[0]->training_type,"batch_academic_year"=>$batchinfo[0]->academic_year);
+
+            $trainingbatchcall = new training_batches();
+            $tb=$trainingbatchcall->insertTrainingBatch($data1,$batchinfo[0]->centre_id,$batchinfo[0]->batch_id);
+            // return view('pages.success');
+            Session::flash("success", "Batch approved successfully!!");
+        }
+         if($input['submit'] == "Reject"){
+            $new_batch_data = array('status'=>"Rejected",'start_date'=>$input['start_date'],'end_date'=>$input['end_date']);
+            $batch = $batchcall->rejectBatch($id,$new_batch_data);
+            // return view('pages.success');  
+            Session::flash("success", "Batch rejected successfully!!");
+         }
         return Redirect::back();
     }
     public function approveBatchtarget()
@@ -297,10 +313,12 @@ class TdController extends Controller
 
     public function credentialCreation()
     {  
-       $districts=districts::all();
-       $ayobj = new academicyear();
-	       $academicyear = $ayobj->fetchAcademicyear();
-	       return view('tdview.credential',compact('districts','academicyear'));
+        $district = Auth::user()->district;
+            $tccall=new training_centres();
+            $tcinfo = DB::table('training_centres')->leftjoin('users','training_centres.centre_id','=','users.centre_id')->where('training_centres.district',$district)->select('training_centres.centre_id','training_centres.centre_name','users.username','users.password')->paginate(10);
+      
+      
+	       return view('tdview.credential',compact('tcinfo','district'));
 	}
 	//------------------------
 	// public function getDistrictwiseTCList($id)
@@ -329,10 +347,13 @@ class TdController extends Controller
         else{
         $userrole=new user_roles();
         $userinfo=$userrole->fetchUserId($req->type);
-        $data = array("centre_id"=>$req->centreid,"user_id"=>$userinfo[0]->user_id,"district"=>$req->district,"username"=>$req->username,"password"=>Hash::make($req->password));        
+        $division = districts::where('district_name',$req->district)->value('division');
+        $data = array("division"=>$division,"centre_id"=>$req->centreid,"user_id"=>$userinfo[0]->user_id,"district"=>$req->district,"username"=>$req->username,"password"=>Hash::make($req->password)); 
+        //echo "<pre>";print_r($data);die;      
         $user=$usercall->insertUser($data);
         }
-        return view('pages.success',compact('user'));
+        Session::flash("success", "User Created successfully!!");
+        return Redirect::back();
     }
 
     public function showRoleview(){

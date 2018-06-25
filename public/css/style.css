@@ -272,9 +272,10 @@ footer {
         background-color:#1f1f60;
         width: 100%;
 }
-h4{
-    color:white;
+.footer h4{
     font-size: 20px;
+    color: #fff;
+
 }
 
 .navbar-default .list-unstyled > li > a{
@@ -476,4 +477,13 @@ h4{
 .success{
     font-size: 12px;
     color: green;
+}
+.pad_top_10{
+    padding-top: 10px;
+}
+.pad_top_20{
+    padding-top: 20px;
+}
+.pad_bottom_20{
+    padding-bottom: 20px;
 }

@@ -21,8 +21,15 @@ class training_batches extends Model
                             'total_expense',
                             'employment_expense_status'
                      ];
-    public function insertTrainingBatch($array){
-    	$batch = training_batches::create( $array );        
+    public function insertTrainingBatch($array,$cent_id,$batc_id){
+        if(training_batches::where('centre_id',$cent_id)->where('batch_id',$batc_id)->exists())
+            {
+                $batch = training_batches::where('centre_id',$cent_id)->where('batch_id',$batc_id)->update( $array );  
+            }
+        else{
+            $batch = training_batches::create( $array );  
+        }
+    	      
         return $batch;
     } 
     public function fetchtrainingBatch($centreid){
@@ -31,7 +38,7 @@ class training_batches extends Model
     }
 
     public function fetchtrainingspecBatch($centreid,$academicyear){
-        $batch = training_batches::where("centre_id",$centreid)->where("batch_academic_year",$academicyear)->pluck('batch_name','batch_id');
+        $batch = training_batches::where('status',"Approved")->where("centre_id",$centreid)->where("batch_academic_year",$academicyear)->pluck('batch_name','batch_id');
         return $batch;
     }
 

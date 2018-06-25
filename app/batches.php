@@ -38,6 +38,13 @@ class batches extends Model
         $batches = batches::where('district_id',$district)->where('status','Pending')->get(); 
         return $batches;
     }
+    public function fetchPendingBatchListPaginate($district,$centre_id){
+        if(!empty($centre_id))
+            $batches = batches::where('district_id',$district)->where('centre_id',$centre_id)->where('status','Pending')->paginate(10); 
+        else
+            $batches = batches::where('district_id',$district)->where('status','Pending')->paginate(10); 
+        return $batches;
+    }
     public function approveBatch($batchid,$new_batch_data){
         $batch = batches::where ('batch_id', $batchid)->update($new_batch_data);
         return $batch;

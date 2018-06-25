@@ -45,8 +45,14 @@ class loginController extends BaseController
             // echo $userinfo[0]->user_id;
             $userrole=new user_roles();
             $role=$userrole->fetchRole($userinfo[0]->user_id);            
-           echo  $previous = URL::previous();die;
-            
+            $previous = URL::previous();
+            if($role[0]->role_id =='TD')  
+                 return Redirect::to('dashboard');      
+            if($role[0]->role_id =='TC')  
+                 return Redirect::to('tcdashboard');
+            if($role[0]->role_id =='DD')  
+                return Redirect::to('dcdashboard');
+            else
                 return Redirect::to($previous);
 
          }

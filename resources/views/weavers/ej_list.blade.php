@@ -4,7 +4,7 @@
 @stop
 @section('content')
     <div class="container">
-    <h2 class="text-center">Applications received for 2 looms, Electronic jacquard and Knotting Machine</h2>
+    <h2 class="text-center">Applications received</h2>
     @if(session()->has('error'))
     <div class="alert alert-danger">
         {{ session()->get('error') }}

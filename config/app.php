@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://njn.karnatakadht.org/'),
+    'url' => env('APP_URL', 'http://njndemo.test/'),
 
     /*
     |--------------------------------------------------------------------------

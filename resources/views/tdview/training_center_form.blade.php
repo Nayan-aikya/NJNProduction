@@ -63,7 +63,6 @@
           <td> 	  
           		<label for="usr">State</label>
         			<select class="form-control" id="sel1" name="state" required>
-              <option value="" disabled selected>Select your State</option>
               @foreach ($states as $state)
               <option>{{ $state->state_names}}</option>
               @endforeach
@@ -131,19 +130,18 @@
           </td><td>&nbsp</td>
           <td>  	 
             	<label for="usr">Type of centre</label>
-          		<select class="form-control" id="sel1" name="centre" required>
+          		<select class="form-control" id="sel1" name="centre" >
               <option value="" disabled selected>Select centre type</option>
       		    @foreach ($tocs as $t)
               <option>{{ $t->types }}</option>
               @endforeach
       		    </select>
-          </td><td><p class="star1">*</p></td>
+          </td><td></td>
         </tr>
         <tr>
           <td>    	  
               <label for="usr">Training subject</label>
               <select class="form-control" id="sel1" name="training">
-              <option value="" disabled selected>Select subject</option>
               @foreach ($subjects as $t)
               <option>{{ $t->subjects }}</option>
               @endforeach

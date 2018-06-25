@@ -1,7 +1,6 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" >
 @extends('layouts.sidebar')
 @section('content')
-
  <div class="row" id="targetcontainer">
         <!-- sidebar content -->
         <div id="sidebar" class="col-md-3">
@@ -153,7 +152,7 @@
                     url: '/pftarget/ajax/'+fy,
                     type: "GET",
                     dataType: "json",
-                    success:function(data) {                       
+                    success:function(data) {    
                         $('select[name="batch"]').empty();
                         // $('select[name="batch"]').append('<option value="'select'">-----Select-----</option>');
                         var count=0;

@@ -17,21 +17,42 @@
 @foreach($batchinfo as $row)
 <tr>
 <td><label>Batch Name:</label><br>
-<input class="form-control" type="text" name="batchname" value="{{ $row -> batch_name }}" required><br></td>
+<input class="form-control" type="text" name="batchname" value="{{ $row -> batch_name }}" required>
+<br> @if ($errors->has('batchname'))
+
+                    <span class="text-danger">{{ $errors->first('batchname') }}</span>
+
+                @endif</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 <td><input class="form-control" type="hidden" name="batchid" value="{{ $row -> batch_id }}"></td>
 <td><label>Training Type:</label><br>
-<input  class="form-control" type="text" name="trainingtype"  value="{{ $row -> training_type }}"  required><br></td>
+<input  class="form-control" type="text" name="trainingtype"  value="{{ $row -> training_type }}"  required><br> @if ($errors->has('trainingtype'))
+
+                    <span class="text-danger">{{ $errors->first('trainingtype') }}</span>
+
+                @endif</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 </tr>
 <tr>
 <td><label>Start Date:</label><br>
-<input  class="form-control" type="date" name="startdate" value="{{  $startdate }}"  required><br></td>	
+<input  class="form-control" type="date" name="startdate" value="{{  $startdate }}"  required><br> @if ($errors->has('startdate'))
+
+                    <span class="text-danger">{{ $errors->first('startdate') }}</span>
+
+                @endif</td>	<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 <td></td>
 <td><label>End Date:</label><br>
-<input  class="form-control" type="date" name="enddate" value="{{ $enddate }}"  required><br></td>
+<input  class="form-control" type="date" name="enddate" value="{{ $enddate }}"  required><br> @if ($errors->has('enddate'))
+
+                    <span class="text-danger">{{ $errors->first('enddate') }}</span>
+
+                @endif</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 </tr>
 <tr><td colspan="1"><label>Number of Candidates:</label><br>
-<input class="form-control" type="number" name="noofstud" value="{{ $row -> no_of_stud }}"  required></td><br><td></td>
-<td colspan="1"><br><button type="submit" class="btn btn-primary" style="width: 100%;">Update</button></td></tr>
+<input class="form-control" type="number" name="noofstud" value="{{ $row -> no_of_stud }}"  required></td> @if ($errors->has('noofstud'))
+
+                    <span class="text-danger">{{ $errors->first('noofstud') }}</span>
+
+                @endif<br><td></td>
+<td colspan="1"><br><button type="submit" class="btn btn-primary" style="width: 100%;">Update</button></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
 @endforeach
 </table>
 </form>

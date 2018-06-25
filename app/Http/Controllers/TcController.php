@@ -32,7 +32,6 @@ use DateTime;
 class TcController extends Controller
 {
 
-    
        
     public function batch()
     {        
@@ -50,17 +49,36 @@ class TcController extends Controller
     }
     public function batchinsert(Request $obj)
     {
-        $username=session()->get('username');
-        $password=session()->get('password');
-        
-        $usercall= new users();
-        $info = $usercall->fetchUserInfo($username);
-        $district=$info[0]->district;
-        $centreid=$info[0]->centre_id;
+        $input = request()->validate([
+
+                'batchname' => 'required',
+
+                'startdate' => 'required|before:enddate',
+
+                'enddate' => 'required',
+
+                'noofstud' => 'required|numeric|min:1'
+
+            ], [
+
+                'batchname.required' => 'Batch Name is required',
+
+                'startdate.required' => 'Start Date is required',
+
+                'enddate.required' => 'End Date is required',
+
+                'noofstud.required' => 'No. of students is required',
+
+                'noofstud.min' => 'No. of students should be greater then 0'
+
+            ]);
+
+        $input = request()->all();
+        $centreid=Auth::user()->centre_id;
 
         $districtcall=new districts();
-        $districtinfo = $districtcall->fetchDivisionInfo($district);
-        $district_code= $districtinfo[0]->district_code;
+        $district = Auth::user()->district;
+        $district_code = $districtcall->pluckDistrictCode($district);
 
         $seqcall = new sequences();
         $seqinfo = $seqcall->fetchSequence();      
@@ -75,14 +93,14 @@ class TcController extends Controller
         $seqcall->updateSequence($newid);
         
         $bat =new batches;
-        $bat->academic_year=$obj->fiscalyear;
+        $bat->academic_year=$input['fiscalyear'];
         $bat->batch_id=$batch_code;
         $bat->district_id=$district_code;
-        $bat->batch_name=$obj->batchname;
-        $bat->training_type=$obj->trainingtype;
-        $bat->no_of_stud=$obj->noofstud;
-        $bat->start_date=$obj->startdate;
-        $bat->end_date=$obj->enddate;
+        $bat->batch_name=$input['batchname'];
+        $bat->training_type=$input['trainingtype'];
+        $bat->no_of_stud=$input['noofstud'];
+        $bat->start_date=$input['startdate'];
+        $bat->end_date=$input['enddate'];
         $bat->status="Pending";
         $bat->centre_id=$centreid;
         $bat->save();
@@ -110,12 +128,38 @@ class TcController extends Controller
     }
      public function batchupdate(Request $req)
     { 
-        $new_batch_data = array('batch_name'=>$req->input('batchname'),'training_type'=>$req->input('trainingtype'),'start_date'=>$req->input('startdate'),'end_date'=>$req->input('enddate'),'no_of_stud'=>$req->input('noofstud'));
+         $input = request()->validate([
+
+                'batchname' => 'required',
+
+                'startdate' => 'required|before:enddate',
+
+                'enddate' => 'required',
+
+                'noofstud' => 'required|numeric|min:1'
+
+            ], [
+
+                'batchname.required' => 'Batch Name is required',
+
+                'startdate.required' => 'Start Date is required',
+
+                'enddate.required' => 'End Date is required',
+
+                'noofstud.required' => 'No. of students is required',
+
+                'noofstud.min' => 'No. of students should be greater then 0'
+
+            ]);
+
+        $input = request()->all();
+        $new_batch_data = array('batch_name'=>$req->input('batchname'),'training_type'=>$req->input('trainingtype'),'start_date'=>$req->input('startdate'),'end_date'=>$req->input('enddate'),'no_of_stud'=>$req->input('noofstud'),'status' => 'Pending');
         $batchid = $req->input('batchid');
 
         $batch=new batches();
         $batch->updateBatch($new_batch_data,$batchid);
-        return view('pages.success');  
+        Session::flash("success", "Batch Updated Successfully!!");
+            return Redirect::back();
         // Session::flash("success", "Batch updated successfully!!");
         // return Redirect::back();
     }
@@ -138,7 +182,7 @@ class TcController extends Controller
     public function pftargetfetch(Request $req)
     {
         $tc = new training_centres();
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         // echo $centreid;
         $tcname =  $tc->fetchTcSpecInfo($centreid);
         // $tcs =  $tc->fetchtcforList();
@@ -151,7 +195,7 @@ class TcController extends Controller
     }
     public function getBatchList($id)
     {
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $tb = new training_batches();
         $batches=$tb->fetchtrainingspecBatch($centreid,$id);
         return json_encode($batches);
@@ -188,7 +232,7 @@ class TcController extends Controller
         // $tcs =  $tc->fetchtcforList();
         // return view('tcview.viewpftarget',compact('tcs'));
         $tc = new training_centres();
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         // echo $centreid;
         $tcname =  $tc->fetchTcSpecInfo($centreid);
         // $tcs =  $tc->fetchtcforList();
@@ -201,7 +245,7 @@ class TcController extends Controller
     }
     public function viewgetBatchList($id)
     {
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $tb = new training_batches();
         // $batches=$tb->fetchtrainingBatch($id);
         $batches=$tb->fetchtrainingspecBatch($centreid,$id);
@@ -331,7 +375,7 @@ class TcController extends Controller
         return view('tcview.candidatemapping',compact('tbinfo'));
     }
     public function getTrainingSubject($id){
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $tbcall = new training_batches();
         session()->put('batchtype',$id);
         $info=$tbcall->fetchTypeBatch($centreid,$id);
@@ -352,7 +396,7 @@ class TcController extends Controller
 
     public function batchCandidateMapping(Request $req){
         $id = $req->candidateid;
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $type = session()->get('batchtype');
         $batchid = session()->get('batchid');
         $bccall = new batch_candidates();
@@ -368,7 +412,7 @@ class TcController extends Controller
     }
 
     public function getTrainingSubjectList($id,$year){
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $tbcall = new training_batches();
         session()->put('batchtype',$id);
         $info=$tbcall->fetchTypeBatch($centreid,$id,$year);
@@ -378,7 +422,7 @@ class TcController extends Controller
         session()->put('batchid',$id);
         $info = DB::table('training_batches')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('districts','districts.district_code','=','training_centres.district_id')->where('training_batches.batch_id','=',$id)->select('training_batches.batch_type','training_centres.centre_type','batches.start_date','batches.end_date','districts.district_name','districts.division',
             'districts.district_code')->get();
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $type = session()->get('batchtype');
         // $candidatecall = new candidates();
         // $candidate = $candidatecall->fetchCandidateMappedList($centreid,$id,$type);
@@ -405,7 +449,7 @@ class TcController extends Controller
    
     public function batchCandidateDelete(Request $req,$candidateid,$batchid){
         $id = $candidateid;
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         // $type = session()->get('batchtype');
         // $batchid = session()->get('batchid');
         $bccall = new batch_candidates();
@@ -453,6 +497,7 @@ class TcController extends Controller
                     $insert[] = ['serial_no' => $value->serial_no,'candidate_id' => $value->serial_no, 'first_name' => $value->first_name,'last_name' => $value->last_name,'phone_no' => $value->phone_no,'email' => $value->email,'dob' => $value->dob,'aadhar_no' => $value->aadhar_no,'gender' => $value->gender,'marital_status' => $value->marital_status,'religion' => $value->religion,'category' => $value->category,'relationship' => $value->relationship,'relation_firstname' => $value->relation_firstname,'relation_lastname' => $value->relation_lastname,'current_location' => $value->current_location,'current_street' => $value->current_street,'current_city' => $value->current_city,'current_state' => $value->current_state,'current_district' => $value->current_district,'current_taluk' => $value->current_taluk,'current_village' => $value->current_village,'current_pincode' => $value->current_pincode,'permanent_location' => $value->permanent_location,'permanent_street' => $value->permanent_street,'permanent_city' => $value->permanent_city,'permanent_state' => $value->permanent_state,'permanent_district' => $value->permanent_district,'permanent_taluk' => $value->permanent_taluk,'permanent_village' => $value->permanent_village,'permanent_pincode' => $value->permanent_pincode,'education' => $value->education,'subject' => $value->subject,'yearofpassing' => $value->yearofpassing,'physically_challenged' => $value->physically_challenged,'skill' => $value->skill,'apprentiseship' => $value->apprentiseship,'perviously_employed' => $value->perviously_employed,'willing_migrate' => $value->willing_migrate,'expected_salary_outside' => $value->expected_salary_outside,'expected_salary_within' => $value->expected_salary_within,'preferred_training_period' => $value->preferred_training_period,'status' => $value->status
                 ];
                 }
+
                 if(!empty($insert)){
                     // echo ''.json_encode($insert);
                     $candidateobj = new candidates();
@@ -526,7 +571,7 @@ class TcController extends Controller
     {
         $tcs = DB::table("training_centres")->pluck("centre_name","centre_id");
         $tc = new training_centres();
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         // echo $centreid;
         $tcname =  $tc->fetchTcSpecInfo($centreid);
         // $tcs =  $tc->fetchtcforList();
@@ -592,7 +637,7 @@ class TcController extends Controller
     }
     public function employmentexpenseBatchList($id)
     {
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $tb = new training_batches();
         $batches=$tb->fetchcompletedtrainingBatch($centreid,$id);
         return json_encode($batches);
@@ -601,7 +646,7 @@ class TcController extends Controller
         session()->put('batchid',$id);
         $info = DB::table('training_batches')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('districts','districts.district_code','=','training_centres.district_id')->where('training_batches.batch_id','=',$id)->where('training_batches.action','=',"Completed")->select('training_batches.batch_type','training_centres.centre_type','batches.start_date','batches.end_date','districts.district_name','districts.division',
             'districts.district_code')->get();
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $type = session()->get('batchtype');
 
         $candidatecall = new candidates();
@@ -657,7 +702,7 @@ class TcController extends Controller
     
     public function candidateInfo(Request $req)
     {
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('batches','batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','batches.batch_id','batches.batch_name')->get();
         return view('tcview.candidate',compact('candidate'));   
     }
@@ -730,7 +775,7 @@ class TcController extends Controller
     } 
 
     public function tcpfreportInfo(){
-        $tc = session()->get('centreid');
+        $tc = Auth::user()->centre_id;
         $now = new DateTime();
         $year1 = $now->format("Y");
         $year2 = (int)$year1+1;
@@ -792,7 +837,7 @@ class TcController extends Controller
    public function pftargetreportfetch(Request $req)
     {
         $tc = new training_centres();
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $tcname =  $tc->fetchTcSpecInfo($centreid);
         $ayobj = new academicyear();
         $academicyear = $ayobj -> fetchAcademicyear();
@@ -815,7 +860,7 @@ class TcController extends Controller
     }
 
     public function certificateuploadTrainingSubjectList($id,$year){
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $tbcall = new training_batches();
         session()->put('batchtype',$id);
         $info=$tbcall->fetchTypeBatch($centreid,$id,$year);
@@ -824,10 +869,10 @@ class TcController extends Controller
    
     public function certificateuploadSubjectBatchList($id){
         session()->put('batchid',$id);
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $info = DB::table('training_batches')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('districts','districts.district_code','=','training_centres.district_id')->where('training_centres.centre_id','=',$centreid)->where('training_batches.centre_id','=',$centreid)->where('training_batches.batch_id','=',$id)->where('batches.batch_id','=',$id)->select('training_batches.batch_type','training_centres.centre_type','batches.start_date','batches.end_date','districts.district_name','districts.division',
             'districts.district_code')->get();
-        $centreid = session()->get('centreid');
+        $centreid = Auth::user()->centre_id;
         $type = session()->get('batchtype');
         $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->where('batch_candidates.centre_id','=',$centreid)->where('batch_candidates.batch_id','=',$id)->where('batch_candidates.employment_status','=','Yes')->select('batch_candidates.centre_id','batch_candidates.employment_status','batch_candidates.candidate_id','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill')->get();
         $info[0]->candidate = $candidate;
@@ -841,9 +886,20 @@ class TcController extends Controller
         // echo $candidateid."  ".$batchid."  ".$file;
         $filename = $candidateid. '-' .time(). '.' .$req->file('file')->getClientOriginalExtension();
         $file = $file->move(public_path().'/certificate/', $filename);
-        $candidatecall = new candidates();
+        $candidatecall = new batch_candidates();
         $candidatecall -> uploadImage($candidateid,$batchid,$filename);
         Session::flash("success", "Successfully uploaded!!");
         return view('pages.message');
     } 
+    public function certificatedownloadView($candidateid,$batchid){
+        $candidatecall = new batch_candidates();
+        $info = $candidatecall->viewFile($candidateid,$batchid);
+        $file_name = $info[0]->certificate;
+        // echo $file_name;
+        // $file_path = public_path('certificate/'.$file_name);
+        $file_path = 'certificate/'.$file_name;
+        // return json_encode([$file_path]);
+        return json_encode([$file_path]);
+        // return response()->download($file_path);
+    }
 }

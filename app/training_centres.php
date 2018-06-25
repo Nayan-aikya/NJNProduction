@@ -37,8 +37,12 @@ class training_centres extends Model
     	$tc = training_centres::all(); 
         return $tc;
     }
-     public function fetchTcListByDistrict($district){
+    public function fetchTcListByDistrict($district){
         $tc = training_centres::where('district',$district)->get(); 
+        return $tc;
+    }
+    public function fetchTcListByDistrictPaginate($district){
+        $tc = training_centres::where('district',$district)->paginate(10); 
         return $tc;
     }
     public function deleteTc($centreid){

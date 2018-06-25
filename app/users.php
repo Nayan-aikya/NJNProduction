@@ -10,6 +10,7 @@ class users extends Authenticatable
 	use Notifiable;
       protected $fillable=[   
 							'district',
+                            'division',
 							'username',
 							'password',
 							'centre_id',

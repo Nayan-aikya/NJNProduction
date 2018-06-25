@@ -1,2 +1,7 @@
 .env
 public/uploads/
+<<<<<<< HEAD
+=======
+user_files/*
+storage/user_files/*
+>>>>>>> 4894a50b8b35dd24b554d845061826a4dd08615f

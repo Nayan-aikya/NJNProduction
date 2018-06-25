@@ -56,7 +56,15 @@ class candidates extends Model
 
                      ];
     public function createCandidate($insert){
-    	$candidates = candidates::insert($insert);     
+    	foreach ($insert as $key => $value) 
+    	{
+    		$count = candidates::where('serial_no',$value['serial_no'])->count();
+	    	if($count >0)
+	    		$candidates = candidates::where('serial_no',$value['serial_no'])->update($value);
+	    	else    
+    			$candidates = candidates::insert($value); 
+    	}
+    	
         return $candidates;
     }
     public function fetchCandidate(){
