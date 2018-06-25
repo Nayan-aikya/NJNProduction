@@ -32,9 +32,10 @@
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SCHEMES<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="{{url('weavers/powersubsidy-list')}}">Power subsidy applications</a></li>
-          <li><a href="{{url('weavers/ej-2loom-list')}}">TL/EJ applications</a></li>
-          <li><a href="{{url('weavers/invest-list')}}">Investments</a></li>
+          <li><a href="{{url('weavers/powersubsidy-apply')}}">Power subsidy application form</a></li>
+          <li><a href="{{url('weavers/ej-2loom-apply')}}">TL/EJ application form</a></li>
+          <li><a href="{{url('weavers/powersubsidy-list')}}">Power subsidy application leads</a></li>          
+          <li><a href="{{url('weavers/ej-2loom-list')}}">TL/EJ application leads</a></li>
         </ul>
       </li>
       <li><a href="#">NOTIFICATION</a></li>

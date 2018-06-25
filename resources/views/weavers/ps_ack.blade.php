@@ -27,7 +27,7 @@
                                     <td>
                                         <center>
                                             <h4>Govt of Karnataka</h4>
-                                            <h3>Department of Handlooms and Textiles</h3>
+                                            <h3>Department of handlooms and Textiles</h3>
                                             <h2>Acknowledgement</h2>
                                         </center>
                                     </td>
@@ -47,24 +47,24 @@
                                 <tbody>
                                     <tr>
                                         <td>Name </td>
-                                        <td>{{$psa->salutation}} {{$psa->name}}  </td>
+                                        <td>{{$app->salutation}} {{$app->name}}  </td>
                                         <td>Application ID</td>
-                                        <td>{{$psa->id}}</td>
+                                        <td>{{$app->id}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
                                     <tr>
-                                        <td>Applied resi_district</td>
-                                        <td>{{$psa->app_district}}</td>
+                                        <td>Applied district</td>
+                                        <td>{{$app->app_dist_name}} ({{$app->app_district}})</td>
                                         <td>Application year</td>
-                                        <td>{{$psa->app_year}}</td>
+                                        <td>{{$app->app_year}}</td>
                                     </tr>
                                     <tr>
                                         <td>Scheme</td>
-                                        <td>{{$psa->scheme_name}}</td>
+                                        <td>{{$app->scheme_name}}</td>
                                         <td>Unit type</td>
-                                        <td>{{$psa->unit_type}}</td>
+                                        <td>{{$app->unit_type}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
@@ -74,33 +74,33 @@
                                     </tr>
                                     <tr>
                                         <td>Aadhaar</td>
-                                        <td>{{$psa->aadhaar}}</td>
+                                        <td>{{$app->aadhaar}}</td>
                                         <td>Mobile no</td>
-                                        <td>{{$psa->resi_mobile}}</td>
+                                        <td>{{$app->resi_mobile}}</td>
                                     </tr>
                                     <tr>
                                         <td>House No</td>
-                                        <td>{{$psa->resi_houseno}}</td>
+                                        <td>{{$app->resi_houseno}}</td>
                                         <td>Ward no</td>
-                                        <td>{{$psa->resi_wardno}}</td>
+                                        <td>{{$app->resi_wardno}}</td>
                                     </tr>
                                     <tr>
                                         <td>Cross no</td>
-                                        <td>{{$psa->resi_crossno}}</td>
+                                        <td>{{$app->resi_crossno}}</td>
                                         <td>Village</td>
-                                        <td>{{$psa->resi_village}}</td>
+                                        <td>{{$app->resi_village}}</td>
                                     </tr>
                                     <tr>
                                         <td>Taluk</td>
-                                        <td>{{$psa->resi_taluk}}</td>
+                                        <td>{{$app->resi_taluk}}</td>
                                         <td>Dist</td>
-                                        <td>{{$psa->resi_district}}</td>
+                                        <td>{{$app->user_dist_name}} ({{$app->resi_district}})</td>
                                     </tr>
                                     <tr>
                                         <td>PIN</td>
-                                        <td>{{$psa->resi_pin}}</td>
+                                        <td>{{$app->resi_pin}}</td>
                                         <td>Mobile</td>
-                                        <td>{{$psa->resi_mobile}}</td>
+                                        <td>{{$app->resi_mobile}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
@@ -110,60 +110,60 @@
                                     </tr>
                                     <tr>
                                         <td>Unit Name</td>
-                                        <td>{{$psa->unit_name}}</td>
+                                        <td>{{$app->unit_name}}</td>
                                         <td>Mobile</td>
-                                        <td>{{$psa->unit_mobile}}</td>
+                                        <td>{{$app->unit_mobile}}</td>
                                     </tr>
                                     <tr>
                                         <td>Unit No</td>
-                                        <td>{{$psa->unit_no}}</td>
+                                        <td>{{$app->unit_no}}</td>
                                         <td>Ward no</td>
-                                        <td>{{$psa->unit_wardno}}</td>
+                                        <td>{{$app->unit_wardno}}</td>
                                     </tr>
                                     <tr>
                                         <td>Cross no</td>
-                                        <td>{{$psa->unit_crossno}}</td>
+                                        <td>{{$app->unit_crossno}}</td>
                                         <td>Village</td>
-                                        <td>{{$psa->unit_village}}</td>
+                                        <td>{{$app->unit_village}}</td>
                                     </tr>
                                     <tr>
                                         <td>Taluk</td>
-                                        <td>{{$psa->unit_taluk}}</td>
+                                        <td>{{$app->unit_taluk}}</td>
                                         <td>Dist</td>
-                                        <td>{{$psa->unit_district}}</td>
+                                        <td>{{$app->unit_district}}</td>
                                     </tr>
                                     <tr>
                                         <td>PIN</td>
-                                        <td>{{$psa->unit_pin}}</td>
+                                        <td>{{$app->unit_pin}}</td>
                                         <td>Landline</td>
-                                        <td>{{$psa->unit_phone}}</td>
+                                        <td>{{$app->unit_phone}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
                                     <tr>
                                         <td>Category</td>
-                                        <td>{{$psa->castecategory}}</td>
+                                        <td>{{$app->castecategory}}</td>
                                         <td>Education</td>
-                                        <td>{{$psa->education}}</td>
+                                        <td>{{$app->education}} {{$app->education_other}}</td>
                                     </tr>
                                     <tr>
                                         <td>SSI/MSME reg. no.</td>
-                                        <td>{{$psa->reg_number}}</td>
+                                        <td>{{$app->reg_number}}</td>
                                         <td>SSI/MSME reg. date</td>
-                                        <td>{{$psa->reg_number}}</td>
+                                        <td>{{$app->reg_number}}</td>
                                     </tr>
                                     <tr>
                                         <td>Ownership type</td>
-                                        <td>{{$psa->ownership_type}}</td>
+                                        <td>{{$app->ownership_type}} {{$app->ownership_other}}</td>
                                         <td>100% women unit?</td>
-                                        <td>{{$psa->u100per_women}}</td>
+                                        <td>{{$app->u100per_women}}</td>
                                     </tr>
                                     <tr>
                                         <td>Power sactioned</td>
-                                        <td>{{$psa->power_alloted}}</td>
-                                        <td>RR number</td>
-                                        <td>{{$psa->rr_number}}</td>
+                                        <td>{{$app->power_alloted}} ( {{$app->power_alloted_date}} )</td>
+                                        <td>R.R/Meter number</td>
+                                        <td>{{$app->rr_number}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
@@ -174,9 +174,9 @@
                                     <tr>
                                         <td colspan="4">
                                             <?php
-                                                $type = $psa->typecheck;
-                                                if($psa->mctype1){
-                                                    $temp1 = json_decode($psa->mctype1);
+                                                $type = $app->typecheck;
+                                                if($app->mctype1){
+                                                    $temp1 = json_decode($app->mctype1);
                                                     ?>
                                                     <table width="100%" border="1" style="border-collapse: collapse; border:1px solid #ccc;">
                                                     <tr>
@@ -201,57 +201,65 @@
                                                     </table>
                                                     <?php
                                                 }
-                                                if($psa->mctype2){
-                                                    $val = json_decode($psa->mctype2);
+                                                if($app->mctype2){
+                                                    $val = json_decode($app->mctype2);
                                                 ?>
                                                     <table border="1" width="100%" style="border-collapse: collapse; border:1px solid #ccc;">
                                                         <tr>
                                                             <th>Preloom facility machines</th>
                                                             <th>Availability</th>
-                                                            <th>No of spin looms</th>
+                                                            <th>No of Spindles</th>
                                                             <th>No of machines</th>
-                                                            <th>Power (in hp)</th>
+                                                            <th>Power (in HP)</th>
                                                         </tr>
                                                         <tr>
                                                             <td>Pirn winding machine</td>
-                                                            <td>{{$val->pirnwind->avail}}</td>
+                                                            <td>{{$val->pirnwind->avail or ''}}</td>
                                                             <td>{{$val->pirnwind->num_loom}}</td>
                                                             <td>{{$val->pirnwind->num_mcs}}</td>
                                                             <td>{{$val->pirnwind->power}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Bobbin/dubbling/winding</td>
-                                                            <td>{{$val->bbdbwi->avail}}</td>
+                                                            <td>{{$val->bbdbwi->avail or ''}}</td>
                                                             <td>{{$val->bbdbwi->num_loom}}</td>
                                                             <td>{{$val->bbdbwi->num_mcs}}</td>
                                                             <td>{{$val->bbdbwi->power}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Warping machine</td>
-                                                            <td>{{$val->wrp->avail}}</td>
+                                                            <td>{{$val->wrp->avail or ''}}</td>
                                                             <td>{{$val->wrp->num_loom}}</td>
                                                             <td>{{$val->wrp->num_mcs}}</td>
                                                             <td>{{$val->wrp->power}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Twisting machine</td>
-                                                            <td>{{$val->twst->avail}}</td>
+                                                            <td>{{$val->twst->avail or ''}}</td>
                                                             <td>{{$val->twst->num_loom}}</td>
                                                             <td>{{$val->twst->num_mcs}}</td>
                                                             <td>{{$val->twst->power}}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Other machine</td>
-                                                            <td>{{$val->other->avail}}</td>
+                                                            <td>Other machines<br>
+                                                                @if ($val->other->othername)
+                                                                {{$val->other->othername}}
+                                                                @endif
+                                                            </td>
+                                                            <td>{{$val->other->avail or ''}}</td>
                                                             <td>{{$val->other->num_loom}}</td>
                                                             <td>{{$val->other->num_mcs}}</td>
                                                             <td>{{$val->other->power}}</td>
                                                         </tr>
+                                                        <tr>
+                                                            <td colspan="4">Total</td>
+                                                            <td>{{$val->totalpower}}</td>
+                                                        </tr>
                                                     </table>
                                                 <?php
                                                 }
-                                                if($psa->mctype3){
-                                                    $temp1 = json_decode($psa->mctype3);
+                                                if($app->mctype3){
+                                                    $temp1 = json_decode($app->mctype3);
                                                     ?>
                                                     <table width="100%" border="1" style="border-collapse: collapse; border:1px solid #ccc;">
                                                     <tr>
@@ -280,7 +288,7 @@
                                     <tr>
                                         <td colspan="4">
                                             <?php
-                                            $temp = json_decode($psa->mctype4);                                            
+                                            $temp = json_decode($app->mctype4);                                            
                                             ?>
                                             <table width="100%" border="1" style="border-collapse: collapse; border:1px solid #ccc;">
                                                 <tr>
@@ -301,9 +309,9 @@
                                     </tr>
                                     <tr>
                                         <td>Application date</td>
-                                        <td>{{$psa->app_date}}</td>
+                                        <td>{{$app->app_date}}</td>
                                         <td>Pace</td>
-                                        <td>{{$psa->app_place}}</td>
+                                        <td>{{$app->app_place}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>

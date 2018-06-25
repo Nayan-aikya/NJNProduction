@@ -3,9 +3,22 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" >
 <style>
-    input[type=text]{ width: 100%; height: 20px;}
+    input[type=text], input[type=number]{ width: 100%; height: 20px;}
+    select{ height: 20px;}
     #salutation,#name{ display: inline-block; width:auto; }
     #name{ width:91%; }
+    .app_title_text{
+        font-size:18px;
+    }
+    .small_txt{
+        max-width: 200px;
+    }
+    .disp_inline{
+        display: inline;
+    }
+    #othervalfeild{
+        display: none;
+    }
 </style>
 @stop
 @section('content')
@@ -19,15 +32,16 @@
                     <div class="col-sm-2"><img src="{{asset('img/Karnataka_log.png')}}" alt="" srcset=""></div>
                     <div class="col-sm-8">
                         <h4 align="center" class="pad_top_10"><u>Government of Karnataka</u></h4>
-                        <h4 align="center" class="pad_top_10"><u>Handloom & Textile Department<br></u>Weaver special package plan</h4>
+                        <h4 align="center" class="pad_top_10"><u>Department of Handlooms and Textiles<br></u>Weaver special package Scheme</h4>
                     </div>
                     <div class="com-sm-8"><img src="{{asset('img/gov-logo.png')}}" alt="" srcset=""></div>
                 </div>
+                <p class="app_title_text text-center pad_top_20 pad_bottom_20">Application for seeking power subsidy for powerloom industry.</p>
             </div>
-            <p class="app_title_text text-center pad_top_20 pad_bottom_20">Application for seeking power subsidy for powerloom industry from government.</p>
             <div class="row">
-                <div class="col-sm-4 text-center">
-                    <p>District:</p>
+                <div class="col-sm-6">
+                    <p>To,<br>Deputy Director /Assistant Director,<br>Department of Handloom &amp; Textile<br>Zilla Panchayat,</p>
+                    <span>District: </span>
                     <?php
                         $dval = array(''=>'Select district');
                         foreach ($dists as $data)
@@ -36,22 +50,51 @@
                         }
                     ?>
                     {{ Form::select('app_district', $dval,'null',['id'=>'app_district']) }}
-                    <span class="error"></span>
+                    <span class="error"></span>                    
+                </div>
+                <div class="col-sm-6">
+                    <ul class="list-unstyled text-right">
+                        <li><a target="_blank" href="{{asset('files/less_than_10HP.pdf')}}">Download guidelines for units less than 10HP</a></li>
+                        <li><a target="_blank" href="{{asset('files/Above_10HP_below_20HP.pdf')}}">Download guidelines for units above 10HP, below 20HP</a></li>
+                        <li><a target="_blank" href="{{asset('files/shuttleless.pdf')}}">Download guidelines for units between 20HP and 150HP(50% subsidy)</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pad_top_20 pad_bottom_20"></div>
+            <div class="row">
+                <div class="col-sm-4 text-center">
+                        <p class=""><label>For the financial year </label><br>
+                            {{ Form::select('fin_year', [
+                                '2018-19'=>'2018-19',
+                                '2017-18' => '2017-18',
+                                '2016-17' => '2016-17',
+                                '2015-16' => '2015-16',
+                                '2014-15' => '2014-15',
+                                '2013-14' => '2013-14',
+                                '2012-13' => '2012-13',
+                                '2011-12' => '2011-12',
+                                '2010-11' => '2010-11',
+                                '2009-10' => '2009-10'],
+                                'null',
+                                ['id'=>'fin_year']
+                            ) }}
+                            <span class="error"></span>
+                        </p>
                 </div>
                 <div class="col-sm-4 text-center">
-                    <p>Name of scheme:</p>
+                    <label for="">Name of scheme:</label><br>
                     {{ Form::select('scheme_name', [
                         ''=>'Select',
-                        'lt_10hp' => 'Units less than 10hp',
-                        'gt_10hp_lt_20hp' => 'Units between 10hp to 20hp',
-                        'gt_20hp_50per_off' => 'Units between 20hp and 150hp(50% subsidy)'],
+                        'lt_10hp' => 'Units less than 10HP',
+                        'gt_10hp_lt_20hp' => 'Units between 10HP to 20HP',
+                        'gt_20hp_50per_off' => 'Units between 20HP and 150HP(50% subsidy)'],
                         'null',
                         ['id'=>'scheme_name']
                     ) }}
                     <span class="error"></span>
                 </div>
                 <div class="col-sm-4 text-center">
-                    <p>Type of unit:</p>
+                    <label for="">Type of unit:</label><br>
                     {{ Form::select('unit_type', [
                         ''=>'Select',
                         'power_loom_unit' => 'Powerloom unit',
@@ -71,14 +114,15 @@
     @endif
     <br>
     <br>
-    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="">     
+        <table id="example" class="table table-striped table-bordered" cellspacing="0" width="">     
             <tbody><tr>
                     <td>1</td>
                     <td>Applicant's full Name</td>  
                     <td>
                     {{ Form::select('salutation', [
                         'Sri'=>'Sri',
-                        'Smt' => 'Smt'],
+                        'Smt' => 'Smt',
+                        'Kumari' => 'Kumari'],
                         'null',
                         ['id'=>'salutation']
                     ) }}
@@ -89,10 +133,22 @@
                 </tr>
                 <tr>
                     <td>2</td>
-                    <td>Aadhaar number</td>  
-                    <td>
-                        {{ Form::text('aadhaar') }}
-                        <span class="error"></span>
+                    <td>Identity</td>
+                    <td collspan="2">
+                        <table class="table table-striped table-bordered">
+                            <tr>
+                                <td>Aadhaar number</td>  
+                                <td>
+                                    {{ Form::text('aadhaar','',['maxlength'=>'12']) }}
+                                    <span class="error"></span>
+                                </td>
+                                <td>Aadhaar copy</td>
+                                <td>
+                                    {{ Form::file('aadhaar_file') }}
+                                    <span class="error"></span>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
                 <tr>
@@ -100,7 +156,6 @@
                     <td>A)Residential address</td>
                     <td>
                         <table class="table table-bordered">
-        
                         <tbody>
                             <tr>
                             <td>House No:</td>
@@ -124,7 +179,7 @@
                             </tr>
                             <tr>
                                 <td>PIN:</td>
-                                <td>{{ Form::text('resi_pin') }}
+                                <td>{{ Form::text('resi_pin','',['maxlength'=>'6']) }}
                                 <span class="error"></span>
                                 </td>
                                 <td>Applicant's recent photo</td>
@@ -132,16 +187,21 @@
                                     <span class="error"></span>
                                 </td>    
                             </tr>
-                            <tr>
-                            <td>Taluk:</td>
-                            <td>{{ Form::text('resi_taluk') }}
-                            <span class="error"></span>
-                            </td>   
+                            <tr>                               
                             <td>District:</td>
-                            <td>
-                                {{ Form::select('resi_district', $dval,'null',['id'=>'app_district']) }}
-                                <span class="error"></span>
-                            </td>       
+                                <td>
+                                    {{ Form::select('resi_district', $dval,'null',['id'=>'resi_district']) }}
+                                    <span class="error"></span>
+                                </td>
+                                <td>Taluk:</td>
+                                <td>                                    
+                                    {{ Form::select('resi_taluk', [
+                                        ''=>'Select',],
+                                        'null',
+                                        ['id'=>'resi_taluk']
+                                    ) }}
+                                    <span class="error"></span>
+                                </td>
                             </tr>
                             <tr>
                             <td>Landline(including STD code):</td>
@@ -149,7 +209,7 @@
                             <span class="error"></span>
                             </td>   
                             <td>Mobile No:</td>
-                            <td>{{ Form::text('resi_mobile') }}
+                            <td>{{ Form::text('resi_mobile','',['maxlength'=>'10']) }}
                             <span class="error"></span>
                             </td>       
                             </tr>
@@ -199,22 +259,26 @@
                         <tr>
                             <td>PIN:</td>
                             <td>
-                                {{ Form::text('unit_pin') }}
+                                {{ Form::text('unit_pin','',['maxlength'=>'6']) }}
                             <span class="error"></span>
                             </td>
                             <td></td>
                             <td></td>     
                         </tr>
                         <tr>
-                            <td>Taluk:</td>
-                            <td>
-                            {{ Form::text('unit_taluk') }}
-                            <span class="error"></span>
-                            </td>   
                             <td>District:</td>
                             <td>
                                 <label id="unit_district">NA</label>
-                            </td>       
+                            </td>
+                            <td>Taluk:</td>
+                            <td>
+                                {{ Form::select('app_taluk', [
+                                    ''=>'Select',],
+                                    'null',
+                                    ['id'=>'app_taluk']
+                                ) }}
+                                <span class="error"></span>
+                            </td>
                         </tr>
                         <tr>
                             <td>Landline(including STD code):</td>
@@ -224,7 +288,7 @@
                             </td>   
                             <td>Mobile No:</td>
                             <td>
-                            {{ Form::text('unit_mobile') }}
+                            {{ Form::text('unit_mobile','',['maxlength'=>'10']) }}
                             <span class="error"></span>
                             </td>       
                         </tr>
@@ -285,9 +349,17 @@
                                 'PUC' => 'PUC',
                                 'UG' => 'Graduate',
                                 'PG' => 'Post graduate',
-                                'textile_engineering' => 'Textile Engineering',]
+                                'textile_engineering' => 'Textile Engineering',
+                                'Others' => 'Others',],
+                                null,
+                                ['id'=>'education']
                             ) }}
                     <span class="error"></span>
+                    <div id="education_other_div" class="disp_inline">
+                        <span>Please specify: </span>
+                        {{ Form::text('education_other','',['id'=>'education_other','class'=>'small_txt'])}}
+                        <span class="error"></span>
+                    </div>
                     </td>
                 </tr>
                 <tr>
@@ -301,9 +373,9 @@
                                     {{ Form::text('reg_number') }}
                                     <span class="error"></span>
                                 </td>
-                                <td>Mou Date</td>
+                                <td>Registration Date</td>
                                 <td>
-                                    {{ Form::text('regdate','',['id'=>'regdate']) }}
+                                    {{ Form::text('regdate','',['id'=>'regdate','autocomplete'=>'off']) }}
                                     <span class="error"></span>
                                 </td>
                             </tr>
@@ -320,9 +392,16 @@
                                 'Partnership' => 'Partnership',
                                 'PVT_LTD' => 'Private limited',
                                 'co_op_society' => 'Co-op society',
-                                'others' => 'Others',]
+                                'Others' => 'Others',],
+                                null,
+                                ['id'=>'ownership_type']
                             ) }}
                     <span class="error"></span>
+                    <div id="ownership_other_div" class="disp_inline">
+                        <span>Company name: </span>
+                        {{ Form::text('ownership_other','',['id'=>'ownership_other','class'=>'small_txt'])}}
+                        <span class="error"></span>
+                    </div>
                     </td>
                 </tr>
                 <tr>
@@ -337,26 +416,37 @@
                     <span id="u100per_women" class="error"></span>
                     </td>
                 </tr>
-                <tr>
-                    <td>8</td>
-                    <td>Power sanction load<br>(in hp)</td>
-                    <td>
-                        {{ Form::text('power_alloted') }}
-                        <span class="error"></span>
-                    </td>  
-                </tr>
+                
             <tr>
-            </tr>
-            <tr>
-                <td>9</td>
-                <td>R.R Number/Meter number</td>
+                <td>8</td>
+                <td>R.R/Meter Number</td>
                 <td>
                     {{ Form::text('rr_number') }}
                 <span class="error"></span>
                 </td>
             </tr>
             <tr>
-                <td>8</td>
+                <td>9</td>
+                <td>Power sanctioned</td>
+                <td colspan="2">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>Load<br>(in HP)</td>
+                            <td>
+                                {{ Form::text('power_alloted') }}
+                                <span class="error"></span>
+                            </td>
+                            <td>Sanctioned Date</td>
+                            <td>
+                                {{ Form::text('power_alloted_date','',['id'=>'power_alloted_date','autocomplete'=>'off']) }}
+                                <span class="error"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>10</td>
                 <td>Details of Machinery</td>
                 <td>
                     <table class="table table-bordered">
@@ -370,7 +460,7 @@
                                             <th>Number of looms</th>
                                             <th>Type of loom</th>
                                             <th>Width of loom<br> (in inchs)</th>
-                                            <th>Power consumption per loom<br> (in hp)</th>
+                                            <th>Power consumption<br>per loom (in HP)</th>
                                             <th>Attachment</th>                                            
                                         </tr>
                                         <tr>
@@ -382,16 +472,17 @@
                                                     'Ordinary' => 'Ordinary',
                                                     'Semi_auto' => 'Semi automatic',
                                                     'Auto' => 'Automatic',
-                                                    'co_op_society' => 'Co-op society',
-                                                    'Rapier' => 'Rapier',]
+                                                    'Hi_Tech_pl' => 'Hi-Tech PL',
+                                                    //'Rapier' => 'Rapier',
+                                                    ]
                                                 ) }}
                                             </td>
                                             <td>{{ Form::text("mctype1[1][loomwidth]") }}</td>
                                             <td>{{ Form::text("mctype1[1][loompowercon]") }}</td>
-                                            <td>
-                                                <label for="dobby1">Dobby</label> {{Form::checkbox("mctype1[1][att][]", 'Dobby','',['id'=>'dobby1'])}}<br>
-                                                <label for="jacquard1">Jacquard</label> {{Form::checkbox("mctype1[1][att][]", 'jacquard','',['id'=>'jacquard1'])}}<br>
-                                                <label for="dropbox1">Dropbox</label> {{Form::checkbox("mctype1[1][att][]", 'dropbox','',['id'=>'dropbox1'])}}<br>
+                                            <td style="width:120px;">
+                                                {{Form::checkbox("mctype1[1][att][]", 'Dobby','',['id'=>'dobby1'])}}&nbsp;<label for="dobby1">Dobby</label><br>
+                                                {{Form::checkbox("mctype1[1][att][]", 'jacquard','',['id'=>'jacquard1'])}}&nbsp;<label for="jacquard1">Jacquard</label><br>
+                                                {{Form::checkbox("mctype1[1][att][]", 'dropbox','',['id'=>'dropbox1'])}}&nbsp;<label for="dropbox1">Dropbox</label><br>
                                             </td>
                                         </tr>
                                         </tbody>                               
@@ -404,9 +495,9 @@
                                     <tr>
                                         <th>Preloom facility machines</th>
                                         <th>Availability</th>
-                                        <th>No of spin looms</th>
+                                        <th>No of Spindles</th>
                                         <th>No of machines</th>
-                                        <th>Power (in hp)</th>
+                                        <th>Power (in HP)</th>
                                     </tr>
                                     <tr>
                                         <td>Pirn winding machine</td>
@@ -426,7 +517,7 @@
 
                                         </td>
                                         <td>
-                                            {{ Form::text("mctype2[pirnwind][power]") }}
+                                            {{ Form::input('number', 'mctype2[pirnwind][power]', null, ['id' => 'pwr1']) }}
                                         </td>
                                     </tr>
                                     <tr>
@@ -447,7 +538,7 @@
 
                                         </td>
                                         <td>
-                                            {{ Form::text("mctype2[bbdbwi][power]") }}
+                                            {{ Form::input('number', 'mctype2[bbdbwi][power]', null, ['id' => 'pwr2']) }}
                                         </td>
                                     </tr>
                                     <tr>
@@ -468,7 +559,7 @@
 
                                         </td>
                                         <td>
-                                            {{ Form::text("mctype2[wrp][power]") }}
+                                            {{ Form::input('number', 'mctype2[wrp][power]', null, ['id' => 'pwr3']) }}
                                         </td>
                                     </tr>
                                     <tr>
@@ -489,11 +580,13 @@
 
                                         </td>
                                         <td>
-                                            {{ Form::text("mctype2[twst][power]") }}
+                                            {{ Form::input('number', 'mctype2[twst][power]', null, ['id' => 'pwr4']) }}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Other machine</td>
+                                        <td>Other machine<br>
+                                            {{ Form::text('mctype2[other][othername]','',['id'=>'othervalfeild']) }}
+                                        </td>
                                         <td>
                                             <label for="other_avail_yes">Yes</label>
                                             {{ Form::radio("mctype2[other][avail]", 'Yes', '', ['id'=>'other_avail_yes']) }}
@@ -510,8 +603,12 @@
 
                                         </td>
                                         <td>
-                                            {{ Form::text("mctype2[other][power]") }}
+                                            {{ Form::input('number', 'mctype2[other][power]', null, ['id' => 'pwr5']) }}
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-right"><b>Total</b></td>
+                                        <td><span id="powertotal"></span></td>
                                     </tr>
                                 </table>
                                 </div>
@@ -535,10 +632,9 @@
                                                 <td>
                                                     {{ Form::text("mctype3[1][power]") }}
                                                 </td>
-                                                <td>
-                                                    <label for="dobby3">Dobby</label> {{Form::checkbox("mctype3[1][att][]", 'Dobby','',['id'=>'dobby3'])}}<br>
-                                                    <label for="jacquard3">Jacquard</label> {{Form::checkbox("mctype3[1][att][]", 'jacquard','',['id'=>'jacquard3'])}}<br>
-                                                    <label for="dropbox3">Dropbox</label> {{Form::checkbox("mctype3[1][att][]", 'dropbox','',['id'=>'dropbox3'])}}<br>
+                                                <td style="width:120px;">
+                                                    {{Form::checkbox("mctype3[1][att][]", 'Dobby','',['id'=>'dobby3'])}} <label for="dobby3">Dobby</label><br>
+                                                    {{Form::checkbox("mctype3[1][att][]", 'jacquard','',['id'=>'jacquard3'])}} <label for="jacquard3">Jacquard</label><br>
                                                 </td>
                                                 <td>
                                                     {{ Form::text("mctype3[1][loom_num]") }}
@@ -574,7 +670,7 @@
                 </td>
             </tr>
             <tr>
-                <td>10</td>
+                <td>11</td>
                 <td>Attachments</td>
                 <td>
                     <table class="table table-bordered">
@@ -600,7 +696,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Recetnt power bill</td>
+                            <td>Recent power bill</td>
                             <td>
                                 {{ Form::file('recent_bill') }}
                                 <span class="error"></span>
@@ -613,6 +709,13 @@
                                 <span class="error"></span>
                             </td>
                         </tr>
+                        <tr>
+                            <td>Recent Tax Paid Recipt</td>
+                            <td>
+                                {{ Form::file('recent_tax_receipt') }}
+                                <span class="error"></span>
+                            </td>
+                        </tr>                        
                         <tr>
                             <td>Building documents/Rent agreement/Lease agreement</td>
                             <td>
@@ -630,7 +733,7 @@
     <table>
         <tr>
             <td>Date: </td>
-            <td>{{ Form::text('app_date','',['id'=>'app_date']) }}<span class="error"></span></td>
+            <td>{{ Form::text('app_date','',['id'=>'app_date','autocomplete'=>'off']) }}<span class="error"></span></td>
         </tr>
         <tr>
             <td colspan="2">&nbsp;</td>
@@ -646,7 +749,9 @@
                     <br><br></center>
                 <center>
                     <p id="errorsummer" class="error"></p>
-                    <input type="submit" name="submit" value="submit">
+                    <button class="btn btn-lg" type="submit" name="Submit" value="Submit"><b>Submit</b></button>
+                    &nbsp;&nbsp;
+                    <button class="btn btn-lg" type="reset" value="Reset"><b>Reset</b></button>
                 </center>   
                 <div class="footer">
                 </div>         

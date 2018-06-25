@@ -8,7 +8,7 @@
 </style>
 @stop
 @section('content')
-    <table width="100%">
+    <table width="100%" id="print_view">
         <tr>
             <td style="border: 1px solid #ddd;">
                 <table width="650" align="center">
@@ -20,8 +20,9 @@
                                     <td>
                                         <center>
                                             <h4>Govt of Karnataka</h4>
-                                            <h3>Department of Handlooms and Textiles</h3>
-                                            <h2>Application details</h2>
+                                            <h4>Department of Handlooms and Textiles</h4>
+                                            <h4>Application details</h4>
+                                            <h5>Power subsidy scheme</h5>
                                         </center>
                                     </td>
                                     <td><img src="{{asset('img/gov-logo.png')}}" alt=""></td>
@@ -35,24 +36,30 @@
                                 <tbody>
                                     <tr>
                                         <td>Name </td>
-                                        <td>{{$psa->salutation}} {{$psa->name}}  </td>
+                                        <td>{{$app->salutation}} {{$app->name}}  </td>
                                         <td>Application ID</td>
-                                        <td>{{$psa->id}}</td>
+                                        <td>{{$app->id}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
                                     <tr>
-                                        <td>Applied resi_district</td>
-                                        <td>{{$psa->app_district}}</td>
+                                        <td>Applied district</td>
+                                        <td>{{$app->app_dist_name}} ({{$app->app_district}})</td>
                                         <td>Application year</td>
-                                        <td>{{$psa->app_year}}</td>
+                                        <td>{{$app->app_year}}</td>
                                     </tr>
                                     <tr>
                                         <td>Scheme</td>
-                                        <td>{{$psa->scheme_name}}</td>
+                                        <td>{{$app->scheme_name}}</td>
                                         <td>Unit type</td>
-                                        <td>{{$psa->unit_type}}</td>
+                                        <td>{{$app->unit_type}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Applied Taluk</td>
+                                        <td>{{$app->app_taluk_name}} ({{$app->app_taluk}})</td>
+                                        <td>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
@@ -62,33 +69,33 @@
                                     </tr>
                                     <tr>
                                         <td>Aadhaar</td>
-                                        <td>{{$psa->aadhaar}}</td>
+                                        <td>{{$app->aadhaar}}</td>
                                         <td>Mobile no</td>
-                                        <td>{{$psa->resi_mobile}}</td>
+                                        <td>{{$app->resi_mobile}}</td>
                                     </tr>
                                     <tr>
                                         <td>House No</td>
-                                        <td>{{$psa->resi_houseno}}</td>
+                                        <td>{{$app->resi_houseno}}</td>
                                         <td>Ward no</td>
-                                        <td>{{$psa->resi_wardno}}</td>
+                                        <td>{{$app->resi_wardno}}</td>
                                     </tr>
                                     <tr>
                                         <td>Cross no</td>
-                                        <td>{{$psa->resi_crossno}}</td>
+                                        <td>{{$app->resi_crossno}}</td>
                                         <td>Village</td>
-                                        <td>{{$psa->resi_village}}</td>
+                                        <td>{{$app->resi_village}}</td>
                                     </tr>
                                     <tr>
                                         <td>Taluk</td>
-                                        <td>{{$psa->resi_taluk}}</td>
+                                        <td>{{$app->resi_taluk_name}} ({{$app->resi_taluk}})</td>
                                         <td>Dist</td>
-                                        <td>{{$psa->resi_district}}</td>
+                                        <td>{{$app->user_dist_name}} ( {{$app->resi_district}} )</td>
                                     </tr>
                                     <tr>
                                         <td>PIN</td>
-                                        <td>{{$psa->resi_pin}}</td>
+                                        <td>{{$app->resi_pin}}</td>
                                         <td>Mobile</td>
-                                        <td>{{$psa->resi_mobile}}</td>
+                                        <td>{{$app->resi_mobile}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
@@ -98,60 +105,60 @@
                                     </tr>
                                     <tr>
                                         <td>Unit Name</td>
-                                        <td>{{$psa->unit_name}}</td>
+                                        <td>{{$app->unit_name}}</td>
                                         <td>Mobile</td>
-                                        <td>{{$psa->unit_mobile}}</td>
+                                        <td>{{$app->unit_mobile}}</td>
                                     </tr>
                                     <tr>
                                         <td>Unit No</td>
-                                        <td>{{$psa->unit_no}}</td>
+                                        <td>{{$app->unit_no}}</td>
                                         <td>Ward no</td>
-                                        <td>{{$psa->unit_wardno}}</td>
+                                        <td>{{$app->unit_wardno}}</td>
                                     </tr>
                                     <tr>
                                         <td>Cross no</td>
-                                        <td>{{$psa->unit_crossno}}</td>
+                                        <td>{{$app->unit_crossno}}</td>
                                         <td>Village</td>
-                                        <td>{{$psa->unit_village}}</td>
+                                        <td>{{$app->unit_village}}</td>
                                     </tr>
                                     <tr>
                                         <td>Taluk</td>
-                                        <td>{{$psa->unit_taluk}}</td>
+                                        <td>{{$app->unit_taluk}}</td>
                                         <td>Dist</td>
-                                        <td>{{$psa->unit_district}}</td>
+                                        <td>{{$app->unit_district}}</td>
                                     </tr>
                                     <tr>
                                         <td>PIN</td>
-                                        <td>{{$psa->unit_pin}}</td>
+                                        <td>{{$app->unit_pin}}</td>
                                         <td>Landline</td>
-                                        <td>{{$psa->unit_phone}}</td>
+                                        <td>{{$app->unit_phone}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
                                     <tr>
                                         <td>Category</td>
-                                        <td>{{$psa->castecategory}}</td>
+                                        <td>{{$app->castecategory}}</td>
                                         <td>Education</td>
-                                        <td>{{$psa->education}}</td>
+                                        <td>{{$app->education}} {{$app->education_other}}</td>
                                     </tr>
                                     <tr>
                                         <td>SSI/MSME reg. no.</td>
-                                        <td>{{$psa->reg_number}}</td>
+                                        <td>{{$app->reg_number}}</td>
                                         <td>SSI/MSME reg. date</td>
-                                        <td>{{$psa->reg_number}}</td>
+                                        <td>{{$app->reg_number}}</td>
                                     </tr>
                                     <tr>
                                         <td>Ownership type</td>
-                                        <td>{{$psa->ownership_type}}</td>
+                                        <td>{{$app->ownership_type}} {{$app->ownership_other}}</td>
                                         <td>100% women unit?</td>
-                                        <td>{{$psa->u100per_women}}</td>
+                                        <td>{{$app->u100per_women}}</td>
                                     </tr>
                                     <tr>
                                         <td>Power sactioned</td>
-                                        <td>{{$psa->power_alloted}}</td>
+                                        <td>{{$app->power_alloted}} ({{$app->power_alloted_date}})</td>
                                         <td>RR number</td>
-                                        <td>{{$psa->rr_number}}</td>
+                                        <td>{{$app->rr_number}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
@@ -162,9 +169,9 @@
                                     <tr>
                                         <td colspan="4">
                                             <?php
-                                                $type = $psa->typecheck;
-                                                if($psa->mctype1){
-                                                    $temp1 = json_decode($psa->mctype1);
+                                                $type = $app->typecheck;
+                                                if($app->mctype1){
+                                                    $temp1 = json_decode($app->mctype1);
                                                     ?>
                                                     <table width="100%" border="1" style="border-collapse: collapse; border:1px solid #ccc;">
                                                     <tr>
@@ -183,14 +190,20 @@
                                                         {
                                                             $t2 = implode(',',$value->att);
                                                         }
-                                                        echo"<tr><td>".$value->loommake."</td><td>".$value->loomnum."</td><td>".$value->loomtype."</td><td>".$value->loomwidth."</td><td>".$value->loompowercon."</td><td>".$t2."</td></tr>";
+                                                        $loommake =  isset($value->loommake) ? $value->loommake : "";
+                                                        $loomnum =  isset($value->loomnum) ? $value->loomnum : "";
+                                                        $loomtype =  isset($value->loomtype) ? $value->loomtype : "";
+                                                        $loomwidth =  isset($value->loomwidth) ? $value->loomwidth : "";
+                                                        $loompowercon =  isset($value->loompowercon) ? $value->loompowercon : "";
+                                                        
+                                                        echo"<tr><td>".$loommake."</td><td>".$loomnum."</td><td>".$loomtype."</td><td>".$loomwidth."</td><td>".$loompowercon."</td><td>".$t2."</td></tr>";
                                                     }
                                                     ?>
                                                     </table>
                                                     <?php
                                                 }
-                                                if($psa->mctype2){
-                                                    $val = json_decode($psa->mctype2);
+                                                if($app->mctype2){
+                                                    $val = json_decode($app->mctype2);
                                                 ?>
                                                     <table border="1" width="100%" style="border-collapse: collapse; border:1px solid #ccc;">
                                                         <tr>
@@ -202,44 +215,52 @@
                                                         </tr>
                                                         <tr>
                                                             <td>Pirn winding machine</td>
-                                                            <td>{{$val->pirnwind->avail}}</td>
+                                                            <td>{{$val->pirnwind->avail or ''}}</td>
                                                             <td>{{$val->pirnwind->num_loom}}</td>
                                                             <td>{{$val->pirnwind->num_mcs}}</td>
                                                             <td>{{$val->pirnwind->power}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Bobbin/dubbling/winding</td>
-                                                            <td>{{$val->bbdbwi->avail}}</td>
+                                                            <td>{{$val->bbdbwi->avail or ''}}</td>
                                                             <td>{{$val->bbdbwi->num_loom}}</td>
                                                             <td>{{$val->bbdbwi->num_mcs}}</td>
                                                             <td>{{$val->bbdbwi->power}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Warping machine</td>
-                                                            <td>{{$val->wrp->avail}}</td>
+                                                            <td>{{$val->wrp->avail or ''}}</td>
                                                             <td>{{$val->wrp->num_loom}}</td>
                                                             <td>{{$val->wrp->num_mcs}}</td>
                                                             <td>{{$val->wrp->power}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Twisting machine</td>
-                                                            <td>{{$val->twst->avail}}</td>
+                                                            <td>{{$val->twst->avail or ''}}</td>
                                                             <td>{{$val->twst->num_loom}}</td>
                                                             <td>{{$val->twst->num_mcs}}</td>
                                                             <td>{{$val->twst->power}}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Other machine</td>
-                                                            <td>{{$val->other->avail}}</td>
+                                                            <td>Other machines<br>
+                                                                @if ($val->other->othername)
+                                                                {{$val->other->othername}}
+                                                                @endif
+                                                            </td>
+                                                            <td>{{$val->other->avail or ''}}</td>
                                                             <td>{{$val->other->num_loom}}</td>
                                                             <td>{{$val->other->num_mcs}}</td>
                                                             <td>{{$val->other->power}}</td>
                                                         </tr>
+                                                        <tr>
+                                                            <td colspan="4">Total</td>
+                                                            <td>{{$val->totalpower}}</td>
+                                                        </tr>
                                                     </table>
                                                 <?php
                                                 }
-                                                if($psa->mctype3){
-                                                    $temp1 = json_decode($psa->mctype3);
+                                                if($app->mctype3){
+                                                    $temp1 = json_decode($app->mctype3);
                                                     ?>
                                                     <table width="100%" border="1" style="border-collapse: collapse; border:1px solid #ccc;">
                                                     <tr>
@@ -256,7 +277,11 @@
                                                         {
                                                             $t2 = implode(',',$value->att);
                                                         }
-                                                        echo"<tr><td>".$value->make."</td><td>".$value->reed_space."</td><td>".$value->power."</td><td>".$t2."</td><td>".$value->loom_num."</td></tr>";
+                                                        $make =  isset($value->make) ? $value->make : "";
+                                                        $reed_space =  isset($value->reed_space) ? $value->reed_space : "";
+                                                        $power =  isset($value->power) ? $value->power : "";
+                                                        $loom_num =  isset($value->loom_num) ? $value->loom_num : "";
+                                                        echo"<tr><td>".$make."</td><td>".$reed_space."</td><td>".$power."</td><td>".$t2."</td><td>".$loom_num."</td></tr>";
                                                     }
                                                     ?>
                                                     </table>
@@ -268,7 +293,7 @@
                                     <tr>
                                         <td colspan="4">
                                             <?php
-                                            $temp = json_decode($psa->mctype4);                                            
+                                            $temp = json_decode($app->mctype4);                                            
                                             ?>
                                             <table width="100%" border="1" style="border-collapse: collapse; border:1px solid #ccc;">
                                                 <tr>
@@ -278,7 +303,10 @@
                                                 </tr>
                                                 <?php
                                                     foreach ($temp as $key => $value) {
-                                                      echo"<tr><td>".$value->raw_mtr."</td><td>".$value->avg_cons."</td><td>".$value->avg_prod."</td></tr>";
+                                                        $raw_mtr =  isset($value->raw_mtr) ? $value->raw_mtr : "";
+                                                        $avg_cons =  isset($value->avg_cons) ? $value->avg_cons : "";
+                                                        $avg_prod =  isset($value->avg_prod) ? $value->avg_prod : "";
+                                                        echo"<tr><td>".$raw_mtr."</td><td>".$avg_cons."</td><td>".$avg_prod."</td></tr>";
                                                     }
                                                 ?>
                                             </table>
@@ -291,29 +319,35 @@
                                         <td>Attachments</td>
                                         <td colspan="3">
                                             <ul>
-                                                @if(!empty($psa->photograph))
+                                                @if(!empty($app->photograph))
                                                 <li>Photo</li>
                                                 @endif
-                                                @if(!empty($psa->cast_certificate))
+                                                @if(!empty($app->building_docs))
+                                                <li>Building doccument</li>
+                                                @endif
+                                                @if(!empty($app->cast_certificate))
                                                 <li>Cast certificate</li>
                                                 @endif
-                                                @if(!empty($psa->pow_sanc_letter))
+                                                @if(!empty($app->pow_sanc_letter))
                                                 <li>Power sanction letter</li>
                                                 @endif
-                                                @if(!empty($psa->trade_licence))
+                                                @if(!empty($app->trade_licence))
                                                 <li>Trade licence</li>
                                                 @endif
-                                                @if(!empty($psa->ssi_msme_cert))
+                                                @if(!empty($app->ssi_msme_cert))
                                                 <li>SSI/MSME certificate</li>
                                                 @endif
-                                                @if(!empty($psa->recent_bill))
+                                                @if(!empty($app->recent_bill))
                                                 <li>Recent power bill</li>
                                                 @endif
-                                                @if(!empty($psa->recent_receipt))
+                                                @if(!empty($app->recent_receipt))
                                                 <li>Recent power recipt</li>
                                                 @endif
-                                                @if(!empty($psa->	building_docs))
-                                                <li>Building doccument</li>
+                                                @if(!empty($app->aadhaar_file))
+                                                <li>Aadhaar copy</li>
+                                                @endif
+                                                @if(!empty($app->recent_tax_receipt))
+                                                <li>Recent tax receipt</li>
                                                 @endif
                                             </ul>
                                         </td>
@@ -323,36 +357,44 @@
                                     </tr>
                                     <tr>
                                         <td>Application date</td>
-                                        <td>{{$psa->app_date}}</td>
-                                        <td>Pace</td>
-                                        <td>{{$psa->app_place}}</td>
+                                        <td>{{$app->app_date}}</td>
+                                        <td>Place</td>
+                                        <td>{{$app->app_place}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4"><center><b>Inspection details</b></center></td>
+                                    </tr>                                    
+                                    <tr>
+                                        <td>Inspection Status</td>
+                                        <td>{{$app->ins_status}}</td>
+                                        <td>Inspection date</td>
+                                        <td>{{$app->ins_date}}</td>
                                     </tr>
                                     <tr>
                                         <td>Inspection remarks</td>
-                                        <td colspan="3">&nbsp;</td>
+                                        <td colspan="3">{{$app->ins_remarks}}</td>
                                     </tr>
                                     <tr>
                                         <td>Inspection attachments</td>
-                                        <td colspan="3">&nbsp;</td>
+                                        <td colspan="3">
+                                            <ul>
+                                                @if(!empty($app->ins_build_picture))
+                                                <li>Building Image</li>
+                                                @endif
+                                            </ul>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Inspection Location</td>
                                         <td colspan="3">
                                             <ul>
-                                                <li>Lattitude: </li>
-                                                <li>Longitude: </li>
+                                                <li>Lattitude: {{$app->ins_lat}}</li>
+                                                <li>Longitude: {{$app->ins_long}}</li>
                                             </ul>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Inspection Date</td>
-                                        <td colspan="3">&nbsp;</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">&nbsp;</td>
@@ -363,10 +405,10 @@
                                     <tr>
                                         <td colspan="4">
                                         <center>
-                                            <a href="{{url('/weavers/ej-2loom-list')}}" class="btn btn-warning btn-md">Go back</a>
-                                            @if($psa->app_status == 'applied')
-                                            <a href="{{url('/weavers/ej-2loom-adminaction/rejected/'.$psa->id)}}" class="btn btn-danger btn-md" onclick="return confirm('Are you sure?')">Reject</a>
-                                            <a href="{{url('/weavers/ej-2loom-adminaction/approved/'.$psa->id)}}" class="btn btn-success btn-md" onclick="return confirm('Are you sure?')">Approve</a>
+                                            <a href="{{url('/weavers/powersubsidy-list')}}" class="btn btn-warning btn-md">Go back</a>
+                                            @if($app->app_status == 'applied')
+                                            <a href="{{url('/weavers/powersubsidy-adminaction/rejected/'.$app->id)}}" class="btn btn-danger btn-md" onclick="return confirm('Are you sure?')">Reject</a>
+                                            <a href="{{url('/weavers/powersubsidy-adminaction/approved/'.$app->id)}}" class="btn btn-success btn-md" onclick="return confirm('Are you sure?')">Approve</a>
                                             @endif
                                         </center>
                                         </td>
@@ -374,8 +416,8 @@
                                     <tr>
                                         <td colspan="4">
                                         <center>
-                                            <a href="#" class="btn btn-warning btn-md">Print applition<br><span class="glyphicon glyphicon-print" aria-hidden="true"></span></a>
-                                            <a href="{{url('/weavers/ej-2loom-list')}}" class="btn btn-info btn-md">Download all attachments<br><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
+                                            <a href="#" id="printThis" class="btn btn-warning btn-md">Print applition<br><span class="glyphicon glyphicon-print" aria-hidden="true"></span></a>
+                                            <!-- <a disabled href="#" class="btn btn-info btn-md">Download all attachments<br><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a> -->
                                         </center>
                                         </td>
                                     </tr>
@@ -393,6 +435,28 @@
 @stop
 @section('custom_scripts')
 <script>
-
+$(function () {
+    $("#printThis").click(function () {
+        var contents = $("#print_view").html();
+        var frame1 = $('<iframe />');
+        frame1[0].name = "frame1";
+        frame1.css({ "position": "absolute", "top": "-1000000px" });
+        $("body").append(frame1);
+        var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
+        frameDoc.document.open();
+        //Create a new HTML document.
+        frameDoc.document.write('<html><head><title>DIV Contents</title>');
+        frameDoc.document.write('</head><body>');
+        //Append the DIV contents.
+        frameDoc.document.write(contents);
+        frameDoc.document.write('</body></html>');
+        frameDoc.document.close();
+        setTimeout(function () {
+            window.frames["frame1"].focus();
+            window.frames["frame1"].print();
+            frame1.remove();
+        }, 500);
+    });
+});
 </script>
 @stop

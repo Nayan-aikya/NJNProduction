@@ -7,11 +7,11 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
-use App\weaver;
 use App\ej2l_Applications;
 use App\powerSubsidyApps;
 use App\districts;
 use App\user_roles;
+use App\taluks;
 use App\investscheme;
 use View;
 use Image; 
@@ -24,351 +24,32 @@ use Illuminate\Support\Facades\Auth;
 class WeaverController extends Controller
 {
     /**
-     * New weaver application
+     * All about 2loom and electronic jaquard scheme
      */
-    public function psNewForm(){
-        $dists = districts::all();
-        return  view('weavers.ps_application', ['dists'=>$dists]);
-    }
-    public function psApplyForm(Request $request)
-    {
-        $rules = array(
-            'app_district' => 'required',
-            'scheme_name' => 'required',
-            'unit_type' => 'required',
-            'name' => 'required',
-            'salutation' => 'required|in:Sri,Smt',
-            'photograph' => 'required',
-            'aadhaar' => 'required|digits:12',
-            'resi_houseno' => 'required',
-            'resi_wardno' => 'required',
-            'resi_village' => 'required',
-            'resi_pin' => 'required|digits:6',
-            'resi_taluk' => 'required',
-            'resi_district' => 'required',
-            'resi_mobile' => 'required|digits:10',
-            'unit_name' => 'required',
-            'unit_no' => 'required',
-            'unit_wardno' => 'required',
-            'unit_crossno' => 'required',
-            'unit_village' => 'required',
-            'unit_pin' => 'required|digits:6',
-            'unit_taluk' => 'required',
-            'castecategory' => 'required|in:SC,ST,Minority,OBC,General',
-            'education' => 'required|in:lt_10,PUC,UG,PG,textile_engineering',
-            'reg_number' => 'required',
-            'regdate' => 'required',
-            'ownership_type' => 'required',
-            'u100per_women' => 'required|in:Yes,No',
-            'power_alloted' => 'required|numeric',
-            'rr_number' => 'required',
-            'app_date' => 'required',
-            'app_place' => 'required'
-        );
-        $validator = Validator::make(Input::all(), $rules);
-        if($validator->fails()){
-            return redirect('weavers/powersubsidy-apply')->withInput()->with('formErrorStatus',$validator->messages());
-            // return redirect('weavers/powersubsidy-apply')->withInput()->with('formErrorStatus','Something went wrong, failed to submit! Please contact admin.');
-        }
-        else{
-            $psa = new powerSubsidyApps;
-            $psa->app_year = '2018';
-            $psa->app_district = Input::get('app_district');
-            $psa->scheme_name = Input::get('scheme_name');
-            $psa->unit_type = Input::get('unit_type');
-            $psa->salutation = Input::get('salutation');
-            $psa->name = Input::get('name');
-            $psa->aadhaar = Input::get('aadhaar');
-            $psa->resi_houseno = Input::get('resi_houseno');
-            $psa->resi_wardno = Input::get('resi_wardno');
-            $psa->resi_crossno = Input::get('resi_crossno');
-            $psa->resi_village = Input::get('resi_village');
-            $psa->resi_pin = Input::get('resi_pin');
-            $psa->resi_taluk = Input::get('resi_taluk');
-            $psa->resi_district = Input::get('resi_district');
-            $psa->resi_phone = Input::get('resi_phone');
-            $psa->resi_mobile = Input::get('resi_mobile');
-            $psa->unit_name = Input::get('unit_name');
-            $psa->unit_no = Input::get('unit_no');
-            $psa->unit_wardno = Input::get('unit_wardno');
-            $psa->unit_crossno = Input::get('unit_crossno');
-            $psa->unit_village = Input::get('unit_village');
-            $psa->unit_pin = Input::get('unit_pin');
-            $psa->unit_taluk = Input::get('unit_taluk');
-            $psa->unit_phone = Input::get('unit_phone');
-            $psa->unit_mobile = Input::get('unit_mobile');
-            $psa->castecategory = Input::get('castecategory');
-            $psa->education = Input::get('education');
-            $psa->reg_number = Input::get('reg_number');
-            $psa->regdate = Input::get('regdate');
-            $psa->ownership_type = Input::get('ownership_type');
-            $psa->u100per_women = Input::get('u100per_women');
-            $psa->power_alloted = Input::get('power_alloted');
-            $psa->rr_number = Input::get('rr_number');
-            $psa->mctype4 = json_encode(Input::get('mctype4'));            
-            $psa->app_date = Input::get('app_date');
-            $psa->app_place = Input::get('app_place');
-            $psa->app_status = 'applied';
 
-            $scheme_name = Input::get('scheme_name');
-            $unit_type = Input::get('unit_type');
-            $typecheck = '';
-            if(($scheme_name == 'lt_10hp' || $scheme_name == 'gt_10hp_lt_20hp') && $unit_type == 'power_loom_unit'){
-                $typecheck = 'mctype1';
-                $psa->mctype1 = json_encode(Input::get('mctype1'));
-            }
-            else if(($scheme_name == 'lt_10hp' || $scheme_name == 'gt_10hp_lt_20hp') && $unit_type == 'preloom_unit'){
-                $typecheck = 'mctype2';
-                $psa->mctype2 = json_encode(Input::get('mctype2'));
-            }
-            else if($scheme_name == 'gt_20hp_50per_off' && $unit_type == 'shuttleless_loom'){
-                $typecheck = 'mctype3';
-                $psa->mctype3 = json_encode(Input::get('mctype3'));
-            }
-            if($typecheck == ''){
-                return redirect('weavers/powersubsidy-apply')->withInput()->with('formErrorStatus','Invalid information');
-            }
-
-            if($psa->save()){
-                $lastInsertedId = $psa->id;
-                $file = $request->file('photograph');
-                $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId.'/uploads');
-                $photoname = $lastInsertedId."_".$file->getClientOriginalName();
-                $file->move($destinationPath,$photoname);
-                $certificatename ='';
-                if(Input::hasFile('caste_certificate')){
-                    $file = $request->file('caste_certificate');
-                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId.'/uploads');
-                    $certificatename = $lastInsertedId."_cast_cert_".$file->getClientOriginalName();
-                    $file->move($destinationPath,$certificatename);
-                }
-                $pow_sanc_letter_name = '';
-                if(Input::hasFile('pow_sanc_letter')){
-                    $file = $request->file('pow_sanc_letter');
-                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId.'/uploads');
-                    $pow_sanc_letter_name = $lastInsertedId."_pow_sanc_letter_".$file->getClientOriginalName();
-                    $file->move($destinationPath,$pow_sanc_letter_name);
-                }
-                $trade_licence_name = '';
-                if(Input::hasFile('trade_licence')){
-                    $file = $request->file('trade_licence');
-                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId.'/uploads');
-                    $trade_licence_name = $lastInsertedId."_trade_licence_".$file->getClientOriginalName();
-                    $file->move($destinationPath,$trade_licence_name);
-                }
-                $ssi_msme_cert_name = '';
-                if(Input::hasFile('ssi_msme_cert')){
-                    $file = $request->file('ssi_msme_cert');
-                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId.'/uploads');
-                    $ssi_msme_cert_name = $lastInsertedId."_ssi_msme_cert_".$file->getClientOriginalName();
-                    $file->move($destinationPath,$ssi_msme_cert_name);
-                }
-                $recent_bill_name = '';
-                if(Input::hasFile('recent_bill')){
-                    $file = $request->file('recent_bill');
-                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId.'/uploads');
-                    $recent_bill_name = $lastInsertedId."_recent_bill_".$file->getClientOriginalName();
-                    $file->move($destinationPath,$recent_bill_name);
-                }
-                $recent_receipt_name = '';
-                if(Input::hasFile('recent_receipt')){
-                    $file = $request->file('recent_receipt');
-                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId.'/uploads');
-                    $recent_receipt_name = $lastInsertedId."_recent_receipt_".$file->getClientOriginalName();
-                    $file->move($destinationPath,$recent_receipt_name);
-                }
-                $building_docs_name = '';
-                if(Input::hasFile('building_docs')){
-                    $file = $request->file('building_docs');
-                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId.'/uploads');
-                    $building_docs_name = $lastInsertedId."_building_docs_".$file->getClientOriginalName();
-                    $file->move($destinationPath,$building_docs_name);
-                }
-
-                $psa2 = powerSubsidyApps::find($lastInsertedId);
-                $psa2->photograph = $photoname;
-                $psa2->cast_certificate = $certificatename;
-                $psa2->pow_sanc_letter = $pow_sanc_letter_name;
-                $psa2->trade_licence = $trade_licence_name;
-                $psa2->ssi_msme_cert = $ssi_msme_cert_name;
-                $psa2->recent_bill = $recent_bill_name;
-                $psa2->recent_receipt = $recent_receipt_name;
-                $psa2->building_docs = $building_docs_name;
-                if($psa2->save()){
-                    $request->session()->put('lastInsertedId', $lastInsertedId);
-                    return redirect('weavers/powersubsidy-ack/');
-                }
-                else{
-                    return redirect('weavers/powersubsidy-apply')->withInput()->with('formErrorStatus','Document process failed.');
-                }
-                
+    public function getTaluk($id){
+        // fetch and send
+        $ret = '<option value="">Select</option>';
+        $taluks = taluks::where('District_Id',$id)->get();
+        if(count($taluks) > 0){
+            foreach ($taluks as $key => $value) {
+                $ret = $ret . '<option value="'.$value->id.'">'.$value->Taluk.'</option>';
             }
         }
-    }
-    public function psShowAck(Request $request){
-        if($request->session()->has('lastInsertedId')){
-            $lastInsertedId = $request->session()->get('lastInsertedId');
-            $app_data = powerSubsidyApps::find($lastInsertedId);
-            $request->session()->forget('lastInsertedId');
-            return View::make('weavers.ps_ack')->with('psa',$app_data);
-        }
-        else{
-            abort(404);
-        } 
+        echo $ret;
     }
 
-    public function psList(){
-        if($did = $this->checkTD()){
-            $applications = powerSubsidyApps::where('app_district',$did)->get();
-            return View::make('weavers.ps_list')->with('applications',$applications);
-        }
-        else{
-            return redirect('login');
-        }
-        
-    }
-    public function ejTlList(){
-        if($did = $this->checkTD()){
-            $applications = ej2l_Applications::where('app_district',$did)->get();
-            return View::make('weavers.ej_list')->with('applications',$applications);
-        }
-        return redirect('login');
-        
-    }
-    public function psDetails($id){
-        if(!$this->checkTD()){
-            return redirect('login');
-        }
-        $app = powerSubsidyApps::find($id);
-        return View::make('weavers.ps_details')->with('psa',$app);
-    }
-
-    public function ejTlDetails($id){
-        if(!$this->checkTD()){
-            return redirect('login');
-        }
-        $app = ej2l_Applications::find($id);
-        return View::make('weavers.ej_details')->with('app',$app);
-    }
-
-    public function psGetfile($type,$id){
-        if(!$this->checkTD()){
-            return redirect('login');
-        }
-        $app = weaver::find($id);
-        if($app->$type != ''){
-            if($type == 'annexurea' || $type == 'annexureb' || $type == 'annexurec' || $type == 'annexured' ){
-                $fileName = base_path('storage/user_files/powersubsidy/'.$id.'/annexurs/').$app->$type;
-            }
-            if($type == 'certificate'){
-                $fileName = base_path('storage/user_files/powersubsidy/'.$id.'/certificates/').$app->$type;
-            }
-            if($type == 'photograph'){
-                $fileName = base_path('storage/user_files/powersubsidy/'.$id.'/photos/').$app->$type;
-            }
-            if (file_exists($fileName))
-            {
-                return Response::download($fileName);
-            }
-            return redirect('/weavers/powersubsidy-list/details/'.$id)->with('error','File not found');
-        }
-        
-        return redirect('/weavers/powersubsidy-list/details/'.$id)->with('error','Invalid parameters passed.');
-    }
-    public function psAdminaction($action, $id){
-
-        if(!$this->checkTD()){
-            return redirect('login');
-        }
-        
-        if($action != 'approved' && $action != 'rejected'){
-            return redirect('/weavers/powersubsidy-list/')->with('error','Invalid action.');
-        }
-        $app = weaver::find($id);
-        if($app->status == 'applied'){
-            $w3 = weaver::find($id);
-                $w3->status = $action;
-                if($w3->save()){
-                return redirect('/weavers/powersubsidy-list/')->with('success','Updated successfully');
-            }
-            else{
-                return redirect('/weavers/powersubsidy-list/')->with('error','Failed, something went wrong.');
-            }
-        }
-        else{
-            return redirect('/weavers/powersubsidy-list/')->with('error','Invalid action.');
-        }        
-    }
-
-    public function psGetzip($id){
-        
-        if(!$this->checkTD()){
-            return redirect('login');
-        }
-        if($id == ''){
-            abort(404);
-        }
-
-        $dir = base_path('storage/user_files/powersubsidy/'.$id);
-
-        if (!file_exists($dir))
-        {
-            return redirect('/weavers/powersubsidy-list/details/'.$id)->with('error','Uploads directory not found.');
-        }
-        
-        $zip_file = 'PS_ID_'.$id.'_files.zip';
-
-        // Get real path for our folder
-        $rootPath = realpath($dir);
-
-        // Initialize archive object
-        $zip = new ZipArchive();
-        $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-        // Create recursive directory iterator
-        /** @var SplFileInfo[] $files */
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($rootPath),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
-
-        foreach ($files as $name => $file)
-        {
-            // Skip directories (they would be added automatically)
-            if (!$file->isDir())
-            {
-                // Get real and relative path for current file
-                $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($rootPath) + 1);
-
-                // Add current file to archive
-                $zip->addFile($filePath, $relativePath);
-            }
-        }
-
-        // Zip archive will be created only after closing object
-        $zip->close();
-
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename='.basename($zip_file));
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($zip_file));
-        readfile($zip_file);
-
-    }
     public function ejTlNewForm(){
         $dists = districts::all();
         return  view('weavers.ej_application',['dists'=>$dists]);
     }
+
     public function ejTlApply(Request $request){
         $rules = array(
             "app_district" => 'required',
+            "app_taluk" => 'required',
             "fin_year" => 'required',
-            "salutation" => 'required|in:Sri,Smt',
+            "salutation" => 'required|in:Sri,Smt,Kumari',
             "name" => 'required',
             "resi_houseno" => 'required',
             "resi_wardno" => 'required',
@@ -388,6 +69,7 @@ class WeaverController extends Controller
             "plan_uadd" => 'required',
             "rr_number" => 'required',
             "connect_load" => 'required|numeric',
+            "building_own_type" => 'required|in:Own,Rent,Lease',
             "prepBank_type" => 'required',
             "prepBank_bankname" => 'required',
             "prepBank_loanamt" => 'required',
@@ -402,6 +84,7 @@ class WeaverController extends Controller
             "app_place" => 'required',
             "photo" => 'required',
             "ind_licence_copy" => 'required',
+            'general_licence_copy' => 'required',
             "prepBank_sancLetter" => 'required',
             "aadhaar_file" => 'required',
         );
@@ -417,12 +100,20 @@ class WeaverController extends Controller
             $castcat = Input::get('castecategory');
             if($castcat == 'SC'){
                 $e1->appCatType = 'SCP';
-                $e1->wka = Input::get('wka');
             }
             if($castcat == 'ST'){
                 $e1->appCatType = 'TSP';
-                $e1->wka = Input::get('wka');
             }
+            $e1->facility_sel = Input::get('facility_sel');
+            $facility_sel = Input::get('facility_sel');
+
+            if($castcat == 'SC' || $castcat == 'ST'){
+                if($facility_sel == '2lm' || $facility_sel == 'sap' || $facility_sel == 'ops')
+                {
+                    $e1->wka = Input::get('wka');
+                }
+            }
+
             if($castcat == 'Minority' || $castcat == 'OBC' || $castcat == 'General'){
                 $e1->appCatType = 'General';
             }
@@ -431,6 +122,7 @@ class WeaverController extends Controller
             }
 
             $e1->app_district = Input::get('app_district');
+            $e1->app_taluk = Input::get('app_taluk');
             $e1->fin_year = Input::get('fin_year');
             $e1->salutation = Input::get('salutation');
             $e1->name = Input::get('name');
@@ -450,8 +142,7 @@ class WeaverController extends Controller
             $e1->fwh_name = Input::get('fwh_name');
             $e1->gender = Input::get('gender');
             $e1->castecategory = Input::get('castecategory');
-            $e1->facility_sel = Input::get('facility_sel');           
-            
+            $e1->building_own_type = Input::get('building_own_type');
             $e1->rr_number = Input::get('rr_number');
             $e1->plan_uadd = Input::get('plan_uadd');
             $e1->space_sqft = Input::get('space_sqft');
@@ -460,7 +151,7 @@ class WeaverController extends Controller
             $e1->num_of_looms = Input::get('num_of_looms');
             $e1->app_place = Input::get('app_place');
             $e1->appdate = Input::get('appdate');
-            $e1->status = 'applied';
+            $e1->app_status = 'applied';
             $e1->prepBank_type = Input::get('prepBank_type');
             $e1->prepBank_bankname = Input::get('prepBank_bankname');
             $e1->prepBank_loanamt = Input::get('prepBank_loanamt');
@@ -522,6 +213,14 @@ class WeaverController extends Controller
                     $prepBank_sancLettername = $lastInsertedId."_loansancletter_".$file->getClientOriginalName();
                     $file->move($destinationPath,$prepBank_sancLettername);
                 }
+                $general_licence_copy_name = '';
+                if(Input::hasFile('general_licence_copy')){
+                    $file = $request->file('general_licence_copy');
+                    $destinationPath = base_path('storage/user_files/ej_2l/'.$lastInsertedId);
+                    $general_licence_copy_name = $lastInsertedId."_general_licence_".$file->getClientOriginalName();
+                    $file->move($destinationPath,$general_licence_copy_name);
+                }
+                
 
                 $e2 = ej2l_Applications::find($lastInsertedId);
                 $e2->photo = $photoname;
@@ -531,6 +230,7 @@ class WeaverController extends Controller
                 $e2->ind_licence_copy =$ind_licence_copyname;
                 $e2->prepBank_sancLetter = $prepBank_sancLettername;
                 $e2->aadhaar_file = $aadhaar_filename;
+                $e2->general_licence_copy = $general_licence_copy_name;
                 if($e2->save()){
                     $request->session()->put('lastInsertedId', $lastInsertedId);
                     return redirect('weavers/ej-2loom-ack');
@@ -544,132 +244,517 @@ class WeaverController extends Controller
             }
         }
     }
+
     public function ejShowAck(Request $request){
         if($request->session()->has('lastInsertedId')){
             $lastInsertedId = $request->session()->get('lastInsertedId');
-            $app_data = ej2l_Applications::find($lastInsertedId);
+            $app = ej2l_Applications::find($lastInsertedId);
+            $app->user_dist_name = districts::where('id',$app->resi_district)->value('district_name');
+            $app->app_dist_name = districts::where('id',$app->app_district)->value('district_name');
             $request->session()->forget('lastInsertedId');
-            return View::make('weavers.ej_ack')->with('e1',$app_data);
+            return View::make('weavers.ej_ack')->with('app',$app);
         }
         else{
             abort(404);
         } 
     }
 
-    public function ejTlGetfile($type,$id){
-        
-        if(!$this->checkTD()){
-            return redirect('login');
-        }
-        $app = ej2l_Applications::find($id);
-        
-        if($app->$type != ''){
-            if($type == 'cast_cert' ){
-                $fileName = base_path('storage/user_files/ej_2l/'.$id.'/caste_certificate/').$app->$type;
-            }
-            if($type == 'photo'){
-                $fileName = base_path('storage/user_files/ej_2l/'.$id.'/photos/').$app->$type;
-            }
-            if($type == 'training_cert'){
-                $fileName = base_path('storage/user_files/ej_2l/'.$id.'/training_certificate/').$app->$type;
-            }
-            if($type == 'building_docs'){
-                $fileName = base_path('storage/user_files/ej_2l/'.$id.'/building_docs/').$app->$type;
-            }
-            
-            if (file_exists($fileName))
-            {
-                return Response::download($fileName);
-            }
-            return redirect('/weavers/ej_2l-list/details/'.$id)->with('error','File not found');
-        }
-        
-        return redirect('/weavers/ej_2l-list/details/'.$id)->with('error','Invalid parameters passed.');
-    }
     public function ejTlAdminaction($action, $id){
 
-        if(!$this->checkTD()){
-            return redirect('login');
-        }
-        
-        if($action != 'approved' && $action != 'rejected'){
-            return redirect('/weavers/powersubsidy-list/')->with('error','Invalid action.');
-        }
-        $app = ej2l_Applications::find($id);
-        if($app->status == 'applied'){
-            $w3 = ej2l_Applications::find($id);
-                $w3->status = $action;
-                if($w3->save()){
-                return redirect('/weavers/ej-2loom-list/')->with('success','Updated successfully');
+        if($did = $this->checkTD()){
+            if($action != 'approved' && $action != 'rejected'){
+                return redirect('/weavers/ej-2loom-list/')->with('error','Invalid action.');
+            }
+            $app = ej2l_Applications::find($id);
+            if($app->app_status == 'applied' && $did == $app->app_district){
+                $w3 = ej2l_Applications::find($id);
+                    $w3->app_status = $action;
+                    if($w3->save()){
+                    return redirect('/weavers/ej-2loom-list/')->with('success','Updated successfully');
+                }
+                else{
+                    return redirect('/weavers/ej-2loom-list/')->with('error','Failed, something went wrong.');
+                }
             }
             else{
-                return redirect('/weavers/ej-2loom-list/')->with('error','Failed, something went wrong.');
+                return redirect('/weavers/ej-2loom-list/')->with('error','Invalid user action.');
             }
         }
         else{
-            return redirect('/weavers/ej-2loom-list/')->with('error','Invalid action.');
-        }        
+            return redirect('login');
+        }              
     }
 
     public function ejTlGetzip($id){
-
-        if(!$this->checkTD()){
-            return redirect('login');
-        }
 
         if($id == ''){
             abort(404);
         }
 
-        $dir = base_path('storage/user_files/ej_2l/'.$id);
+        if($did = $this->checkTD()){
+            $app = ej2l_Applications::find($id);
+            if($did != $app->app_district){
+                return redirect('/weavers/ej-2loom-list/')->with('error','Invalid user action.');
+            }
+            $dir = base_path('storage/user_files/ej_2l/'.$id);
 
-        if (!file_exists($dir))
-        {
-            return redirect('/weavers/ej_2l-list/details/'.$id)->with('error','Uploads directory not found.');
-        }
-        
-        $zip_file = 'EJ2L_ID_'.$id.'_files.zip';
+            if (!file_exists($dir)){
+                return redirect('/weavers/ej-2loom-app/details/'.$id)->with('error','Uploads directory not found.');
+            }
+            
+            $zip_file = 'EJ2L_ID_'.$id.'_files.zip';
 
-        // Get real path for our folder
-        $rootPath = realpath($dir);
+            // Get real path for our folder
+            $rootPath = realpath($dir);
 
-        // Initialize archive object
-        $zip = new ZipArchive();
-        $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            // Initialize archive object
+            $zip = new ZipArchive();
+            $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
-        // Create recursive directory iterator
-        /** @var SplFileInfo[] $files */
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($rootPath),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
+            // Create recursive directory iterator
+            /** @var SplFileInfo[] $files */
+            $files = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($rootPath),
+                RecursiveIteratorIterator::LEAVES_ONLY
+            );
 
-        foreach ($files as $name => $file)
-        {
-            // Skip directories (they would be added automatically)
-            if (!$file->isDir())
+            foreach ($files as $name => $file)
             {
-                // Get real and relative path for current file
-                $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($rootPath) + 1);
+                // Skip directories (they would be added automatically)
+                if (!$file->isDir())
+                {
+                    // Get real and relative path for current file
+                    $filePath = $file->getRealPath();
+                    $relativePath = substr($filePath, strlen($rootPath) + 1);
 
-                // Add current file to archive
-                $zip->addFile($filePath, $relativePath);
+                    // Add current file to archive
+                    $zip->addFile($filePath, $relativePath);
+                }
+            }
+
+            // Zip archive will be created only after closing object
+            $zip->close();
+
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename='.basename($zip_file));
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($zip_file));
+            readfile($zip_file);
+        }
+        else{
+            return redirect('login')->with('error','Invalid user action.');
+        }
+
+        
+
+        
+
+    }
+
+    public function ejTlList(){
+        if($did = $this->checkTD()){
+            $applications = ej2l_Applications::where('app_district',$did)->get();
+            return View::make('weavers.ej_list')->with('applications',$applications);
+        }
+        return redirect('login');
+        
+    }
+
+    public function ejTlDetails($id){
+        if($did = $this->checkTD()){
+            $app = ej2l_Applications::find($id);
+            if($did == $app->app_district){
+                $app->user_dist_name = districts::where('id',$app->resi_district)->value('district_name');
+                $app->app_dist_name = districts::where('id',$app->app_district)->value('district_name');
+
+                $app->app_taluk_name = taluks::where('id',$app->app_taluk)->value('Taluk');
+                $app->resi_taluk_name = taluks::where('id',$app->resi_taluk)->value('Taluk');
+
+                return View::make('weavers.ej_details')->with('app',$app);
+            }
+            else{
+                return redirect('login')->with('error','Invalid user.');
             }
         }
+        else{
+            return redirect('login');
+        }
+    }
 
-        // Zip archive will be created only after closing object
-        $zip->close();
+    /**
+     * All about Power subsidy
+     */
 
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename='.basename($zip_file));
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($zip_file));
-        readfile($zip_file);
+    public function psNewForm(){
+        $dists = districts::all();
+        return  view('weavers.ps_application', ['dists'=>$dists]);
+    }
+
+    public function psApplyForm(Request $request){
+        $rules = array(
+            'fin_year'=> 'required',
+            'app_district' => 'required',
+            'app_taluk' => 'required',
+            'scheme_name' => 'required',
+            'unit_type' => 'required',
+            'name' => 'required',
+            'salutation' => 'required|in:Sri,Smt,Kumari',
+            'photograph' => 'required',
+            'aadhaar_file' => 'required',
+            'aadhaar' => 'required|digits:12',
+            'resi_houseno' => 'required',
+            'resi_wardno' => 'required',
+            'resi_village' => 'required',
+            'resi_pin' => 'required|digits:6',
+            'resi_taluk' => 'required',
+            'resi_district' => 'required',
+            'resi_mobile' => 'required|digits:10',
+            'unit_name' => 'required',
+            'unit_no' => 'required',
+            'unit_wardno' => 'required',
+            'unit_crossno' => 'required',
+            'unit_village' => 'required',
+            'unit_pin' => 'required|digits:6',
+            'castecategory' => 'required|in:SC,ST,Minority,OBC,General',
+            'education' => 'required|in:lt_10,PUC,UG,PG,textile_engineering,Others',
+            'reg_number' => 'required',
+            'regdate' => 'required',
+            'ownership_type' => 'required|in:Proprietary,Partnership,PVT_LTD,co_op_society,Others',
+            'u100per_women' => 'required|in:Yes,No',
+            'power_alloted' => 'required|numeric',
+            'power_alloted_date' => 'required',
+            'recent_tax_receipt' => 'required',
+            'rr_number' => 'required',
+            'app_date' => 'required',
+            'app_place' => 'required'
+        );
+        $validator = Validator::make(Input::all(), $rules);
+        if($validator->fails()){
+            return redirect('weavers/powersubsidy-apply')->withInput()->with('formErrorStatus',$validator->messages());
+            // return redirect('weavers/powersubsidy-apply')->withInput()->with('formErrorStatus','Something went wrong, failed to submit! Please contact admin.');
+        }
+        else{
+            $psa = new powerSubsidyApps;
+            $psa->fin_year = Input::get('fin_year');
+            $psa->app_district = Input::get('app_district');
+            $psa->app_taluk = Input::get('app_taluk');
+            $psa->scheme_name = Input::get('scheme_name');
+            $psa->unit_type = Input::get('unit_type');
+            $psa->salutation = Input::get('salutation');
+            $psa->name = Input::get('name');
+            $psa->aadhaar = Input::get('aadhaar');
+            $psa->resi_houseno = Input::get('resi_houseno');
+            $psa->resi_wardno = Input::get('resi_wardno');
+            $psa->resi_crossno = Input::get('resi_crossno');
+            $psa->resi_village = Input::get('resi_village');
+            $psa->resi_pin = Input::get('resi_pin');
+            $psa->resi_taluk = Input::get('resi_taluk');
+            $psa->resi_district = Input::get('resi_district');
+            $psa->resi_phone = Input::get('resi_phone');
+            $psa->resi_mobile = Input::get('resi_mobile');
+            $psa->unit_name = Input::get('unit_name');
+            $psa->unit_no = Input::get('unit_no');
+            $psa->unit_wardno = Input::get('unit_wardno');
+            $psa->unit_crossno = Input::get('unit_crossno');
+            $psa->unit_village = Input::get('unit_village');
+            $psa->unit_pin = Input::get('unit_pin');
+            $psa->unit_taluk = Input::get('app_taluk');
+            $psa->unit_district = Input::get('app_district');
+            $psa->unit_phone = Input::get('unit_phone');
+            $psa->unit_mobile = Input::get('unit_mobile');
+            $psa->castecategory = Input::get('castecategory');
+            $psa->education = Input::get('education');
+            $psa->reg_number = Input::get('reg_number');
+            $psa->regdate = Input::get('regdate');
+            $psa->ownership_type = Input::get('ownership_type');
+            $psa->u100per_women = Input::get('u100per_women');            
+            $psa->power_alloted = Input::get('power_alloted');
+            $psa->power_alloted_date = Input::get('power_alloted_date');
+            $psa->rr_number = Input::get('rr_number');
+            $psa->mctype4 = json_encode(Input::get('mctype4'));            
+            $psa->app_date = Input::get('app_date');
+            $psa->app_place = Input::get('app_place');
+            $psa->app_status = 'applied';
+
+            $scheme_name = Input::get('scheme_name');
+            $unit_type = Input::get('unit_type');
+
+            // type validation
+            $typecheck = false;
+            if(($scheme_name == 'lt_10hp' || $scheme_name == 'gt_10hp_lt_20hp') && $unit_type == 'power_loom_unit'){
+                $typecheck = true;
+                $psa->mctype1 = json_encode(Input::get('mctype1'));
+            }
+            else if(($scheme_name == 'lt_10hp' || $scheme_name == 'gt_10hp_lt_20hp') && $unit_type == 'preloom_unit'){
+                $typecheck = true;
+                $mctype_total_num = 0;
+                $tempmc2 = Input::get('mctype2');
+                foreach ($tempmc2 as $key => $value) {
+                    $mctype_total_num = $mctype_total_num + intval($value['power']);
+                }
+                $tempmc2['totalpower'] = $mctype_total_num;
+                $psa->mctype2 = json_encode($tempmc2);
+            }
+            else if($scheme_name == 'gt_20hp_50per_off' && $unit_type == 'shuttleless_loom'){
+                $typecheck = true;
+                $psa->mctype3 = json_encode(Input::get('mctype3'));
+            }
+            
+            // Education check
+            $edu = Input::get('education');
+            $edu_other = Input::get('education_other');
+            $educheck = true;
+            if($edu == 'Others' && $edu_other == ''){
+                $educheck = false;
+            }
+
+            // Ownership check
+            $ownership_type = Input::get('ownership_type');
+            $ownership_other = Input::get('ownership_other');
+            $ownershipcheck = true;
+            if($ownership_type == 'Others' && $ownership_other == ''){
+                $ownershipcheck = false;
+            }
+
+            if(!$typecheck && !$educheck && !$ownershipcheck){
+                return redirect('weavers/powersubsidy-apply')->withInput()->with('formErrorStatus',"Invalid information_".$typecheck."_".$educheck ."_". $ownershipcheck);
+            }
+            $psa->education_other = Input::get('education_other'); 
+            $psa->ownership_other = Input::get('ownership_other');
+
+            if($psa->save()){
+                $lastInsertedId = $psa->id;
+                $file = $request->file('photograph');
+                $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId);
+                $photoname = $lastInsertedId."_".$file->getClientOriginalName();
+                $file->move($destinationPath,$photoname);
+                $certificatename ='';
+                if(Input::hasFile('caste_certificate')){
+                    $file = $request->file('caste_certificate');
+                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId);
+                    $certificatename = $lastInsertedId."_cast_cert_".$file->getClientOriginalName();
+                    $file->move($destinationPath,$certificatename);
+                }
+                $pow_sanc_letter_name = '';
+                if(Input::hasFile('pow_sanc_letter')){
+                    $file = $request->file('pow_sanc_letter');
+                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId);
+                    $pow_sanc_letter_name = $lastInsertedId."_pow_sanc_letter_".$file->getClientOriginalName();
+                    $file->move($destinationPath,$pow_sanc_letter_name);
+                }
+                $trade_licence_name = '';
+                if(Input::hasFile('trade_licence')){
+                    $file = $request->file('trade_licence');
+                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId);
+                    $trade_licence_name = $lastInsertedId."_trade_licence_".$file->getClientOriginalName();
+                    $file->move($destinationPath,$trade_licence_name);
+                }
+                $ssi_msme_cert_name = '';
+                if(Input::hasFile('ssi_msme_cert')){
+                    $file = $request->file('ssi_msme_cert');
+                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId);
+                    $ssi_msme_cert_name = $lastInsertedId."_ssi_msme_cert_".$file->getClientOriginalName();
+                    $file->move($destinationPath,$ssi_msme_cert_name);
+                }
+                $recent_bill_name = '';
+                if(Input::hasFile('recent_bill')){
+                    $file = $request->file('recent_bill');
+                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId);
+                    $recent_bill_name = $lastInsertedId."_recent_bill_".$file->getClientOriginalName();
+                    $file->move($destinationPath,$recent_bill_name);
+                }
+                $recent_receipt_name = '';
+                if(Input::hasFile('recent_receipt')){
+                    $file = $request->file('recent_receipt');
+                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId);
+                    $recent_receipt_name = $lastInsertedId."_recent_receipt_".$file->getClientOriginalName();
+                    $file->move($destinationPath,$recent_receipt_name);
+                }
+                $building_docs_name = '';
+                if(Input::hasFile('building_docs')){
+                    $file = $request->file('building_docs');
+                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId);
+                    $building_docs_name = $lastInsertedId."_building_docs_".$file->getClientOriginalName();
+                    $file->move($destinationPath,$building_docs_name);
+                }
+
+                $aadhaar_file_name = '';
+                if(Input::hasFile('aadhaar_file')){
+                    $file = $request->file('aadhaar_file');
+                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId);
+                    $aadhaar_file_name = $lastInsertedId."_aadhaar_".$file->getClientOriginalName();
+                    $file->move($destinationPath,$aadhaar_file_name);
+                }
+
+                $recent_tax_receipt_name = '';
+                if(Input::hasFile('recent_tax_receipt')){
+                    $file = $request->file('recent_tax_receipt');
+                    $destinationPath = base_path('storage/user_files/powersubsidy/'.$lastInsertedId);
+                    $recent_tax_receipt_name = $lastInsertedId."_taxreceipt_".$file->getClientOriginalName();
+                    $file->move($destinationPath,$recent_tax_receipt_name);
+                }
+
+                $psa2 = powerSubsidyApps::find($lastInsertedId);
+                $psa2->photograph = $photoname;
+                $psa2->cast_certificate = $certificatename;
+                $psa2->pow_sanc_letter = $pow_sanc_letter_name;
+                $psa2->trade_licence = $trade_licence_name;
+                $psa2->ssi_msme_cert = $ssi_msme_cert_name;
+                $psa2->recent_bill = $recent_bill_name;
+                $psa2->recent_receipt = $recent_receipt_name;
+                $psa2->building_docs = $building_docs_name;
+                $psa2->aadhaar_file = $aadhaar_file_name;
+                $psa2->recent_tax_receipt = $recent_tax_receipt_name;
+                if($psa2->save()){
+                    $request->session()->put('lastInsertedId', $lastInsertedId);
+                    return redirect('weavers/powersubsidy-ack/');
+                }
+                else{
+                    return redirect('weavers/powersubsidy-apply')->withInput()->with('formErrorStatus','Document process failed.');
+                }
+                
+            }
+        }
+    }
+
+    public function psShowAck(Request $request){
+        if($request->session()->has('lastInsertedId')){
+            $lastInsertedId = $request->session()->get('lastInsertedId');
+            $app = powerSubsidyApps::find($lastInsertedId);
+            $app->user_dist_name = districts::where('id',$app->resi_district)->value('district_name');
+            $app->app_dist_name = districts::where('id',$app->app_district)->value('district_name');
+            $request->session()->forget('lastInsertedId');
+            return View::make('weavers.ps_ack')->with('app',$app);
+        }
+        else{
+            abort(404);
+        } 
+    }
+
+    public function psList(){
+        if($did = $this->checkTD()){
+            $applications = powerSubsidyApps::where('app_district',$did)->get();
+            return View::make('weavers.ps_list')->with('applications',$applications);
+        }
+        else{
+            return redirect('login')->with('error','Invalid user action.');
+        }
+        
+    }
+
+    public function psDetails($id){
+
+        if($did = $this->checkTD()){
+            $app = powerSubsidyApps::find($id);
+            if($did == $app->app_district){
+                $app->user_dist_name = districts::where('id',$app->resi_district)->value('district_name');
+                $app->app_dist_name = districts::where('id',$app->app_district)->value('district_name');
+
+                $app->app_taluk_name = taluks::where('id',$app->app_taluk)->value('Taluk');
+                $app->resi_taluk_name = taluks::where('id',$app->resi_taluk)->value('Taluk');
+                return View::make('weavers.ps_details')->with('app',$app);
+            }
+            else{
+                return redirect('login')->with('error','Invalid user.');
+            }
+        }
+        else{
+            return redirect('login')->with('error','Invalid user.');
+        }
+    }
+
+    public function psAdminaction($action, $id){
+        if($did = $this->checkTD()){
+            if($action != 'approved' && $action != 'rejected'){
+                return redirect('/weavers/powersubsidy-list/')->with('error','Invalid command.');
+            }
+            $app = powerSubsidyApps::find($id);
+            if($app->app_status == 'applied' && $app->app_district == $did){
+                $w3 = powerSubsidyApps::find($id);
+                    $w3->app_status = $action;
+                    if($w3->save()){
+                    return redirect('/weavers/powersubsidy-list/')->with('success','Updated successfully');
+                }
+                else{
+                    return redirect('/weavers/powersubsidy-list/')->with('error','Failed, something went wrong.');
+                }
+            }
+            else{
+                return redirect('/weavers/powersubsidy-list/')->with('error','Invalid action.');
+            }
+        }
+        else{
+            return redirect('login');
+        }
+    }
+
+    public function psGetzip($id){
+        if($id == ''){
+            abort(404);
+        }
+        if($did = $this->checkTD()){
+            $app = powerSubsidyApps::find($id);
+            if($did != $app->app_district){
+                return redirect('/weavers/powersubsidy-list/')->with('error','Invalid user action.');
+            }
+            $dir = storage_path('user_files/powersubsidy/'.$id);
+            if (!file_exists($dir)){
+                return redirect('/weavers/powersubsidy-list/details/'.$id)->with('error','Uploads directory not found.');
+            }
+            
+            $zip_file = 'PS_ID_'.$id.'_files.zip';
+
+            // Get real path for our folder
+            $rootPath = realpath($dir);
+
+            // Initialize archive object
+            $zip = new ZipArchive();
+            $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+            // Create recursive directory iterator
+            /** @var SplFileInfo[] $files */
+            $files = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($rootPath),
+                RecursiveIteratorIterator::LEAVES_ONLY
+            );
+
+            foreach ($files as $name => $file)
+            {
+                // Skip directories (they would be added automatically)
+                if (!$file->isDir())
+                {
+                    // Get real and relative path for current file
+                    $filePath = $file->getRealPath();
+                    $relativePath = substr($filePath, strlen($rootPath) + 1);
+                    echo "\$zip->addFile('".$filePath."','".$relativePath."');<br>";
+                    // Add current file to archive
+                    $zip->addFile($filePath, $relativePath);
+                }
+            }
+            
+            // Zip archive will be created only after closing object
+            $zip->close();
+
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename='.basename($zip_file));
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($zip_file));
+            readfile($zip_file);
+        }
+        else{
+            return redirect('login');
+        }
+        
+
+        
 
     }
 
@@ -699,6 +784,10 @@ class WeaverController extends Controller
             return false;
         }
     }
+
+    /**
+     * All about Investment plan
+     */
     
     public function investApply(Request $req){
 
@@ -709,8 +798,6 @@ class WeaverController extends Controller
             'unit_address' => 'required',
             'unit_city' => 'required',
             'unit_pin' => 'required',
-            // 'zone_new' => 'required',
-            // 'zone_old' => 'required',
             'em_regno' => 'required',
             'em_regdate' => 'required',
             'vat_regno' => 'required',
@@ -718,7 +805,6 @@ class WeaverController extends Controller
             'industry_nature' => 'required',
             'products_man' => 'required',
             'constitution_ind_type' => 'required',
-            // 'constitution_ind_val' => 'required',
             'ent_category' => 'required',
             'unit_park' => 'required',
             'ind_ex_type' => 'required',
@@ -730,8 +816,6 @@ class WeaverController extends Controller
             'loan_inst_name' => 'required',
             'loan_date' => 'required',
             'loan_amount' => 'required',
-            // 'employment_newunit_a' => 'required',
-            // 'employment_newunit_b' => 'required',
             'cont_name' => 'required',
             'cont_phone' => 'required|digits:10',
             'cont_email' => 'required|email',
@@ -739,12 +823,9 @@ class WeaverController extends Controller
             'bank_name' => 'required',
             'bank_acno' => 'required',
             'bank_ifsc' => 'required',
-            // 'incentive_list' => 'required',
-            // 'form_list' => 'required'
         );
         $validator = Validator::make(Input::all(), $rules);
         if($validator->fails()){
-            // return redirect('weavers/invest-apply')->with('errors',$validator->messages());
             return redirect('weavers/invest-apply')->withInput()->with('formErrorStatus','Something went wrong, failed to submit! Please contact admin.');
         }
         else{

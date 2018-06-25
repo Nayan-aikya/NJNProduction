@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\weaver;
+use App\powerSubsidyApps;
 use App\ej2l_Applications;
 use Validator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -18,6 +18,7 @@ use App\districts;
 use Image;
 use File;
 use View;
+use Illuminate\Support\Facades\Log;
 
 class WeaverInspector extends Controller
 {
@@ -26,12 +27,14 @@ class WeaverInspector extends Controller
         $dist_id = $req->input('dist_id');
         $leads = '';
         if($type == 1){
-            $leads = weaver::where('app_district', '=' ,$dist_id)
-                ->get();
+            $leads = powerSubsidyApps::where('app_district', '=' ,$dist_id)
+            ->where('ins_status', '=' ,'pending')
+            ->get();
         }
         if($type == 2){
             $leads = ej2l_Applications::where('app_district', '=' ,$dist_id)
-                ->get();
+            ->where('ins_status', '=' ,'pending')
+            ->get();
         }
         return response()->json($leads,200);
     }
@@ -47,7 +50,7 @@ class WeaverInspector extends Controller
 
         $leads = '';
         if($type == 1){
-            $leads = weaver::find($id);
+            $leads = powerSubsidyApps::find($id);
             return response()->json($leads,200);
         }
         if($type == 2){
@@ -61,12 +64,11 @@ class WeaverInspector extends Controller
         $rules = array(
             'id' => 'required|numeric',
             'type' => 'required|numeric',
-            'ins_status' => 'required',
-            'ins_aadhaar_img' => 'required',
-            'ins_aadhaar_no' => 'required|digits:12',
-            'building_image'=> 'required',
+            'ins_build_picture'=> 'required',
+            'ins_loom_pictures'=> 'required',
             'ins_lat' => 'required',
             'ins_long' => 'required',
+            'ins_remarks' => 'required',
         );
         $validator = Validator::make(Input::all(), $rules);
         if($validator->fails()){
@@ -77,21 +79,40 @@ class WeaverInspector extends Controller
         $id = $req->input('id');
 
         if($type == 1){
-            $wi = weaver::find($id);
+            $wi = powerSubsidyApps::find($id);
             if(!$wi){
                 return response()->json(['status' => 'failed- No record found.'], 401);
             }
-            $dir_to_up = '../user_files/powersubsidy/'.$id.'/';
-            $wi->ins_status = $req->input('ins_status');
-            $wi->ins_aadhaar_no = $req->input('ins_aadhaar_no');
-            $wi->ins_lat = $req->input('lat');
-            $wi->ins_long = $req->input('long');
+            $dir_to_up = '../storage/user_files/powersubsidy/'.$id.'/';
+
+            $wi->ins_lat = $req->input('ins_lat');
+            $wi->ins_long = $req->input('ins_long');
+            $wi->ins_remarks = $req->input('ins_remarks');
+            $wi->ins_date = date('Y-m-d H:i:s');
+            // $wi->ins_status = 'finished';
+
             if($wi->save()){
-                $imageStr = $req->input('ins_aadhaar_img');
+                $imageStr = $req->input('ins_build_picture');
                 if (!is_dir($dir_to_up)) {
-                    File::makeDirectory(base_path('user_files/powersubsidy/'.$id.'/'),0775,true);
+                    File::makeDirectory(base_path('storage/user_files/powersubsidy/'.$id.'/'),0775,true);
                 }
-                file_put_contents($dir_to_up.'aadhaar.jpg', base64_decode($imageStr));
+                file_put_contents($dir_to_up.'building_picture.jpg', base64_decode($imageStr));
+                $wi1 = powerSubsidyApps::find($id);
+                $wi1->ins_build_picture ="building_picture.jpg";
+
+                $loompics = $req->input('ins_loom_pictures');
+                $loompicsarray = array();
+                $key = 1;
+                foreach ($loompics as $value) {
+                    $picname = 'loompic_'.$key.'.jpg';
+                    $loompicsarray[] = $picname;
+                    file_put_contents($dir_to_up.$picname, base64_decode($value));
+                    $key++;
+                }
+                $wi1 = ej2l_Applications::find($id);
+                $wi1->ins_loom_pictures = json_encode($loompicsarray);
+
+                $wi1->save();
                 return response()->json(['status' => 'success'], 200);
             }
         }
@@ -101,17 +122,36 @@ class WeaverInspector extends Controller
             if(!$ei){
                 return response()->json(['status' => 'failed- No record found.'], 401);
             }
-            $dir_to_up = '../user_files/ej_2l/'.$id.'/';
-            $ei->ins_status = $req->input('ins_status');
-            $ei->ins_aadhaar_no = $req->input('ins_aadhaar_no');
+            $dir_to_up = '../storage/user_files/ej_2l/'.$id.'/';
+            
             $ei->ins_lat = $req->input('ins_lat');
             $ei->ins_long = $req->input('ins_long');
+            $ei->ins_remarks = $req->input('ins_remarks');
+            $ei->ins_date = date('Y-m-d H:i:s');
+            // $ei->ins_status = 'finished';
+
             if($ei->save()){
-                $imageStr = $req->input('ins_aadhaar_img');
+                $imageStr = $req->input('ins_build_picture');
                 if (!is_dir($dir_to_up)) {
-                    File::makeDirectory(base_path('user_files/ej_2l/'.$id.'/'),0775,true);
+                    File::makeDirectory(base_path('storage/user_files/ej_2l/'.$id.'/'),0775,true);
                 }
-                file_put_contents($dir_to_up.'aadhaar.jpg', base64_decode($imageStr));
+                file_put_contents($dir_to_up.'building_picture.jpg', base64_decode($imageStr));
+
+                $loompics = $req->input('ins_loom_pictures');
+                $loompicsarray = array();
+                $key = 1;
+                foreach ($loompics as $value) {
+                    $picname = 'loompic_'.$key.'.jpg';
+                    $loompicsarray[] = $picname;
+                    file_put_contents($dir_to_up.$picname, base64_decode($value));
+                    $key++;
+                }
+                $ei1 = ej2l_Applications::find($id);
+                $ei1->ins_loom_pictures = json_encode($loompicsarray);
+
+                $ei1->ins_build_picture ="building_picture.jpg";
+                
+                $ei1->save();
                 return response()->json(['status' => 'success'], 200);
             }
         }

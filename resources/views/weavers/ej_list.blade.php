@@ -21,12 +21,9 @@
                 <tr>
                     <th>Id</th>
                     <th>Name</th>
-                    <th>Residential address</th>
-                    <th>Taluk</th>
-                    <th>District</th>
                     <th>Mobile</th>
                     <th>Date of apllication</th>
-                    <th>Status</th>                    
+                    <th>Application Status</th> 
                     <th>Inspection status</th>
                     <th>Actions</th>
                 </tr>
@@ -34,19 +31,16 @@
             <tr>
                 <td>{{$app->id}}</td>
                 <td>{{$app->name}}</td>
-                <td>{{$app->resi_houseno.', '.$app->resi_wardno.', '.$app->resi_crossno.', '.$app->resi_village}}</td>
-                <td>{{$app->resi_taluk}}</td>
-                <td>{{$app->resi_district}}</td>
                 <td>{{$app->resi_mobile}}</td>
                 <td>{{$app->created_at}}</td>
                 <td>
-                    @if ($app->status == 'applied')
+                    @if ($app->app_status == 'applied')
                     <span class="label label-warning">Applied</span>
                     @endif
-                    @if ($app->status == 'approved')
+                    @if ($app->app_status == 'approved')
                     <span class="label label-success">Approved</span>
                     @endif
-                    @if ($app->status == 'rejected')
+                    @if ($app->app_status == 'rejected')
                     <span class="label label-danger">Rejected</span>
                     @endif
                 </td>                
@@ -54,11 +48,8 @@
                     @if ($app->ins_status == 'pending')
                     <span class="label label-warning">Pending</span>
                     @endif
-                    @if ($app->ins_status == 'approved')
-                    <span class="label label-success">Approved</span>
-                    @endif
-                    @if ($app->ins_status == 'rejected')
-                    <span class="label label-danger">Rejected</span>
+                    @if ($app->ins_status == 'finished')
+                    <span class="label label-success">Finished</span>
                     @endif
                 </td>
                 <td>

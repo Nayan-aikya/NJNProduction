@@ -1,5 +1,5 @@
+// Js for power subsidy scheme form validation
 $( document ).ready(function() {
-
     //Validator regular expressions.
     var req_reg = /^[\w\-\'\(\)\#][\w\.\-\'\(\)\s\#\,\/\:]*$/;
     var mob_reg = /^\d{10}$/;
@@ -15,145 +15,144 @@ $( document ).ready(function() {
     var mctype = '';
     var scheme_name = '';
     var unit_type_val = '';
+    var education = $("select[name='education']").val() || '';
+    edu_change();
+    var ownership_type = $("select[name='ownership_type']").val() || '';
+    ownership_change();
+    
+    $("#formOne").submit(function(e){        
+        education = $("select[name='education']").val();
 
-    $("#formOne").submit(function(e){
-        var app_district = $("select[name='app_district']").val() || '';
-        var scheme_name = $("select[name='scheme_name']").val() || '';
-        var unit_type = $("select[name='unit_type']").val() || '';
-        var name = $("input[name='name']").val();
-        var salutation = $("select[name='salutation']").val();
-        var aadhaar = $("input[name='aadhaar']").val();
-        var resi_houseno = $("input[name='resi_houseno']").val();
-        var resi_wardno = $("input[name='resi_wardno']").val();
-
-        var resi_village = $("input[name='resi_village']").val();
-        var resi_pin = $("input[name='resi_pin']").val();
-        var resi_taluk = $("input[name='resi_taluk']").val();
-        var resi_district = $("select[name='resi_district']").val();
-
-        var resi_mobile = $("input[name='resi_mobile']").val();
-        var unit_name = $("input[name='unit_name']").val();
-        var unit_no = $("input[name='unit_no']").val();
-        var unit_wardno = $("input[name='unit_wardno']").val();
-
-        var unit_village = $("input[name='unit_village']").val();
-        var unit_pin = $("input[name='unit_pin']").val();
-        var unit_taluk = $("input[name='unit_taluk']").val();
-
-        var castecategory = $("input[name='castecategory']:checked").val() || '';
-        
-        var education = $("select[name='education']").val();
-        var reg_number = $("input[name='reg_number']").val();
-        var regdate = $("input[name='regdate']").val();
-        var ownership_type = $("select[name='ownership_type']").val();
-        var u100per_women = $("input[name='u100per_women']:checked").val() || '';
-        var power_alloted = $("input[name='power_alloted']").val();
-        var rr_number = $("input[name='rr_number']").val();
-
-        var app_date = $("input[name='app_date']").val();
-        var app_place = $("input[name='app_place']").val();
-
-        var app_district_check = validate_dropdown(app_district, req_reg, 'app_district');
-        var scheme_name_check = validate_dropdown(scheme_name, req_reg, 'scheme_name');
-        var unit_type_check = validate_dropdown(unit_type, req_reg, 'unit_type');
-        var name_check = validate_inputtext(name, name_reg, 'name');
-        var salutation_check = validate_inputtext(salutation, req_reg, 'salutation');
-        var aadhaar_check = validate_inputtext(aadhaar, uid_reg, 'aadhaar');
-        var resi_houseno_check = validate_inputtext(resi_houseno, req_reg, 'resi_houseno');
-        var resi_wardno_check = validate_inputtext(resi_wardno, req_reg, 'resi_wardno');
-        var resi_village_check = validate_inputtext(resi_village, req_reg, 'resi_village');
-        var resi_pin_check = validate_inputtext(resi_pin, req_reg, 'resi_pin');
-        var resi_taluk_check = validate_inputtext(resi_taluk, req_reg, 'resi_taluk');
-        var resi_district_check = validate_dropdown(resi_district, req_reg, 'resi_district');
-        var resi_mobile_check = validate_inputtext(resi_mobile, mob_reg, 'resi_mobile');
-        var unit_name_check = validate_inputtext(unit_name, req_reg, 'unit_name');
-        var unit_no_check = validate_inputtext(unit_no, req_reg, 'unit_no');
-        var unit_wardno_check = validate_inputtext(unit_wardno, req_reg, 'unit_wardno');
-        var unit_village_check = validate_inputtext(unit_village, req_reg, 'unit_village');
-        var unit_pin_check = validate_inputtext(unit_pin, pin_reg, 'unit_pin');
-        var unit_taluk_check = validate_inputtext(unit_taluk, req_reg, 'unit_taluk');
-        var castecategory_check = validate_radio(castecategory, req_reg, 'castecategory');
-        var education_check = validate_dropdown(education, req_reg, 'education');
-        var reg_number_check = validate_inputtext(reg_number, req_reg, 'reg_number');
-        var regdate_check = validate_inputtext(regdate, date_reg, 'regdate');
-        var ownership_type_check = validate_dropdown(ownership_type, req_reg, 'ownership_type');
-        var u100per_women_check = validate_radio(u100per_women, req_reg, 'u100per_women');
-        var power_alloted_check = validate_inputtext(power_alloted, num_reg, 'power_alloted');
-        var rr_number_check = validate_inputtext(rr_number, req_reg, 'rr_number');
-        var app_date_check = validate_inputtext(app_date, date_reg, 'app_date');
-        var app_place_check = validate_inputtext(app_place, req_reg, 'app_place');
+        var app_district_check = validate_dropdown(req_reg, 'app_district');
+        var app_taluk_check = validate_dropdown(req_reg, 'app_taluk');
+        var scheme_name_check = validate_dropdown(req_reg, 'scheme_name');
+        var unit_type_check = validate_dropdown(req_reg, 'unit_type');
+        var name_check = validate_inputtext(name_reg, 'name');
+        var salutation_check = validate_dropdown(req_reg, 'salutation');
+        var aadhaar_check = validate_inputtext(uid_reg, 'aadhaar');
+        var resi_houseno_check = validate_inputtext(req_reg, 'resi_houseno');
+        var resi_wardno_check = validate_inputtext(req_reg, 'resi_wardno');
+        var resi_village_check = validate_inputtext(req_reg, 'resi_village');
+        var resi_pin_check = validate_inputtext(req_reg, 'resi_pin');
+        var resi_taluk_check = validate_dropdown(req_reg, 'resi_taluk');
+        var resi_district_check = validate_dropdown(req_reg, 'resi_district');
+        var resi_mobile_check = validate_inputtext(mob_reg, 'resi_mobile');
+        var unit_name_check = validate_inputtext(req_reg, 'unit_name');
+        var unit_no_check = validate_inputtext(req_reg, 'unit_no');
+        var unit_wardno_check = validate_inputtext(req_reg, 'unit_wardno');
+        var unit_village_check = validate_inputtext(req_reg, 'unit_village');
+        var unit_pin_check = validate_inputtext(pin_reg, 'unit_pin');
+        var castecategory_check = validate_radio(req_reg, 'castecategory');
+        var reg_number_check = validate_inputtext(req_reg, 'reg_number');
+        var regdate_check = validate_inputtext(date_reg, 'regdate');        
+        var u100per_women_check = validate_radio(req_reg, 'u100per_women');
+        var power_alloted_check = validate_inputtext(num_reg, 'power_alloted');
+        var power_alloted_date_check = validate_inputtext(date_reg, 'power_alloted_date');
+        var rr_number_check = validate_inputtext(req_reg, 'rr_number');
+        var app_date_check = validate_inputtext(date_reg, 'app_date');
+        var app_place_check = validate_inputtext(req_reg, 'app_place');
         var pow_sanc_letter_check = validate_file('pow_sanc_letter');
         var trade_licence_check = validate_file('trade_licence');
         var ssi_msme_cert_check = validate_file('ssi_msme_cert');
         var recent_bill_check = validate_file('recent_bill');
         var recent_receipt_check = validate_file('recent_receipt');
+        var recent_tax_receipt_check = validate_file('recent_tax_receipt');
         var building_docs_check = validate_file('building_docs');
         var photograph_check = validate_file('photograph');
-        // cast certificate only for SC/ST
-        var caste_certificate_check = false;
-        if(castsel == "SC" || castsel=="ST"){
-            caste_certificate_check = validate_file('caste_certificate');
+        var aadhaar_file_check = validate_file('aadhaar_file');
+
+        // Education feild for others
+        education_check = false;
+        validate_dropdown(req_reg, 'education');
+        if(education == 'lt_10' || education == 'PUC' || education == 'UG' || education == 'PG'|| education == 'textile_engineering'){
+            education_check = true;
         }
-        else{
-            caste_certificate_check = true;
+        var education_other = $("input[name='education_other']").val();
+        if(education == 'Others' && validate_inputtext(req_reg, 'education_other')){
+            education_check = true;
         }
-        console.log("app_distri "+app_district_check);
-        console.log("scheme_nam "+scheme_name_check);
-        console.log("unit_type_ "+unit_type_check);
-        console.log("name_check "+name_check);
-        console.log("salutation "+salutation_check);
-        console.log("aadhaar_ch "+aadhaar_check);
-        console.log("resi_house "+resi_houseno_check);
-        console.log("resi_wardn "+resi_wardno_check);
-        console.log("resi_villa "+resi_village_check);
-        console.log("resi_pin_c "+resi_pin_check);
-        console.log("resi_taluk "+resi_taluk_check);
-        console.log("resi_distr "+resi_district_check);
-        console.log("resi_mobil "+resi_mobile_check);
-        console.log("unit_name_ "+unit_name_check);
-        console.log("unit_no_ch "+unit_no_check);
-        console.log("unit_wardn "+unit_wardno_check);
-        console.log("unit_villa "+unit_village_check);
-        console.log("unit_pin_c "+unit_pin_check);
-        console.log("unit_taluk "+unit_taluk_check);
-        console.log("castecateg "+castecategory_check);
-        console.log("education_ "+education_check);
-        console.log("reg_number "+reg_number_check);
-        console.log("regdate_ch "+regdate_check);
-        console.log("ownership_ "+ownership_type_check);
-        console.log("u100per_wo "+u100per_women_check);
-        console.log("power_allo "+power_alloted_check);
-        console.log("rr_number_ "+rr_number_check);
-        console.log("app_date_c "+app_date_check);
-        console.log("app_place_ "+app_place_check);
-        console.log("pow_sanc_l "+pow_sanc_letter_check);
-        console.log("trade_lice "+trade_licence_check);
-        console.log("ssi_msme_c "+ssi_msme_cert_check);
-        console.log("recent_bil "+recent_bill_check);
-        console.log("recent_rec "+recent_receipt_check);
-        console.log("building_d "+building_docs_check);
-        console.log("photograph "+photograph_check);
-        console.log("caste_cert "+caste_certificate_check );
-        if(app_district_check && scheme_name_check && unit_type_check && name_check && salutation_check && aadhaar_check && resi_houseno_check && resi_wardno_check && resi_village_check && resi_pin_check && resi_taluk_check && resi_district_check && resi_mobile_check && unit_name_check && unit_no_check && unit_wardno_check && unit_village_check && unit_pin_check && unit_taluk_check && castecategory_check && education_check && reg_number_check && regdate_check && ownership_type_check && u100per_women_check && power_alloted_check && rr_number_check && app_date_check && app_place_check && pow_sanc_letter_check && trade_licence_check && ssi_msme_cert_check && recent_bill_check && recent_receipt_check && building_docs_check && photograph_check && caste_certificate_check ){
+        
+        // ownership_type other field test
+        var ownership_type_check = false;
+        validate_dropdown(req_reg, 'ownership_type');
+        var ownership_type = $("select[name='ownership_type']").val() || '';
+        if(ownership_type == 'Proprietary' || ownership_type == 'Partnership' || ownership_type =='PVT_LTD' || ownership_type == 'co_op_society'){
+            ownership_type_check = true;
+        }
+        if(ownership_type == 'Others' && validate_inputtext(req_reg, 'ownership_other')){
+            ownership_type_check = true;
+        }
+
+        if(app_district_check && app_taluk_check && scheme_name_check && unit_type_check && name_check && salutation_check && aadhaar_check && aadhaar_file_check && resi_houseno_check && resi_wardno_check && resi_village_check && resi_pin_check && resi_taluk_check && resi_district_check && resi_mobile_check && unit_name_check && unit_no_check && unit_wardno_check && unit_village_check && unit_pin_check && castecategory_check && education_check && reg_number_check && regdate_check && ownership_type_check && u100per_women_check && power_alloted_check && power_alloted_date_check && rr_number_check && app_date_check && app_place_check && pow_sanc_letter_check && trade_licence_check && ssi_msme_cert_check && recent_bill_check && recent_receipt_check && recent_tax_receipt_check && building_docs_check && photograph_check){
             return true;
         }
-        return false;
+        else{
+            $("#errorsummer").html('One or more errors found, please correct and try again!');
+            return false;
+        }
     });
+
+    // Education change
+    $("#education").change(function() {
+        education = $("select[name='education']").val();
+        edu_change();
+    });
+    function edu_change(){
+        if(education == 'Others'){
+            $('#education_other_div').show();
+        }
+        else{
+            $('#education_other_div').hide();
+            $('#education_other').val('');
+        }
+    }
+
+    // Ownership change
+    $("#ownership_type").change(function() {
+        ownership_type = $("select[name='ownership_type']").val();
+        ownership_change();
+    });
+    function ownership_change(){
+        if(ownership_type == 'Others'){
+            $('#ownership_other_div').show();
+        }
+        else{
+            $('#ownership_other_div').hide();
+            $('#ownership_other').val('');
+        }
+    }
 
     //Toggle file upload and scheme selection
     $("input[name='castecategory']").change(function(){
         castsel = $("input[name='castecategory']:checked").val() || '';
-        if(castsel == 'SC' || castsel == 'ST'){
-            $("#caste_certificate").parent().show();
-        }
-        else{
-            $("#caste_certificate").parent().hide();
-        }
     });
 
     // Application district should be same as unit district
     $('#app_district').change(function(e) {
         $('#unit_district').html($("#app_district option:selected").html());
+        var did = $("#app_district option:selected").val();
+        if(did != ''){
+            $.ajax({url: "/weavers/get_talukas/"+did, success: function(result){
+                $("#app_taluk").html(result);
+            }});
+        }
+        else{
+            $("#app_taluk").html('');
+        }
+    });
+
+    // Residential taluk
+    
+    $('#resi_district').change(function(e) {
+        var did = $("#resi_district option:selected").val();
+        if(did!=''){
+            $.ajax({url: "/weavers/get_talukas/"+did, success: function(result){
+                $("#resi_taluk").html(result);
+            }});
+        }
+        else{
+            $("#resi_taluk").html('');
+        }
     });
 
     // restricting unit type
@@ -182,16 +181,24 @@ $( document ).ready(function() {
             tab_type_sel();
     });
     
-    $('#regdate, #app_date').datepicker({
-        onSelect: function(value, ui) {
-            var today = new Date(), 
-                age = today.getFullYear() - ui.selectedYear;
-            $('#age').val(age);
-        },
+    // Calendar activation
+    $('#regdate, #app_date, #power_alloted_date').datepicker({
         changeMonth: true,
         changeYear: true,
         yearRange: "1908:2018",
         dateFormat: 'dd-mm-yy',
+    });
+
+    // Other Preloom other machine details change
+    $("input[name='mctype2[other][avail]']").change(function(){
+        var oval = $("input[name='mctype2[other][avail]']:checked").val() || '';
+        if(oval == 'Yes'){
+            $('#othervalfeild').show();
+        }
+        else{
+            $('#othervalfeild').hide();
+            $('#othervalfeild').val('');
+        }
     });
 
     // deciding what type of machine details required
@@ -240,10 +247,10 @@ $( document ).ready(function() {
         var cols = "";
         cols += '<td><input name="mctype1['+mct_count_1+'][loommake]" type="text"></td>';
         cols += '<td><input name="mctype1['+mct_count_1+'][loomnum]" type="text"></td>';
-        cols += '<td><select name="mctype1['+mct_count_1+'][loomtype]"><option value="">Select</option><option value="Ordinary">Ordinary</option><option value="Semi_auto">Semi automatic</option><option value="Auto">Automatic</option><option value="co_op_society">Co-op society</option><option value="Rapier">Rapier</option></select></td>';
+        cols += '<td><select name="mctype1['+mct_count_1+'][loomtype]"><option value="">Select</option><option value="Ordinary">Ordinary</option><option value="Semi_auto">Semi automatic</option><option value="Auto">Automatic</option><option value="Hi_Tech_pl">Hi-Tech PL</option></select></td>';
         cols += '<td><input name="mctype1['+mct_count_1+'][loomwidth]" type="text"></td>';
         cols += '<td><input name="mctype1['+mct_count_1+'][loompowercon]" type="text"></td>';
-        cols += '<td><label for="dobby1">Dobby</label> <input id="dobby1" name="mctype1['+mct_count_1+'][att][]" type="checkbox" value="Dobby"><br> <label for="jacquard1">Jacquard</label> <input id="jacquard1" name="mctype1['+mct_count_1+'][att][]" type="checkbox" value="jacquard"><br> <label for="dropbox1">Dropbox</label> <input id="dropbox1" name="mctype1['+mct_count_1+'][att][]" type="checkbox" value="dropbox"></td>';
+        cols += '<td><input id="dobby1" name="mctype1['+mct_count_1+'][att][]" type="checkbox" value="Dobby">&nbsp;<label for="dobby1">Dobby</label><br><input id="jacquard1" name="mctype1['+mct_count_1+'][att][]" type="checkbox" value="jacquard">&nbsp;<label for="jacquard1">Jacquard</label><br><input id="dropbox1" name="mctype1['+mct_count_1+'][att][]" type="checkbox" value="dropbox">&nbsp;<label for="dropbox1">Dropbox</label></td>';
         $("#mctype1 table tbody").append("<tr>"+cols+"</tr>");
         mct_count_1++;
     });
@@ -255,18 +262,46 @@ $( document ).ready(function() {
         cols += '<td><input name="mctype3['+mct_count_3+'][make]" type="text"></td>';
         cols += '<td><input name="mctype3['+mct_count_3+'][reed_space]" type="text"></td>';
         cols += '<td><input name="mctype3['+mct_count_3+'][power]" type="text"></td>';
-        cols += '<td><label for="dobby3">Dobby</label> <input id="dobby3" name="mctype3['+mct_count_3+'][att][]" type="checkbox" value="Dobby"><br><label for="jacquard3">Jacquard</label> <input id="jacquard3" name="mctype3['+mct_count_3+'][att][]" type="checkbox" value="jacquard"><br><label for="dropbox3">Dropbox</label> <input id="dropbox3" name="mctype3['+mct_count_3+'][att][]" type="checkbox" value="dropbox"><br></td>';
+        cols += '<td><input id="dobby3" name="mctype3['+mct_count_3+'][att][]" type="checkbox" value="Dobby"> <label for="dobby3">Dobby</label><br><input id="jacquard3" name="mctype3['+mct_count_3+'][att][]" type="checkbox" value="jacquard"> <label for="jacquard3">Jacquard</label></td>';
         cols += '<td><input name="mctype3['+mct_count_3+'][loom_num]" type="text"></td>';
         $("#mctype3 table tbody").append("<tr>"+cols+"</tr>");
         mct_count_3++;
     });
     //...................
+
+    //Total of machine type 3
+    $('#pwr1, #pwr2, #pwr3, #pwr4, #pwr5').change(function(){
+        var pwr1 = parseInt($("#pwr1").val());
+            if(pwr1 == '' || isNaN(pwr1)){
+                pwr1 = 0;
+            }
+        var pwr2 = parseInt($("#pwr2").val());
+            if(pwr2 == '' || isNaN(pwr2)){
+                pwr2 = 0;
+            }
+        var pwr3 = parseInt($("#pwr3").val());
+            if(pwr3 == '' || isNaN(pwr3)){
+                pwr3 = 0;
+            }
+        var pwr4 = parseInt($("#pwr4").val());
+            if(pwr4 == '' || isNaN(pwr4)){
+                pwr4 = 0;
+            }
+        var pwr5 = parseInt($("#pwr5").val());
+            if(pwr5 == '' || isNaN(pwr5)){
+                pwr5 = 0;
+            }
+        var totalpwr = pwr1+pwr2+pwr3+pwr4+pwr5;
+        $("#powertotal").html(totalpwr);
+    });
+
 });
 
 
 //Validating input type
-function validate_inputtext(strval, regex, parametername) {
-    if(strval.match(regex)){
+function validate_inputtext(regex, parametername) {
+    var content = $("input[name='"+parametername+"']").val();
+    if(content.match(regex)){
         $("input[name='"+parametername+"'] + .error").html('');
         return true;
     }
@@ -276,19 +311,21 @@ function validate_inputtext(strval, regex, parametername) {
     }
 }
 //Validating textarea type
-function validate_textarea(strval, regex, parametername) {
-    if(strval.match(regex)){
-        $("#"+parametername).html('');
+function validate_textarea(regex, parametername) {
+    var content = $("textarea[name='"+parametername+"']").val();;
+    if(content.match(regex)){
+        $("select[name='"+parametername+"'] + .error").html('');
         return true;
     }
     else{
-        $("#"+parametername).html('Please enter valid value.');
+        $("select[name='"+parametername+"'] + .error").html('Please enter valid value.');
         return false;
     }
 }
 //Validating select option
-function validate_dropdown(strval, regex, parametername) {
-    if(strval.match(regex)){
+function validate_dropdown(regex, parametername) {
+    var content = $("select[name='"+parametername+"']").val() || '';
+    if(content.match(regex)){
         $("select[name='"+parametername+"'] + .error").html('');
         return true;
     }
@@ -298,8 +335,9 @@ function validate_dropdown(strval, regex, parametername) {
     }
 }
 //Validating radio option
-function validate_radio(strval, regex, parametername) {
-    if(strval.match(regex)){
+function validate_radio(regex, parametername) {
+    var content = $("input[name='"+parametername+"']:checked").val() || '';
+    if(content.match(regex)){
         $("#"+parametername).html('');
         return true;
     }
