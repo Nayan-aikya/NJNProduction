@@ -45,4 +45,33 @@ class LoginController extends Controller
         $this->middleware('tc');
         }
     }
+    
+    // For REST API
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+
+        if ($this->attemptLogin($request)) {
+            $user = $this->guard()->user();
+            $user->generateToken();
+            return response()->json([ 'api_token' => $user->api_token ]);
+        }
+
+        return $this->sendFailedLoginResponse($request);
+    }
+    public function logout(Request $request)
+    {
+        $user = Auth::guard('api')->user();
+
+        if ($user) {
+            $user->api_token = null;
+            $user->save();
+        }
+
+        return response()->json(['status' => 'User logged out.'], 200);
+    }
+    public function username()
+    {
+        return 'username';
+    }
 }

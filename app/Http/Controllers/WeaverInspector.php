@@ -23,8 +23,14 @@ use Illuminate\Support\Facades\Log;
 class WeaverInspector extends Controller
 {
     public function showLeads(Request $req){
+        if(Auth::guard('api')->user()->user_id != 5){
+            return response()->json(['status' => 'Unauthorised access.'], 401);
+        }
+        // dd(Auth::guard('api')->user()->district);
+        $ins_dist = Auth::guard('api')->user()->district;
+        $dist_id = districts::where('district_name', '=', $ins_dist)->value('id');
+
         $type = $req->input('type');
-        $dist_id = $req->input('dist_id');
         $leads = '';
         if($type == 1){
             $leads = powerSubsidyApps::where('app_district', '=' ,$dist_id)
@@ -39,28 +45,34 @@ class WeaverInspector extends Controller
         return response()->json($leads,200);
     }
     
-    public function showdistricts(){
-        $dists = districts::all();
-        return response()->json($dists,200);
-    }
 
     public function showOneLead(Request $req){
+        if(Auth::guard('api')->user()->user_id != 5){
+            return response()->json(['status' => 'Unauthorised access.'], 401);
+        }
+        $ins_dist = Auth::guard('api')->user()->district;
+        $dist_id = districts::where('district_name', '=', $ins_dist)->value('id');
+
         $type = $req->input('type');
         $id = $req->input('id');
 
         $leads = '';
         if($type == 1){
-            $leads = powerSubsidyApps::find($id);
+            $leads = powerSubsidyApps::where('app_district', '=' ,$dist_id)->where('id', '=', $id)->get();
             return response()->json($leads,200);
         }
         if($type == 2){
-            $leads = ej2l_Applications::find($id);
+            $leads = ej2l_Applications::where('app_district', '=' ,$dist_id)->where('id', '=', $id)->get();
             return response()->json($leads,200);
         }
-        return response()->json($leads,200);
+        return response()->json(['status' => 'No data found.'], 401);
     }
 
     public function update(Request $req){
+
+        if(Auth::guard('api')->user()->user_id != 5){
+            return response()->json(['status' => 'Unauthorised access.'], 401);
+        }
         $rules = array(
             'id' => 'required|numeric',
             'type' => 'required|numeric',
@@ -72,16 +84,18 @@ class WeaverInspector extends Controller
         );
         $validator = Validator::make(Input::all(), $rules);
         if($validator->fails()){
-            // return response()->json(['status' => 'failed-mandatory fields missing.'], 401);
-            return response()->json($validator->messages(), 401);
+            return response()->json(['status' => 'failed-mandatory fields missing.'], 401);
+            // return response()->json($validator->messages(), 401);
         }
+        $ins_dist = Auth::guard('api')->user()->district;
+        $dist_id = districts::where('district_name', '=', $ins_dist)->value('id');
+
         $type = $req->input('type');
         $id = $req->input('id');
-
         if($type == 1){
-            $wi = powerSubsidyApps::find($id);
+            $wi = powerSubsidyApps::where('app_district', '=' ,$dist_id)->where('id', '=', $id)->first();
             if(!$wi){
-                return response()->json(['status' => 'failed- No record found.'], 401);
+                return response()->json(['status' => 'Invalid record access.'], 401);
             }
             $dir_to_up = '../storage/user_files/powersubsidy/'.$id.'/';
 
@@ -109,7 +123,6 @@ class WeaverInspector extends Controller
                     file_put_contents($dir_to_up.$picname, base64_decode($value));
                     $key++;
                 }
-                $wi1 = ej2l_Applications::find($id);
                 $wi1->ins_loom_pictures = json_encode($loompicsarray);
 
                 $wi1->save();
@@ -118,9 +131,9 @@ class WeaverInspector extends Controller
         }
 
         if($type == 2){            
-            $ei = ej2l_Applications::find($id);
+            $ei = ej2l_Applications::where('app_district', '=' ,$dist_id)->where('id', '=', $id)->first();
             if(!$ei){
-                return response()->json(['status' => 'failed- No record found.'], 401);
+                return response()->json(['status' => 'Invalid record access.'], 401);
             }
             $dir_to_up = '../storage/user_files/ej_2l/'.$id.'/';
             

@@ -13,12 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('weaverinspector/login', 'Auth\LoginController@login');
+Route::post('weaverinspector/logout', 'Auth\LoginController@logout');
 
-Route::post('weaverinspector/showall', 'WeaverInspector@showLeads');
-Route::get('weaverinspector/districts', 'WeaverInspector@showdistricts');
-Route::post('weaverinspector/show', 'WeaverInspector@showOneLead');
-Route::post('weaverinspector/update', 'WeaverInspector@update');
-Route::post('weaverinspector/savefiles', 'WeaverInspector@saveFiles');
+Route::group(['middleware' => 'auth:api'], function() {
+    Route::get('weaverinspector/showall', 'WeaverInspector@showLeads');
+    Route::get('weaverinspector/show', 'WeaverInspector@showOneLead');
+    Route::put('weaverinspector/update', 'WeaverInspector@update');
+});
