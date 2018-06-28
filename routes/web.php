@@ -161,37 +161,32 @@ Route::get('/certificateupload/batchajax/{id}','TcController@certificateuploadSu
 Route::post('/candidateCertificate','TcController@candidatecertificate');
 Route::get('/certificatedownload/{candidateid}/{batchid}', 'TcController@certificatedownloadView');
 
-// Get Taluks list
-Route::get('weavers/get_talukas/{id}', 'WeaverController@getTaluk');
 // Power subsidy public
 Route::get('weavers/powersubsidy-apply', 'WeaverController@psNewForm');
 Route::post('weavers/powersubsidy-apply', 'WeaverController@psApplyForm');
-// Electronic jaqpublic
+// Electronic jaq public
 Route::get('weavers/ej-2loom-apply', 'WeaverController@ejTlNewForm');
 Route::post('weavers/ej-2loom-apply', 'WeaverController@ejTlApply');
+// Get Taluks list
+Route::get('weavers/get_talukas/{id}', 'WeaverController@getTaluk')->middleware('CheckTD');
 
-// Power subsidy private
-Route::get('weavers/powersubsidy-list', 'WeaverController@psList');
-Route::get('weavers/powersubsidy-app/details/{id}', 'WeaverController@psDetails');
-Route::get('weavers/powersubsidy-getfile/{type}/{id}', 'WeaverController@psGetfile');
-Route::get('weavers/powersubsidy-adminaction/{action}/{id}', 'WeaverController@psAdminaction');
-Route::get('weavers/powersubsidy-getzip/{id}', 'WeaverController@psGetzip');
-Route::get('weavers/powersubsidy-ack', 'WeaverController@psShowAck');
+Route::group(['middleware' => 'CheckTD'], function(){
 
-// Electronic jaq private
-Route::get('weavers/ej-2loom-list', 'WeaverController@ejTlList');
-Route::get('weavers/ej-2loom-app/details/{id}', 'WeaverController@ejTlDetails');
-Route::get('weavers/ej-2loom-getfile/{type}/{id}', 'WeaverController@ejTlGetfile');
-Route::get('weavers/ej-2loom-adminaction/{action}/{id}', 'WeaverController@ejTlAdminaction');
-Route::get('weavers/ej-2loom-getzip/{id}', 'WeaverController@ejTlGetzip');
-Route::get('weavers/ej-2loom-ack', 'WeaverController@ejShowAck');
-
-// weaver investment form
-Route::post('weavers/invest-apply', 'WeaverController@investApply');
-Route::get('weavers/invest-apply', function()
-{
-    return View::make('weavers.invest_apply');
+    // Power subsidy private
+    Route::get('weavers/powersubsidy-list', 'WeaverController@psList');
+    Route::get('weavers/powersubsidy-app/details/{id}', 'WeaverController@psDetails');
+    Route::get('weavers/powersubsidy-getfile/{type}/{id}', 'WeaverController@psGetfile');
+    Route::get('weavers/powersubsidy-adminaction/{action}/{id}', 'WeaverController@psAdminaction');
+    Route::get('weavers/powersubsidy-getzip/{id}', 'WeaverController@psGetzip');
+    Route::get('weavers/powersubsidy-ack', 'WeaverController@psShowAck');
+    
+    // Electronic jaq private
+    Route::get('weavers/ej-2loom-list', 'WeaverController@ejTlList');
+    Route::get('weavers/ej-2loom-app/details/{id}', 'WeaverController@ejTlDetails');
+    Route::get('weavers/ej-2loom-getfile/{type}/{id}', 'WeaverController@ejTlGetfile');
+    Route::get('weavers/ej-2loom-adminaction/{action}/{id}', 'WeaverController@ejTlAdminaction');
+    Route::get('weavers/ej-2loom-getzip/{id}', 'WeaverController@ejTlGetzip');
+    Route::get('weavers/ej-2loom-ack', 'WeaverController@ejShowAck');
 });
-Route::get('weavers/invest-list','WeaverController@investList');
 
 Route::get('home','DCController@home');

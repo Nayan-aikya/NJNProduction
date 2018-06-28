@@ -84,8 +84,8 @@ class WeaverInspector extends Controller
         );
         $validator = Validator::make(Input::all(), $rules);
         if($validator->fails()){
-            return response()->json(['status' => 'failed-mandatory fields missing.'], 401);
-            // return response()->json($validator->messages(), 401);
+            // return response()->json(['status' => 'failed-mandatory fields missing.'], 401);
+            return response()->json($validator->messages(), 401);
         }
         $ins_dist = Auth::guard('api')->user()->district;
         $dist_id = districts::where('district_name', '=', $ins_dist)->value('id');
