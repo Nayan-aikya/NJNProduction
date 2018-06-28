@@ -26,6 +26,18 @@
         <th></th>
       </tr>
  </thead>
+<form method="get" action="{{ url::to('candidatelistinfo') }}">
+    <div class="form-group">
+        <label>Select Batch:</label><br>
+        <select name="batchid" onchange="this.form.submit()"  class="form-control" style="width:350px" required>
+        <option value="">--- All ---</option>
+        @foreach($batchlist as $value)
+            <option value="{{ $value->batch_id }}" {{( $value->batch_id == $batchid ) ? 'selected' : ''}} >{{ $value->batch_name }}</option>
+        @endforeach
+        </select>
+    </div>  
+</form>
+
  @foreach ($candidate as $c)
     <tr><td>{{$c->candidate_id}}</td><td>{{$c->first_name}}</td><td>{{$c->last_name}}</td><td>{{$c->gender}}</td><td>{{$c->batch_id}}</td><td>{{$c->batch_name}}</td><td>{{$c->batch_type}}</td>
     <td>
@@ -45,6 +57,7 @@
     </tr>
  @endforeach
  </table>
+{{ $candidate->links() }}
 </div>
 </div>
 @stop

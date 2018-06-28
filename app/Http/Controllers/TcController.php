@@ -183,6 +183,8 @@ class TcController extends Controller
     {
         $tc = new training_centres();
         $centreid = Auth::user()->centre_id;
+        $district = Auth::user()->district;
+        $division = Auth::user()->division;
         // echo $centreid;
         $tcname =  $tc->fetchTcSpecInfo($centreid);
         // $tcs =  $tc->fetchtcforList();
@@ -191,7 +193,7 @@ class TcController extends Controller
         // return json_encode($batches);
         $ayobj = new academicyear();
         $academicyear = $ayobj -> fetchAcademicyear();
-        return view('tcview.pftarget',compact('tcname','academicyear'));
+        return view('tcview.pftarget',compact('tcname','academicyear','district','division'));
     }
     public function getBatchList($id)
     {
@@ -216,7 +218,7 @@ class TcController extends Controller
         $ftobj = $ft->checkFinancialTarget($info[0]->district_code,$info[0]->batch_academic_year,$info[0]->centre_id,$info[0]->batch_id,$info[0]->batch_type);
         // echo count($ptobj);
         if(count($ptobj)>0){
-        $info = DB::table('training_batches as b')->join('training_centres as t','t.centre_id','=','b.centre_id')->join('batches as ba','ba.batch_id','=','b.batch_id')->join('districts as d','d.district_code','=','t.district_id')->join('physical_targets as p','p.centre_id','=','b.centre_id')->join('financial_targets as f','f.centre_id','=','b.centre_id')->where('f.batch_id','=',$id)->where('p.batch_id','=',$id)->where('b.batch_id','=',$id)->select('ba.no_of_stud','ba.start_date','ba.end_date','b.batch_type','t.centre_type','t.district_id','d.district_name','d.district_code','d.division','p.general_male_target as genpm','p.general_female_target as genpf','p.general_total_target as genpt','p.tsp_male_target as tsppm','p.tsp_female_target as tsppf','p.tsp_total_target as tsppt','p.scp_male_target as scppm','p.scp_female_target as scppf','p.scp_total_target as scppt','p.min_male_target as minpm','p.min_female_target as minpf','p.min_total_target as minpt','f.general_male_target as genfm','f.general_female_target as genff','f.general_total_target as genft' ,'f.tsp_male_target as tspfm','f.tsp_female_target as tspff','f.tsp_total_target as tspft','f.scp_male_target as scpfm','f.scp_female_target as scpff','f.scp_total_target as scpft','f.min_male_target as minfm','f.min_female_target as minff','f.min_total_target as minft')->get();
+        $info = DB::table('training_batches as b')->join('training_centres as t','t.centre_id','=','b.centre_id')->join('batches as ba','ba.batch_id','=','b.batch_id')->join('districts as d','d.district_code','=','t.district_id')->join('physical_targets as p','p.centre_id','=','b.centre_id')->join('financial_targets as f','f.centre_id','=','b.centre_id')->where('f.batch_id','=',$id)->where('p.batch_id','=',$id)->where('b.batch_id','=',$id)->select('ba.no_of_stud','ba.start_date','ba.end_date','b.batch_type','t.centre_type','t.district_id','d.district_name','d.district_code','d.division','p.general_male_target as genpm','p.general_female_target as genpf','p.general_total_target as genpt','p.tsp_male_target as tsppm','p.tsp_female_target as tsppf','p.tsp_total_target as tsppt','p.scp_male_target as scppm','p.scp_female_target as scppf','p.scp_total_target as scppt','p.min_male_target as minpm','p.min_female_target as minpf','p.min_total_target as minpt','f.general_male_target as genfm','f.general_female_target as genff','f.general_total_target as genft' ,'f.tsp_male_target as tspfm','f.tsp_female_target as tspff','f.tsp_total_target as tspft','f.scp_male_target as scpfm','f.scp_female_target as scpff','f.scp_total_target as scpft','f.min_male_target as minfm','f.min_female_target as minff','f.min_total_target as minft','p.status as status')->get();
         }
         else{
             $info = DB::table('training_batches')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('districts','districts.district_code','=','training_centres.district_id')->where('training_batches.batch_id','=',$id)->select('training_batches.batch_academic_year','training_batches.centre_id','training_batches.batch_id','training_batches.batch_type','training_centres.centre_type','batches.start_date','batches.end_date','batches.no_of_stud','districts.district_name','districts.division','districts.district_code','training_centres.district_id')->get();
@@ -327,8 +329,8 @@ class TcController extends Controller
         
         $data1 = array("district_id"=>$districtid,"financial_year"=>$year,"centre_id"=>$tc,"batch_id"=>$batch,"general_male_target"=>$genpm,"general_female_target"=>$genpf,"general_total_target"=>$genpt,"tsp_male_target"=>$tsppm,"tsp_female_target"=>$tsppf,"tsp_total_target"=>$tsppt,"scp_male_target"=>$scppm,"scp_female_target"=>$scppf,"scp_total_target"=>$scppt,"min_male_target"=>$minpm,"min_female_target"=>$minpf,"min_total_target"=>$minpt,"status"=>"Created");
         $data2 = array("district_id"=>$districtid,"financial_year"=>$year,"centre_id"=>$tc,"batch_id"=>$batch,"general_male_target"=>$genfm,"general_female_target"=>$genff,"general_total_target"=>$genft,"tsp_male_target"=>$tspfm,"tsp_female_target"=>$tspff,"tsp_total_target"=>$tspft,"scp_male_target"=>$scpfm,"scp_female_target"=>$scpff,"scp_total_target"=>$scpft,"min_male_target"=>$minfm,"min_female_target"=>$minff,"min_total_target"=>$minft,"status"=>"Created");
-        $updatedata1 = array("district_id"=>$districtid,"financial_year"=>$year,"centre_id"=>$tc,"batch_id"=>$batch,"general_male_target"=>$genpm,"general_female_target"=>$genpf,"general_total_target"=>$genpt,"tsp_male_target"=>$tsppm,"tsp_female_target"=>$tsppf,"tsp_total_target"=>$tsppt,"scp_male_target"=>$scppm,"scp_female_target"=>$scppf,"scp_total_target"=>$scppt,"min_male_target"=>$minpm,"min_female_target"=>$minpf,"min_total_target"=>$minpt);
-        $updatedata2 = array("district_id"=>$districtid,"financial_year"=>$year,"centre_id"=>$tc,"batch_id"=>$batch,"general_male_target"=>$genfm,"general_female_target"=>$genff,"general_total_target"=>$genft,"tsp_male_target"=>$tspfm,"tsp_female_target"=>$tspff,"tsp_total_target"=>$tspft,"scp_male_target"=>$scpfm,"scp_female_target"=>$scpff,"scp_total_target"=>$scpft,"min_male_target"=>$minfm,"min_female_target"=>$minff,"min_total_target"=>$minft);
+        $updatedata1 = array("district_id"=>$districtid,"financial_year"=>$year,"centre_id"=>$tc,"batch_id"=>$batch,"general_male_target"=>$genpm,"general_female_target"=>$genpf,"general_total_target"=>$genpt,"tsp_male_target"=>$tsppm,"tsp_female_target"=>$tsppf,"tsp_total_target"=>$tsppt,"scp_male_target"=>$scppm,"scp_female_target"=>$scppf,"scp_total_target"=>$scppt,"min_male_target"=>$minpm,"min_female_target"=>$minpf,"min_total_target"=>$minpt,"status"=>"Created");
+        $updatedata2 = array("district_id"=>$districtid,"financial_year"=>$year,"centre_id"=>$tc,"batch_id"=>$batch,"general_male_target"=>$genfm,"general_female_target"=>$genff,"general_total_target"=>$genft,"tsp_male_target"=>$tspfm,"tsp_female_target"=>$tspff,"tsp_total_target"=>$tspft,"scp_male_target"=>$scpfm,"scp_female_target"=>$scpff,"scp_total_target"=>$scpft,"min_male_target"=>$minfm,"min_female_target"=>$minff,"min_total_target"=>$minft,"status"=>"Created");
 
 
         $pt=new physical_target();
@@ -478,6 +480,7 @@ class TcController extends Controller
 
         $noofcandidate=$batchres[0]->no_of_stud;
         $status=$batchres[0]->status;
+        $batch_id=$batchres[0]->batch_id;
         if($status=="Approved"){
         if(Input::hasFile('import_file')){
             $path = Input::file('import_file')->getRealPath();
@@ -493,17 +496,8 @@ class TcController extends Controller
             else{
                 // echo "fail";
             if(!empty($data) && $data->count()){
-                foreach ($data as $key => $value) {
-                    $insert[] = ['serial_no' => $value->serial_no,'candidate_id' => $value->serial_no, 'first_name' => $value->first_name,'last_name' => $value->last_name,'phone_no' => $value->phone_no,'email' => $value->email,'dob' => $value->dob,'aadhar_no' => $value->aadhar_no,'gender' => $value->gender,'marital_status' => $value->marital_status,'religion' => $value->religion,'category' => $value->category,'relationship' => $value->relationship,'relation_firstname' => $value->relation_firstname,'relation_lastname' => $value->relation_lastname,'current_location' => $value->current_location,'current_street' => $value->current_street,'current_city' => $value->current_city,'current_state' => $value->current_state,'current_district' => $value->current_district,'current_taluk' => $value->current_taluk,'current_village' => $value->current_village,'current_pincode' => $value->current_pincode,'permanent_location' => $value->permanent_location,'permanent_street' => $value->permanent_street,'permanent_city' => $value->permanent_city,'permanent_state' => $value->permanent_state,'permanent_district' => $value->permanent_district,'permanent_taluk' => $value->permanent_taluk,'permanent_village' => $value->permanent_village,'permanent_pincode' => $value->permanent_pincode,'education' => $value->education,'subject' => $value->subject,'yearofpassing' => $value->yearofpassing,'physically_challenged' => $value->physically_challenged,'skill' => $value->skill,'apprentiseship' => $value->apprentiseship,'perviously_employed' => $value->perviously_employed,'willing_migrate' => $value->willing_migrate,'expected_salary_outside' => $value->expected_salary_outside,'expected_salary_within' => $value->expected_salary_within,'preferred_training_period' => $value->preferred_training_period,'status' => $value->status
-                ];
-                }
-
-                if(!empty($insert)){
-                    // echo ''.json_encode($insert);
-                    $candidateobj = new candidates();
-                    $candidateobj->createCandidate($insert);
-
-                    $batchobj = new training_batches();
+                $seqcall = new sequences();
+                $batchobj = new training_batches();
                     $batchinfo = $batchobj->fetchBatchSpecInfo($id);
 
                     $centreid = $batchinfo[0]->centre_id;
@@ -514,22 +508,44 @@ class TcController extends Controller
                     $bccall = new batch_candidates();
                     $candidatecall = new candidates();
 
-                    foreach ($data as $key => $value) {
-                      $candidateinsert[] = ['candidate_id' => $value->serial_no,'centre_id' => $centreid ,'batch_type' => $type ,'batch_id' => $batchid , 'academic_year' => $academicyear];                        
-                    }
+                foreach ($data as $key => $value) {
 
-                    // $candidateinfo = $bccall -> checkCandidate($id);
-                    // if(count($candidateinfo)==0){
-                    // $data1 = array('status' => 'Mapped' );       
-                    // $data = array('candidate_id' => $id , 'centre_id' => $centreid ,'batch_type' => $type ,'batch_id' => $batchid );
+                        $uniCandid = $candidatecall->getUniqueCandidate($value->aadhar_no);
+                        if(empty($uniCandid)){
+                          $seqinfo = $seqcall->fetchSequence();
+                            $cand_id=$seqinfo[0]->cand_id;
+                            if($cand_id<10)
+                                $cand_id="000".$cand_id;
+                            if($cand_id<100 && $cand_id>10)
+                                $cand_id="00".$cand_id;
+                            if($cand_id<1000 && $cand_id>100)
+                                $cand_id="0".$cand_id;
+
+
+                            $cand_prefix=$seqinfo[0]->cand_prefix;
+                            $candid_code=$cand_prefix.$batch_id.$cand_id;
+                            $newcand_id=$cand_id+1;
+
+                            $newid = array('cand_id'=>$newcand_id);
+                            $seqcall->updateSequence($newid);  
+                        }
+                        else{
+                            $candid_code = $uniCandid;
+                        }
+
+
+                    $insert[] = ['candidate_id' => $candid_code, 'first_name' => $value->first_name,'last_name' => $value->last_name,'phone_no' => $value->phone_no,'email' => $value->email,'dob' => $value->dob,'aadhar_no' => $value->aadhar_no,'gender' => $value->gender,'marital_status' => $value->marital_status,'religion' => $value->religion,'category' => $value->category,'relationship' => $value->relationship,'relation_firstname' => $value->relation_firstname,'relation_lastname' => $value->relation_lastname,'permanent_location' => $value->permanent_location,'permanent_street' => $value->permanent_street,'permanent_city' => $value->permanent_city,'permanent_state' => $value->permanent_state,'permanent_district' => $value->permanent_district,'permanent_taluk' => $value->permanent_taluk,'permanent_village' => $value->permanent_village,'permanent_pincode' => $value->permanent_pincode,'education' => $value->education,'physically_challenged' => $value->physically_challenged,'skill' => $value->skill,'status' => 'Mapped'
+                ];
+                   $candidateinsert[] = ['candidate_id' => $candid_code,'centre_id' => $centreid ,'batch_type' => $type ,'batch_id' => $batchid , 'academic_year' => $academicyear]; 
+                }
+
+                if(!empty($insert)){
+                    // echo ''.json_encode($insert);
+                    $candidateobj = new candidates();
+                    $candidateobj->createCandidate($insert);
+
                     $info = $bccall -> createbatchCandidate($candidateinsert);    
-                    // $updateinfo = $candidatecall -> updateCandidateStatus($id,$data1);    
-                    // }
-                    foreach ($data as $key => $value) {
-                        $data1 = array('status' => 'Mapped' ); 
-                        $updateinfo = $candidatecall -> updateCandidateStatus($value->serial_no,$data1);    
-                    }
-                    // return view('pages.success');
+                                       // return view('pages.success');
                     Session::flash("success", "Uploaded successfully!!");
                     return Redirect::back();
                 }
@@ -703,8 +719,20 @@ class TcController extends Controller
     public function candidateInfo(Request $req)
     {
         $centreid = Auth::user()->centre_id;
-        $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('batches','batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','batches.batch_id','batches.batch_name')->get();
-        return view('tcview.candidate',compact('candidate'));   
+        $batchid = "";
+        $batches = new batches();
+        if(Input::get('batchid'))
+            $batchid = Input::get('batchid');
+
+        $batchlist = $batches->fetchBatchListByTc($centreid);
+        if(!empty($batchid)){
+            $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('batches','batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->where('batch_candidates.batch_id','=',$batchid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','batches.batch_id','batches.batch_name')->paginate(10);
+        }
+        else{
+            $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('batches','batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','batches.batch_id','batches.batch_name')->paginate(10);
+        }
+        
+        return view('tcview.candidate',compact('candidate','batchlist','batchid'));   
     }
     public function uploadPhoto(Request $req,$candidateid,$batchid)
     {

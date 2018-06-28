@@ -33,6 +33,9 @@ class DCController extends Controller
 {
 	public function home()
     {
-    	return view('dcview.home');
+    	
+	    	return view('dcview.home');
+    	
+
     }
 }

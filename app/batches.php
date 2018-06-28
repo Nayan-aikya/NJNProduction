@@ -38,11 +38,15 @@ class batches extends Model
         $batches = batches::where('district_id',$district)->where('status','Pending')->get(); 
         return $batches;
     }
-    public function fetchPendingBatchListPaginate($district,$centre_id){
-        if(!empty($centre_id))
-            $batches = batches::where('district_id',$district)->where('centre_id',$centre_id)->where('status','Pending')->paginate(10); 
+    public function fetchPendingBatchListPaginate($district,$centre_id,$status){
+        if(!empty($centre_id) && !empty($status))
+            $batches = batches::where('district_id',$district)->where('centre_id',$centre_id)->where('status',$status)->paginate(10); 
+        else if(!empty($centre_id) && empty($status))
+            $batches = batches::where('district_id',$district)->where('centre_id',$centre_id)->paginate(10); 
+        else if(empty($centre_id) && !empty($status))
+            $batches = batches::where('district_id',$district)->where('centre_id',$centre_id)->paginate(10); 
         else
-            $batches = batches::where('district_id',$district)->where('status','Pending')->paginate(10); 
+            $batches = batches::where('district_id',$district)->paginate(10); 
         return $batches;
     }
     public function approveBatch($batchid,$new_batch_data){

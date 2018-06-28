@@ -184,16 +184,20 @@ class TdController extends Controller
     public function fetchbatchlist(Request $obj)
     {
         $tc = "";
-        if(Input::get('tcid'))
-            $tc = Input::get('tcid');
+        $status = "";
+        $input = Input::all();
+        if(!empty($input)){
+            $tc = $input['tcid'];
+            $status = $input['status'];
+        }
         $batchcall = new batches();
         $district = Auth::user()->district;
         $tccall =new training_centres();
         $tcinfo = $tccall->fetchTcListByDistrict($district);
         $districts = new districts();
         $dist_code = $districts->pluckDistrictCode($district);
-        $batchinfo = $batchcall->fetchPendingBatchListPaginate($dist_code,$tc);
-        return view('tdview.viewbatch')->with(array('batchinfo'=>$batchinfo,'tcinfo' => $tcinfo,'tc' =>$tc));
+        $batchinfo = $batchcall->fetchPendingBatchListPaginate($dist_code,$tc,$status);
+        return view('tdview.viewbatch')->with(array('batchinfo'=>$batchinfo,'tcinfo' => $tcinfo,'tc' =>$tc,'status' => $status));
     }
     public function fetchTrainingCentreList(Request $obj)
     {

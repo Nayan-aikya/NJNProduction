@@ -8,7 +8,6 @@ class candidates extends Model
 {
      protected $fillable=[   
      						
-    						'serial_no',
 							'first_name',
 							'last_name',
 							'phone_no',
@@ -58,9 +57,9 @@ class candidates extends Model
     public function createCandidate($insert){
     	foreach ($insert as $key => $value) 
     	{
-    		$count = candidates::where('serial_no',$value['serial_no'])->count();
+    		$count = candidates::where('candidate_id',$value['candidate_id'])->count();
 	    	if($count >0)
-	    		$candidates = candidates::where('serial_no',$value['serial_no'])->update($value);
+	    		$candidates = candidates::where('candidate_id',$value['candidate_id'])->update($value);
 	    	else    
     			$candidates = candidates::insert($value); 
     	}
@@ -88,6 +87,12 @@ class candidates extends Model
     public function uploadImage($candidateid,$batchid,$filename){
     	$data = array('photo' => $filename);
     	$candidates = candidates::where('candidate_id',$candidateid)->update($data);     
+        return $candidates;
+    }
+    
+    public function getUniqueCandidate($adhar){
+    	
+    	$candidates = candidates::where('aadhar_no',$adhar)->value('candidate_id');     
         return $candidates;
     }
     

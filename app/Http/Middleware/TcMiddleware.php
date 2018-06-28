@@ -21,9 +21,7 @@ class TcMiddleware
 
             return redirect('tcdashboard');
         }
-        else if(Auth::check() && Auth::user()->user_id == 1){
-            return redirect('dashboard');
-        }
+       
         else{
             return redirect('home');
         }
