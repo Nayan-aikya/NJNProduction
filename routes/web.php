@@ -142,7 +142,7 @@ Route::get('/dashboard/{tc}/{fiscalyear}','TdController@fetchSpecDashboardInfo')
 Route::get('/tcdashboard','TcController@fetchTcDashboardInfo');
 
 Route::post('/candidatePhoto','TcController@candidatePhoto');
-Route::post('/batchcandidatedelete', 'TcController@batchCandidateDelete');
+Route::post('/batchcandidatedelete/{cid}/{bcid}', 'TcController@batchCandidateDelete');
 
 Route::get('/printcertification','TdController@printCertification');
 

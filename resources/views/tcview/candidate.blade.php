@@ -49,12 +49,33 @@
         </form>
     </td>
     <td>
-    	<form action="{{ url('batchcandidatedelete/'.$c->candidate_id.'/'.$c->batch_id)  }}" method="POST">
-            {{ csrf_field() }}
-            <button type="submit" class="btn btn-danger"><i></i> Remove</button>
-        </form>
+    
+            <a  class="btn btn-danger" href="#deleteEmployeeModal{{ $c->candidate_id }}" class="delete" data-toggle="modal">Remove</a>
     </td>
     </tr>
+    <div id="deleteEmployeeModal{{ $c->candidate_id }}" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <div class="modal-header">                      
+                        <h4 class="modal-title">Delete Candidate</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">                    
+                        <p>Are you sure you want to delete this employee?</p>
+                        <p class="text-warning"><small>This action cannot be undone.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <form action="{{ url('batchcandidatedelete/'.$c->candidate_id.'/'.$c->batch_id)  }}" method="POST">
+                            {{ csrf_field() }}
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+
+                            <button type="submit" class="btn btn-danger"><i></i> Remove</button>
+                           
+                        </form>
+                    </div>
+            </div>
+        </div>
+    </div>
  @endforeach
  </table>
 {{ $candidate->links() }}

@@ -449,23 +449,18 @@ class TcController extends Controller
         return view('tcview.batchcandidate_list',compact('tbinfo','academicyear'));
     }
    
-    public function batchCandidateDelete(Request $req,$candidateid,$batchid){
+    public function batchCandidateDelete($candidateid,$batchid){
         $id = $candidateid;
         $centreid = Auth::user()->centre_id;
         // $type = session()->get('batchtype');
         // $batchid = session()->get('batchid');
         $bccall = new batch_candidates();
         $candidatecall = new candidates();
-        $candidateinfo = $bccall -> checkCandidate($id);
-        if(count($candidateinfo)>0){
-        $data1 = array('status' => 'Created' );       
-        $data = array('candidate_id' => $id , 'centre_id' => $centreid ,'batch_id' => $batchid );
-        $info = $bccall -> deletebatchCandidate($data);    
-         $updateinfo = $candidatecall -> updateCandidateStatus($id,$data1);    
-        // return json_encode($info);
-         Session::flash("success", "Removed successfully!!");
-         return Redirect::back();
-        }        
+        $bccall->where('candidate_id',$candidateid)->delete();
+        $candidatecall->where('candidate_id',$candidateid)->delete();
+        Session::flash("success", "Removed successfully!!");
+        return Redirect::back();
+              
     }
 
     public function candidateUpload(){
