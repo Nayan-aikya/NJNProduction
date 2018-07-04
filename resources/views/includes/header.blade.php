@@ -40,7 +40,7 @@
      
       <li><a href="{{ url('/home') }}">HOME</a></li>
       <li><a href="{{ $url }}">Training</a></li>
-      <li><a href="#">Schemes</a></li>
+      <li><a href="{{ url('/weavers/schemes') }}">Schemes</a></li>
      
     </ul>
   </div>

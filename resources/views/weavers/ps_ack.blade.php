@@ -310,7 +310,7 @@
                                     <tr>
                                         <td>Application date</td>
                                         <td>{{$app->app_date}}</td>
-                                        <td>Pace</td>
+                                        <td>Place</td>
                                         <td>{{$app->app_place}}</td>
                                     </tr>
                                     <tr>

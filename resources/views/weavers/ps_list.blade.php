@@ -23,8 +23,7 @@
                     <th>Name</th>
                     <th>Mobile</th>
                     <th>Date of apllication</th>
-                    <th>Status</th>                    
-                    <th>Inspection status</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
                 @foreach($applications as $key => $app)
@@ -37,29 +36,18 @@
                         @if ($app->app_status == 'applied')
                         <span class="label label-warning">Applied</span>
                         @endif
-                        @if ($app->app_status == 'approved')
-                        <span class="label label-success">Approved</span>
-                        @endif
-                        @if ($app->app_status == 'rejected')
-                        <span class="label label-danger">Rejected</span>
+                        @if ($app->app_status == 'closed')
+                        <span class="label label-success">Closed</span>
                         @endif
                     </td>
+                   
                     <td>
-                        @if ($app->ins_status == 'pending')
-                        <span class="label label-warning">Pending</span>
-                        @endif
-                        @if ($app->ins_status == 'finished')
-                        <span class="label label-success">Finished</span>
-                        @endif
-                        @if ($app->ins_status == 'rejected')
-                        <span class="label label-danger">Rejected</span>
-                        @endif
-                        @if ($app->ins_status == '')
-                        <span class="label label-danger">NA</span>
-                        @endif
-                    </td>
-                    <td>
+                    @if ($app->is_complete == 'yes')
                         <a class="btn btn-sm btn-info" href="{{ url('/weavers/powersubsidy-app/details/'.$app->id)}}">View details</a>
+                    @endif
+                    @if ($app->is_complete == 'no')
+                        <a class="btn btn-sm btn-warning" href="{{ url('weavers/powersubsidy-edit/'.$app->id)}}">Edit form</a>
+                    @endif
                     </td>
                 </tr>
                 @endforeach

@@ -161,32 +161,38 @@ Route::get('/certificateupload/batchajax/{id}','TcController@certificateuploadSu
 Route::post('/candidateCertificate','TcController@candidatecertificate');
 Route::get('/certificatedownload/{candidateid}/{batchid}', 'TcController@certificatedownloadView');
 
+Route::get('home','DCController@home');
+
 // Power subsidy public
 Route::get('weavers/powersubsidy-apply', 'WeaverController@psNewForm');
 Route::post('weavers/powersubsidy-apply', 'WeaverController@psApplyForm');
+Route::get('weavers/powersubsidy-ack', 'WeaverController@psShowAck');
 // Electronic jaq public
 Route::get('weavers/ej-2loom-apply', 'WeaverController@ejTlNewForm');
 Route::post('weavers/ej-2loom-apply', 'WeaverController@ejTlApply');
+Route::get('weavers/ej-2loom-ack', 'WeaverController@ejShowAck');
 // Get Taluks list
-Route::get('weavers/get_talukas/{id}', 'WeaverController@getTaluk')->middleware('CheckTD');
+Route::get('weavers/get_talukas/{id}', 'WeaverController@getTaluk');
 
-Route::group(['middleware' => 'CheckTD'], function(){
+Route::group(['middleware' => 'CheckUserType'], function(){
 
     // Power subsidy private
-    Route::get('weavers/powersubsidy-list', 'WeaverController@psList');
-    Route::get('weavers/powersubsidy-app/details/{id}', 'WeaverController@psDetails');
-    Route::get('weavers/powersubsidy-getfile/{type}/{id}', 'WeaverController@psGetfile');
-    Route::get('weavers/powersubsidy-adminaction/{action}/{id}', 'WeaverController@psAdminaction');
-    Route::get('weavers/powersubsidy-getzip/{id}', 'WeaverController@psGetzip');
-    Route::get('weavers/powersubsidy-ack', 'WeaverController@psShowAck');
+    Route::get('weavers/powersubsidy-list', 'SchemesAdmin@psList');
+    Route::get('weavers/powersubsidy-app/details/{id}', 'SchemesAdmin@psDetails');
+    Route::post('weavers/powersubsidy-addremarks', 'SchemesAdmin@psRemarkUpdate');
+    Route::get('weavers/powersubsidy-getzip/{id}', 'SchemesAdmin@psGetzip');
     
     // Electronic jaq private
-    Route::get('weavers/ej-2loom-list', 'WeaverController@ejTlList');
-    Route::get('weavers/ej-2loom-app/details/{id}', 'WeaverController@ejTlDetails');
-    Route::get('weavers/ej-2loom-getfile/{type}/{id}', 'WeaverController@ejTlGetfile');
-    Route::get('weavers/ej-2loom-adminaction/{action}/{id}', 'WeaverController@ejTlAdminaction');
-    Route::get('weavers/ej-2loom-getzip/{id}', 'WeaverController@ejTlGetzip');
-    Route::get('weavers/ej-2loom-ack', 'WeaverController@ejShowAck');
-});
+    Route::get('weavers/ej-2loom-list', 'SchemesAdmin@ejTlList');
+    Route::get('weavers/ej-2loom-app/details/{id}', 'SchemesAdmin@ejTlDetails');
+    Route::post('weavers/ej-2loom-addremarks', 'SchemesAdmin@ejRemarkUpdate');
+    Route::get('weavers/ej-2loom-getzip/{id}', 'SchemesAdmin@ejTlGetzip');
 
-Route::get('home','DCController@home');
+    // Dist admin
+    Route::get('weavers/schemes', 'SchemesAdmin@index');
+
+    // update incomplte forms
+    Route::get('weavers/powersubsidy-edit/{id}', 'WeaverDataImport@psEdit');
+    Route::post('weavers/powersubsidy-update/{id}', 'WeaverDataImport@ps_update');
+
+});

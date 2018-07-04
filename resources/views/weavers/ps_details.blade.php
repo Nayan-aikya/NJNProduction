@@ -8,7 +8,7 @@
     .app-action{
         padding: 10px;
     }
-    .dd-actions a{
+    .dd-actions a, .dd-actions input, .dd-actions select{
         width: 90%;
         margin: 5px auto;
         display: block;
@@ -16,7 +16,15 @@
     .dd-comment textarea{ width:100%; }
 </style>
 @stop
+
 @section('content')
+    @section('content')
+    @if (session('formErrorStatus'))
+    <div class="alert alert-danger"><center><b>{{ session('formErrorStatus') }}</b></center></div>
+    @endif
+    @if (session('formSuccessStatus'))
+    <div class="alert alert-success"><center><b>{{ session('formSuccessStatus') }}</b></center></div>
+    @endif
     <div class="row pad_top_20">
         <div class="col-md-9">
             <table width="100%" align="center" id="print_view" class="border1ccc">
@@ -372,28 +380,31 @@
                                 <tr>
                                     <td colspan="4">&nbsp;</td>
                                 </tr>
+                                <?php
+                                    if(isset($app->insp_remarks->ins_status)){
+                                ?>
                                 <tr>
                                     <td colspan="4"><center><b>Inspection details</b></center></td>
                                 </tr>                                    
                                 <tr>
                                     <td>Inspection Status</td>
-                                    <td>{{$app->ins_status}}</td>
+                                    <td>{{$app->insp_remarks->ins_status}}</td>
                                     <td>Inspection date</td>
-                                    <td>{{$app->ins_date}}</td>
+                                    <td>{{$app->insp_remarks->ins_date}}</td>
                                 </tr>
                                 <tr>
                                     <td>Inspection remarks</td>
-                                    <td colspan="3">{{$app->ins_remarks}}</td>
+                                    <td colspan="3">{{$app->insp_remarks->ins_remarks}}</td>
                                 </tr>
                                 <tr>
                                     <td>Inspection attachments</td>
                                     <td colspan="3">
                                         <ul>
-                                            @if(!empty($app->ins_build_picture))
+                                            @if(!empty($app->insp_remarks->ins_build_picture))
                                             <li>Building Image</li>
                                             @endif
                                             <?php
-                                            $t1 = json_decode($app->ins_loom_pictures);
+                                            $t1 = json_decode($app->insp_remarks->ins_loom_pictures);
                                                 if(is_array($t1)){
                                                     foreach ($t1 as $key => $value) {
                                                         echo "<li>".$value."</li>";
@@ -407,14 +418,19 @@
                                     <td>Inspection Location</td>
                                     <td colspan="3">
                                         <ul>
-                                            <li>Lattitude: {{$app->ins_lat}}</li>
-                                            <li>Longitude: {{$app->ins_long}}</li>
+                                            <li>Lattitude: {{$app->insp_remarks->ins_lat}}</li>
+                                            <li>Longitude: {{$app->insp_remarks->ins_long}}</li>
                                         </ul>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="4">&nbsp;</td>
-                                </tr>                                
+                                </tr>
+
+                                <?php
+                                    }
+                                ?>
+                                                                
                             </tbody>
                         </table>
                     </td>
@@ -432,18 +448,19 @@
                     </li>
                     <li class="list-group-item">
                         <b>Inspection</b><br>
-                        Date: {{$app->ins_date or 'NA'}}<br>
-                        Status: {{$app->ins_status}}
+                        Date: {{$app->insp_remarks->ins_date or 'NA'}}<br>
+                        Status: {{$app->insp_remarks->ins_status or 'NA'}}
                     </li>
                     <li class="list-group-item">
-                        <b>Next step</b><br>
-                        Date: NA<br>
-                        Status: NA
+                        <b>District remarks</b><br>
+                        Remarks: {{$app->dist_remarks->remarks or "NA"}}<br>
+                        Date: {{$app->dist_remarks->created_at or "NA"}}
                     </li>
                     <li class="list-group-item">
-                        <b>Next step</b><br>
-                        Date: NA<br>
-                        Status:NA
+                        <b>Division admin remarks</b><br>
+                        Remarks: {{$app->div_remarks->remarks or "NA"}}<br>
+                        Acceptance: {{$app->div_remarks->acceptance or "NA"}}<br>
+                        Date: {{$app->div_remarks->created_at or "NA"}}
                     </li>
                 </ul>
                 <div class="dd-actions">
@@ -452,12 +469,27 @@
                     <a href="#" id="printThis" class="btn btn-success btn-md">Print applition<br><span class="glyphicon glyphicon-print" aria-hidden="true"></span></a>
                     <a href="{{ url('/weavers/powersubsidy-getzip/'.$app->id) }}" class="btn btn-info btn-md">Download all attachments<br><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
                     <hr>
-                    <h4 class="text-center">Actions</h4>
-                    @if($app->app_status == 'applied')
+                    
+
+                    @if($app->app_status == 'applied' && $app->userRole == 'TD' && !isset($app->dist_remarks->remarks))
                     <div class="dd-comment">
-                        {{ Form::textarea('dd_comment_text') }}
-                        <a href="{{url('/weavers/powersubsidy-adminaction/rejected/'.$app->id)}}" class="btn btn-danger btn-md" onclick="return confirm('Are you sure?')">Reject</a>
-                        <a href="{{url('/weavers/powersubsidy-adminaction/approved/'.$app->id)}}" class="btn btn-success btn-md" onclick="return confirm('Are you sure?')">Approve</a>
+                    <h4 class="text-center">Add remarks</h4>
+                        {{ Form::open(array('url' => 'weavers/powersubsidy-addremarks')) }}
+                            {{ Form::textarea('remarks', null, array('required'=>true)) }}
+                            {{ Form::hidden('applicationid',$app->id) }}
+                            <input class="btn btn-success btn-md" type="submit" value="submit">
+                        {{ Form::close() }}
+                    </div>
+                    @endif
+                    @if($app->app_status == 'applied' && $app->userRole == 'DD' && !isset($app->div_remarks->remarks))
+                    <div class="dd-comment">
+                    <h4 class="text-center">Add remarks</h4>
+                        {{ Form::open(array('url' => 'weavers/powersubsidy-addremarks')) }}
+                            {{ Form::textarea('remarks', null, array('required'=>true)) }}
+                            {{ Form::hidden('applicationid',$app->id) }}
+                            {{ Form::select('acceptance', [''=>'Select','accepted' => 'Accepted', 'rejected' => 'Rejected'], null, ['class'=>'form-control', 'required'=>'required']) }}
+                            <input class="btn btn-success btn-md" type="submit" value="submit">
+                        {{ Form::close() }}
                     </div>
                     @endif
                 </div>
