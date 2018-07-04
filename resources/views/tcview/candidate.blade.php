@@ -23,7 +23,8 @@
         <th>Batch Name</th>
         <th>Batch Type</th>
         <th>Photo Upload</th>
-        <th></th>
+        <th>Action</th>
+        <th>Attendence</th>
       </tr>
  </thead>
 <form method="get" action="{{ url::to('candidatelistinfo') }}">
@@ -37,7 +38,6 @@
         </select>
     </div>  
 </form>
-
  @foreach ($candidate as $c)
     <tr><td>{{$c->candidate_id}}</td><td>{{$c->first_name}}</td><td>{{$c->last_name}}</td><td>{{$c->gender}}</td><td>{{$c->batch_id}}</td><td>{{$c->batch_name}}</td><td>{{$c->batch_type}}</td>
     <td>
@@ -49,8 +49,19 @@
         </form>
     </td>
     <td>
-    
+    @if($c->action != 'Completed')
             <a  class="btn btn-danger" href="#deleteEmployeeModal{{ $c->candidate_id }}" class="delete" data-toggle="modal">Remove</a>
+    @endif
+    </td>
+    <td>
+    @if($c->action == 'Completed')
+    <form action="{{ url('updateAttendance') }}" method="POST">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+        <input type="hidden" name="canid" value="{{ $c->candidate_id }}">
+        <input required class="tinf" type="number" value="{{ $c->attendence }}" name="attendence"  onchange="this.form.submit()" >
+    </form>
+    @endif
     </td>
     </tr>
     <div id="deleteEmployeeModal{{ $c->candidate_id }}" class="modal fade">
@@ -81,4 +92,5 @@
 {{ $candidate->links() }}
 </div>
 </div>
+
 @stop

@@ -96,4 +96,8 @@ class candidates extends Model
         return $candidates;
     }
     
+    public function uploadAttendence($candidateid,$attendence){
+    	$candidates = candidates::where('candidate_id',$candidateid)->update(array('attendence'=>$attendence));     
+        return $candidates;
+    }
 }

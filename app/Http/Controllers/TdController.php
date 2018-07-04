@@ -186,10 +186,14 @@ class TdController extends Controller
         $tc = "";
         $status = "";
         $input = Input::all();
-        if(!empty($input)){
+        if(!empty($input['tcid'])){
             $tc = $input['tcid'];
+            
+        }
+        if(!empty($input['status'])){
             $status = $input['status'];
         }
+        
         $batchcall = new batches();
         $district = Auth::user()->district;
         $tccall =new training_centres();

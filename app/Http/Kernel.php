@@ -62,5 +62,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'tc' => \App\Http\Middleware\TcMiddleware::class,
         'td' => \App\Http\Middleware\TdMiddleware::class,
+        'CheckTD' => \App\Http\Middleware\CheckTD::class,
     ];
 }

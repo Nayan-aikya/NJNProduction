@@ -37,6 +37,11 @@ class training_batches extends Model
         return $batch;
     }
 
+    public function fetchtrainingBatchs($centreid){
+        $batch = training_batches::where("centre_id",$centreid)->get(array('batch_name','batch_id','action'));
+        return $batch;
+    }
+
     public function fetchtrainingspecBatch($centreid,$academicyear){
         $batch = training_batches::where('status',"Approved")->where("centre_id",$centreid)->where("batch_academic_year",$academicyear)->pluck('batch_name','batch_id');
         return $batch;

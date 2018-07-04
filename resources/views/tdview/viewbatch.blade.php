@@ -72,7 +72,7 @@
             </form>
             @endforeach
         </table>
-        {{ $batchinfo->links() }}
+        {{ $batchinfo->appends(['tcid' => $tc, 'status' => $status])->links() }}
         </div>
 </div>   
 @stop

@@ -36,8 +36,13 @@
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <span style="float:left;margin-top: 4%;"><input type="file" name="import_file" /></span><br>
                 <span style="float:right;margin-top: -10%;"><button class="btn btn-primary">Import</button></span>
-                </form>
-              
+                </form><br>
+                 <a href="{{ url::to('downloadfile') }}">Download Sample File</a>
+                <form id=""  action="{{ url('olddata') }}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <span style="float:left;margin-top: 4%;"><input type="file" name="import_file" /></span><br>
+                <span style="float:right;margin-top: -10%;"><button class="btn btn-primary">Import old data</button></span>
+                </form> 
                 </td>
                
                 <td>

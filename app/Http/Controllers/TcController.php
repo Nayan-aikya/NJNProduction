@@ -25,6 +25,8 @@ use App\candidates;
 use App\batch_candidates;
 use App\batch_employment_expense;
 use App\academicyear;
+use App\old_records;
+
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Excel;
@@ -32,7 +34,49 @@ use DateTime;
 class TcController extends Controller
 {
 
-       
+    public function olddata()
+    {
+        if(Input::hasFile('import_file')){
+            $path = Input::file('import_file')->getRealPath();
+            $data = Excel::load($path, function($reader) {
+            })->get();
+
+        
+
+       $users = new user();
+        $oldrecords = new old_records();
+
+         $seqcall = new sequences();
+        $seqinfo = $seqcall->fetchSequence();
+        $centre_id=$seqinfo[0]->centre_id;
+        if($centre_id<10)
+            $centre_id="0".$centre_id;
+        $centre_prefix=$seqinfo[0]->centre_prefix;
+        $centre_code=$district_code.$centre_prefix.$centre_id;
+        $username=$district_code.$centre_id;
+        $password = Hash::make('123');
+        $newcentre_id=$centre_id+1;
+
+
+        
+
+        $newid = array('centre_id'=>$newcentre_id);
+        $seqcall->updateSequence($newid);
+        $i=0;
+        foreach ($data as $key => $input) {
+           $data = array('district' => $input['district_id'],'division' => $input['division'],'username' => $username,'password' => $password,'centre_id' => $centre_code,'user_id' => 2);
+                $users->create($data); 
+$centre_code="";
+            $tdata = array('district' => $input['district_id'],'center_name' => $input['tc_name'],'center_id' => $centre_code, 'batch_name' => $input['batch_name'],'batch_start_date' => $input['batch_start'],'batch_end_date' => $input['batch_end'],'candidate_name' => $input['candidate_name'],'wage_emp' => $input['wage_emp'],'industry' =>$input['industry'],'loan' => $input['loan'],'others' => $input['others'],'self_emp' => $input['self_emp'],'financial_yr' => $input['financial_yr']);
+             $oldrecords->insert($tdata);
+             $i++;
+        }
+
+        }
+
+        return $i;
+
+    }   
     public function batch()
     {        
         $tcobj = new training_centre_subjects();
@@ -715,16 +759,16 @@ class TcController extends Controller
     {
         $centreid = Auth::user()->centre_id;
         $batchid = "";
-        $batches = new batches();
+        $batches = new training_batches();
         if(Input::get('batchid'))
             $batchid = Input::get('batchid');
 
-        $batchlist = $batches->fetchBatchListByTc($centreid);
+        $batchlist = $batches->fetchtrainingBatchs($centreid);
         if(!empty($batchid)){
-            $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('batches','batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->where('batch_candidates.batch_id','=',$batchid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','batches.batch_id','batches.batch_name')->paginate(10);
+            $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('training_batches','training_batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->where('batch_candidates.batch_id','=',$batchid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','training_batches.batch_id','training_batches.batch_name','training_batches.action','candidates.attendence')->paginate(10);
         }
         else{
-            $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('batches','batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','batches.batch_id','batches.batch_name')->paginate(10);
+            $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('training_batches','training_batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','training_batches.batch_id','training_batches.batch_name','training_batches.action','candidates.attendence')->paginate(10);
         }
         
         return view('tcview.candidate',compact('candidate','batchlist','batchid'));   
@@ -925,4 +969,36 @@ class TcController extends Controller
         return json_encode([$file_path]);
         // return response()->download($file_path);
     }
+
+    public function  updateAttendance()
+    {
+        $input = Input::All();
+        $candidatecall = new candidates();
+        $candidatecall -> uploadAttendence($input['canid'],$input['attendence']);
+        Session::flash("success", "Successfully updated!!");
+        return Redirect::back();
+        
+    }
+
+    public function  downloadfile()
+    {
+      $fileName = basename('candidate_sample.csv');
+        $filePath = 'uploads/'.$fileName;
+        if(!empty($fileName) && file_exists($filePath)){
+            // Define headers
+            header("Cache-Control: public");
+            header("Content-Description: File Transfer");
+            header("Content-Disposition: attachment; filename=$fileName");
+            header("Content-Type: application/zip");
+            header("Content-Transfer-Encoding: binary");
+            
+            // Read the file
+            readfile($filePath);
+            exit;
+        }else{
+            return 'The file does not exist.';
+        }
+        
+    }
+    
 }

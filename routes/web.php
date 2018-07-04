@@ -160,6 +160,8 @@ Route::get('/certificateupload/ajax/{id}/{year}','TcController@certificateupload
 Route::get('/certificateupload/batchajax/{id}','TcController@certificateuploadSubjectBatchList');
 Route::post('/candidateCertificate','TcController@candidatecertificate');
 Route::get('/certificatedownload/{candidateid}/{batchid}', 'TcController@certificatedownloadView');
+Route::post('updateAttendance', 'TcController@updateAttendance');
+
 
 // Get Taluks list
 Route::get('weavers/get_talukas/{id}', 'WeaverController@getTaluk');
@@ -195,3 +197,6 @@ Route::get('weavers/invest-apply', function()
 Route::get('weavers/invest-list','WeaverController@investList');
 
 Route::get('home','DCController@home');
+Route::post('/olddata','TcController@olddata');
+Route::get('downloadfile','TcController@downloadfile');
+
