@@ -381,6 +381,16 @@ class WeaverController extends Controller
                 $psa->mctype3 = json_encode(Input::get('mctype3'));
             }
             
+            // additional preloom
+            if(Input::get('additional_preloom1', false) || Input::get('additional_preloom2', false)){
+                $mctype_total_num = 0;
+                $tempmc2 = Input::get('mctype2');
+                foreach ($tempmc2 as $key => $value) {
+                    $mctype_total_num = $mctype_total_num + intval($value['power']);
+                }
+                $tempmc2['totalpower'] = $mctype_total_num;
+                $psa->mctype2 = json_encode($tempmc2);
+            }
             // Education check
             $edu = Input::get('education');
             $edu_other = Input::get('education_other');
@@ -610,3 +620,4 @@ class WeaverController extends Controller
         return View::make('weavers.invest_list')->with('applications',$applications);
     }
 }
+

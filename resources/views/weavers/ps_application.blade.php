@@ -452,167 +452,53 @@
                     <table class="table table-bordered">
                         <tr>
                             <td>
+                            <!-- Powerloom -->
                                 <div id="mctype1">
+                                    <h5 class="text-center">Powerloom Details</h5>
                                     <table class="table table-bordered">
-                                    <tbody>
-                                        <tr>
-                                            <th>Powerloom make name</th>
-                                            <th>Number of looms</th>
-                                            <th>Type of loom</th>
-                                            <th>Width of loom<br> (in inchs)</th>
-                                            <th>Power consumption<br>per loom (in HP)</th>
-                                            <th>Attachment</th>                                            
-                                        </tr>
-                                        <tr>
-                                            <td>{{ Form::text("mctype1[1][loommake]") }}</td>
-                                            <td>{{ Form::text("mctype1[1][loomnum]") }}</td>
-                                            <td>
-                                                {{ Form::select("mctype1[1][loomtype]", [
-                                                    ''=>'Select',
-                                                    'Ordinary' => 'Ordinary',
-                                                    'Semi_auto' => 'Semi automatic',
-                                                    'Auto' => 'Automatic',
-                                                    'Hi_Tech_pl' => 'Hi-Tech PL',
-                                                    //'Rapier' => 'Rapier',
-                                                    ]
-                                                ) }}
-                                            </td>
-                                            <td>{{ Form::text("mctype1[1][loomwidth]") }}</td>
-                                            <td>{{ Form::text("mctype1[1][loompowercon]") }}</td>
-                                            <td style="width:120px;">
-                                                {{Form::checkbox("mctype1[1][att][]", 'Dobby','',['id'=>'dobby1'])}}&nbsp;<label for="dobby1">Dobby</label><br>
-                                                {{Form::checkbox("mctype1[1][att][]", 'jacquard','',['id'=>'jacquard1'])}}&nbsp;<label for="jacquard1">Jacquard</label><br>
-                                                {{Form::checkbox("mctype1[1][att][]", 'dropbox','',['id'=>'dropbox1'])}}&nbsp;<label for="dropbox1">Dropbox</label><br>
-                                            </td>
-                                        </tr>
+                                        <tbody>
+                                            <tr>
+                                                <th>Powerloom make name</th>
+                                                <th>Number of looms</th>
+                                                <th>Type of loom</th>
+                                                <th>Width of loom<br> (in inchs)</th>
+                                                <th>Power consumption<br>per loom (in HP)</th>
+                                                <th>Attachment</th>                                            
+                                            </tr>
+                                            <tr>
+                                                <td>{{ Form::text("mctype1[1][loommake]") }}</td>
+                                                <td>{{ Form::input('number',"mctype1[1][loomnum]") }}</td>
+                                                <td>
+                                                    {{ Form::select("mctype1[1][loomtype]", [
+                                                        ''=>'Select',
+                                                        'Ordinary' => 'Ordinary',
+                                                        'Semi_auto' => 'Semi automatic',
+                                                        'Auto' => 'Automatic',
+                                                        'Hi_Tech_pl' => 'Hi-Tech PL',
+                                                        //'Rapier' => 'Rapier',
+                                                        ]
+                                                    ) }}
+                                                </td>
+                                                <td>{{ Form::input('number',"mctype1[1][loomwidth]") }}</td>
+                                                <td>{{ Form::input('number',"mctype1[1][loompowercon]") }}</td>
+                                                <td style="width:120px;">
+                                                    {{Form::checkbox("mctype1[1][att][]", 'Dobby','',['id'=>'dobby1'])}}&nbsp;<label for="dobby1">Dobby</label><br>
+                                                    {{Form::checkbox("mctype1[1][att][]", 'jacquard','',['id'=>'jacquard1'])}}&nbsp;<label for="jacquard1">Jacquard</label><br>
+                                                    {{Form::checkbox("mctype1[1][att][]", 'dropbox','',['id'=>'dropbox1'])}}&nbsp;<label for="dropbox1">Dropbox</label><br>
+                                                </td>
+                                            </tr>
                                         </tbody>                               
                                     </table>
                                     <button id="mctype1_btn" type="button">Add row</button>
-                                </div>
-                                
-                                <div id="mctype2">
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th>Preloom facility machines</th>
-                                        <th>Availability</th>
-                                        <th>No of Spindles</th>
-                                        <th>No of machines</th>
-                                        <th>Power (in HP)</th>
-                                    </tr>
-                                    <tr>
-                                        <td>Pirn winding machine</td>
-                                        <td>
-                                            <label for="pirnwind_avail_yes">Yes</label>
-                                            {{ Form::radio("mctype2[pirnwind][avail]", 'Yes', '', ['id'=>'pirnwind_avail_yes']) }}
-                                            &nbsp;<br>&nbsp;
-                                            <label for="pirnwind_avail_no">No</label>
-                                            {{ Form::radio("mctype2[pirnwind][avail]", 'No', '', ['id'=>'pirnwind_avail_no']) }}
-                                            <span class="error"></span>
-                                        </td>
-                                        <td>
-                                            {{ Form::text("mctype2[pirnwind][num_loom]") }}
-                                        </td>
-                                        <td>
-                                            {{ Form::text("mctype2[pirnwind][num_mcs]") }}
-
-                                        </td>
-                                        <td>
-                                            {{ Form::input('number', 'mctype2[pirnwind][power]', null, ['id' => 'pwr1']) }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Bobbin/dubbling/winding</td>
-                                        <td>
-                                            <label for="bbdbwi_avail_yes">Yes</label>
-                                            {{ Form::radio("mctype2[bbdbwi][avail]", 'Yes', '', ['id'=>'bbdbwi_avail_yes']) }}
-                                            &nbsp;<br>&nbsp;
-                                            <label for="bbdbwi_avail_no">No</label>
-                                            {{ Form::radio("mctype2[bbdbwi][avail]", 'No', '', ['id'=>'bbdbwi_avail_no']) }}
-                                            <span class="error"></span>
-                                        </td>
-                                        <td>
-                                            {{ Form::text("mctype2[bbdbwi][num_loom]") }}
-                                        </td>
-                                        <td>
-                                            {{ Form::text("mctype2[bbdbwi][num_mcs]") }}
-
-                                        </td>
-                                        <td>
-                                            {{ Form::input('number', 'mctype2[bbdbwi][power]', null, ['id' => 'pwr2']) }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Warping machine</td>
-                                        <td>
-                                            <label for="wrp_avail_yes">Yes</label>
-                                            {{ Form::radio("mctype2[wrp][avail]", 'Yes', '', ['id'=>'wrp_avail_yes']) }}
-                                            &nbsp;<br>&nbsp;
-                                            <label for="wrp_avail_no">No</label>
-                                            {{ Form::radio("mctype2[wrp][avail]", 'No', '', ['id'=>'wrp_avail_no']) }}
-                                            <span class="error"></span>
-                                        </td>
-                                        <td>
-                                            {{ Form::text("mctype2[wrp][num_loom]") }}
-                                        </td>
-                                        <td>
-                                            {{ Form::text("mctype2[wrp][num_mcs]") }}
-
-                                        </td>
-                                        <td>
-                                            {{ Form::input('number', 'mctype2[wrp][power]', null, ['id' => 'pwr3']) }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Twisting machine</td>
-                                        <td>
-                                            <label for="twst_avail_yes">Yes</label>
-                                            {{ Form::radio("mctype2[twst][avail]", 'Yes', '', ['id'=>'twst_avail_yes']) }}
-                                            &nbsp;<br>&nbsp;
-                                            <label for="twst_avail_no">No</label>
-                                            {{ Form::radio("mctype2[twst][avail]", 'No', '', ['id'=>'twst_avail_no']) }}
-                                            <span class="error"></span>
-                                        </td>
-                                        <td>
-                                            {{ Form::text("mctype2[twst][num_loom]") }}
-                                        </td>
-                                        <td>
-                                            {{ Form::text("mctype2[twst][num_mcs]") }}
-
-                                        </td>
-                                        <td>
-                                            {{ Form::input('number', 'mctype2[twst][power]', null, ['id' => 'pwr4']) }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Other machine<br>
-                                            {{ Form::text('mctype2[other][othername]','',['id'=>'othervalfeild']) }}
-                                        </td>
-                                        <td>
-                                            <label for="other_avail_yes">Yes</label>
-                                            {{ Form::radio("mctype2[other][avail]", 'Yes', '', ['id'=>'other_avail_yes']) }}
-                                            &nbsp;<br>&nbsp;
-                                            <label for="other_avail_no">No</label>
-                                            {{ Form::radio("mctype2[other][avail]", 'No', '', ['id'=>'other_avail_no']) }}
-                                            <span class="error"></span>
-                                        </td>
-                                        <td>
-                                            {{ Form::text("mctype2[other][num_loom]") }}
-                                        </td>
-                                        <td>
-                                            {{ Form::text("mctype2[other][num_mcs]") }}
-
-                                        </td>
-                                        <td>
-                                            {{ Form::input('number', 'mctype2[other][power]', null, ['id' => 'pwr5']) }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4" class="text-right"><b>Total</b></td>
-                                        <td><span id="powertotal"></span></td>
-                                    </tr>
-                                </table>
-                                </div>
+                                    <hr>
+                                    <div class="addnl-preloom">
+                                        {{ Form::checkbox("additional_preloom1", "additional_preloom1", null, ['id'=>'additional_preloom1']) }}
+                                        <label for="additional_preloom1">Do you have preloom units?</label>
+                                    </div>
+                                </div>                                
+                                <!-- Shutleless -->
                                 <div id="mctype3">
+                                    <h5 class="text-center">Shuttleless Loom Details</h5>
                                     <table class="table table-bordered">
                                         <tbody>
                                             <tr>
@@ -643,7 +529,136 @@
                                         </tbody>
                                     </table>
                                     <button id="mctype3_btn">Add row</button>
-                                </div>                                
+                                    <hr>
+                                    <div class="addnl-preloom">
+                                        {{ Form::checkbox("additional_preloom2", "additional_preloom2", null, ['id'=>'additional_preloom2']) }}
+                                        <label for="additional_preloom2">Do you have preloom units?</label>
+                                    </div>
+                                </div>
+                                <!-- Preloom -->
+                                <div id="mctype2">
+                                        <h5 class="text-center">Preloom Details</h5>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <th>Preloom facility machines</th>
+                                                <th>Availability</th>
+                                                <th>No of Spindles</th>
+                                                <th>No of machines</th>
+                                                <th>Power (in HP)</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Pirn winding machine</td>
+                                                <td>
+                                                    <label for="pirnwind_avail_yes">Yes</label>
+                                                    {{ Form::radio("mctype2[pirnwind][avail]", 'Yes', '', ['id'=>'pirnwind_avail_yes']) }}
+                                                    &nbsp;<br>&nbsp;
+                                                    <label for="pirnwind_avail_no">No</label>
+                                                    {{ Form::radio("mctype2[pirnwind][avail]", 'No', '', ['id'=>'pirnwind_avail_no']) }}
+                                                    <span class="error"></span>
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number',"mctype2[pirnwind][num_loom]") }}
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number',"mctype2[pirnwind][num_mcs]") }}
+    
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number', 'mctype2[pirnwind][power]', null, ['id' => 'pwr1']) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bobbin/dubbling/winding</td>
+                                                <td>
+                                                    <label for="bbdbwi_avail_yes">Yes</label>
+                                                    {{ Form::radio("mctype2[bbdbwi][avail]", 'Yes', '', ['id'=>'bbdbwi_avail_yes']) }}
+                                                    &nbsp;<br>&nbsp;
+                                                    <label for="bbdbwi_avail_no">No</label>
+                                                    {{ Form::radio("mctype2[bbdbwi][avail]", 'No', '', ['id'=>'bbdbwi_avail_no']) }}
+                                                    <span class="error"></span>
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number',"mctype2[bbdbwi][num_loom]") }}
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number',"mctype2[bbdbwi][num_mcs]") }}
+    
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number', 'mctype2[bbdbwi][power]', null, ['id' => 'pwr2']) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Warping machine</td>
+                                                <td>
+                                                    <label for="wrp_avail_yes">Yes</label>
+                                                    {{ Form::radio("mctype2[wrp][avail]", 'Yes', '', ['id'=>'wrp_avail_yes']) }}
+                                                    &nbsp;<br>&nbsp;
+                                                    <label for="wrp_avail_no">No</label>
+                                                    {{ Form::radio("mctype2[wrp][avail]", 'No', '', ['id'=>'wrp_avail_no']) }}
+                                                    <span class="error"></span>
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number',"mctype2[wrp][num_loom]") }}
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number',"mctype2[wrp][num_mcs]") }}
+    
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number', 'mctype2[wrp][power]', null, ['id' => 'pwr3']) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Twisting machine</td>
+                                                <td>
+                                                    <label for="twst_avail_yes">Yes</label>
+                                                    {{ Form::radio("mctype2[twst][avail]", 'Yes', '', ['id'=>'twst_avail_yes']) }}
+                                                    &nbsp;<br>&nbsp;
+                                                    <label for="twst_avail_no">No</label>
+                                                    {{ Form::radio("mctype2[twst][avail]", 'No', '', ['id'=>'twst_avail_no']) }}
+                                                    <span class="error"></span>
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number',"mctype2[twst][num_loom]") }}
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number',"mctype2[twst][num_mcs]") }}
+    
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number', 'mctype2[twst][power]', null, ['id' => 'pwr4']) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Other machine<br>
+                                                    {{ Form::text('mctype2[other][othername]','',['id'=>'othervalfeild']) }}
+                                                </td>
+                                                <td>
+                                                    <label for="other_avail_yes">Yes</label>
+                                                    {{ Form::radio("mctype2[other][avail]", 'Yes', '', ['id'=>'other_avail_yes']) }}
+                                                    &nbsp;<br>&nbsp;
+                                                    <label for="other_avail_no">No</label>
+                                                    {{ Form::radio("mctype2[other][avail]", 'No', '', ['id'=>'other_avail_no']) }}
+                                                    <span class="error"></span>
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number',"mctype2[other][num_loom]") }}
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number',"mctype2[other][num_mcs]") }}
+    
+                                                </td>
+                                                <td>
+                                                    {{ Form::input('number', 'mctype2[other][power]', null, ['id' => 'pwr5']) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" class="text-right"><b>Total</b></td>
+                                                <td><span id="powertotal"></span></td>
+                                            </tr>
+                                        </table>
+                                    </div>
                             </td>
                         </tr>
                         <tr>
@@ -657,8 +672,8 @@
                                         </tr>
                                         <tr>
                                             <td>{{ Form::text("mctype4[1][raw_mtr]") }}</td>
-                                            <td>{{ Form::text("mctype4[1][avg_cons]") }}</td>
-                                            <td>{{ Form::text("mctype4[1][avg_prod]") }}</td>
+                                            <td>{{ Form::input('number',"mctype4[1][avg_cons]") }}</td>
+                                            <td>{{ Form::input('number',"mctype4[1][avg_prod]") }}</td>
                                         </tr>
                                     </tbody>
                                     
@@ -764,3 +779,4 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="{{asset('js/ps_apply_script.js')}}"></script>
 @stop
+
