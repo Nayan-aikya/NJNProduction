@@ -18,4 +18,6 @@
   <a href="{{ URL::to('approveemploymentexpense')}}">Approve Employment Expense</a>
   <a href="{{ URL::to('printcertification')}}">Print Candidate Certificate</a>
   <a href="{{ URL::to('pfreport') }}">Physical & Financial Target Report</a>
+  <a href="{{ URL::to('oldreport') }}">Past Reports</a>
+
 </div>

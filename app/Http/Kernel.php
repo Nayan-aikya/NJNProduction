@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'tc' => \App\Http\Middleware\TcMiddleware::class,
         'td' => \App\Http\Middleware\TdMiddleware::class,
         'CheckTD' => \App\Http\Middleware\CheckTD::class,
+        'CheckUserType' => \App\Http\Middleware\CheckUserType::class,
     ];
 }

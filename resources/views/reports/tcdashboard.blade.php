@@ -29,7 +29,7 @@
 <div id="viewtargetcontent" class="col-md-9">
 <div class="row" >
 <form action="{{ URL::to('tcdashboard') }}" method="get">
-<div class="col-sm-5" style="margin-left:4%;">
+<div class="col-sm-4" style="margin-left:4%;">
               <label for="usr">Academic Year</label>
               <select onchange="this.form.submit()" class="form-control" id="sel1" name="fiscalyear" required>
               <option value="">-----Select Academic Year-----</option>

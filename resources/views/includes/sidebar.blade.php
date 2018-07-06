@@ -16,4 +16,6 @@
 
   <a href="{{ URL::to('tcpfreport') }}">Physical & Financial Target Report</a>
   <a href="{{ URL::to('certificateupload') }}">Certificate Upload</a>
+  <a href="{{ URL::to('oldreport') }}">Past Reports</a>
+
 </div>

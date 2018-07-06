@@ -26,14 +26,13 @@ use App\batch_employment_expenses;
 use App\academicyear;
 use App\batch_candidates;
 use App\batch_employment_expense;
-
-
-
 use Hash;
 use Illuminate\Support\Facades\Input;
 
 use Illuminate\Support\Facades\Redirect;
 use DateTime;
+use App\old_records;
+
 
 class TdController extends Controller
 {
@@ -63,7 +62,7 @@ class TdController extends Controller
         
         $usercall= new users();
         $info = $usercall->fetchUserInfo($username);
-        $district=$info[0]->district;
+        $district = Auth::user()->district;
 
         $districtcall=new districts();
         $division = $districtcall->fetchDivisionInfo($district);
@@ -92,7 +91,7 @@ class TdController extends Controller
 
         $usercall= new users();
         $info = $usercall->fetchUserInfo($username);
-        $district=$info[0]->district;
+        $district = Auth::user()->district;
 
         $districtcall=new districts();
         $districtinfo = $districtcall->fetchDivisionInfo($district);
@@ -955,5 +954,18 @@ class TdController extends Controller
         }
         
     }
+    public function  oldreport()
+    {
+        $district = Auth::user()->district;
+        $oldr = new old_records();
+        $reports = $oldr->getAllReportByDC($district);
+        return view('tcview.oldreport',compact('reports','district'));
+    }
     
+    public function fulldetails(){
+        $district = Auth::user()->district;
+        $oldr = new old_records();
+        $data = $oldr->where('district',$district)->paginate(10);
+        return view('tdview.fulldetails',compact('data','district'));
+    }
 }

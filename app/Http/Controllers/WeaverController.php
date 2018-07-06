@@ -12,6 +12,7 @@ use App\powerSubsidyApps;
 use App\districts;
 use App\user_roles;
 use App\taluks;
+use App\DistAppCommits;
 use App\investscheme;
 use View;
 use Image; 
@@ -27,7 +28,7 @@ class WeaverController extends Controller
      * All about 2loom and electronic jaquard scheme
      */
 
-    public function getTaluk($id){
+    public function getTaluk(Request $req,$id){
         // fetch and send
         $ret = '<option value="">Select</option>';
         $taluks = taluks::where('District_Id',$id)->get();
@@ -152,6 +153,7 @@ class WeaverController extends Controller
             $e1->app_place = Input::get('app_place');
             $e1->appdate = Input::get('appdate');
             $e1->app_status = 'applied';
+            $e1->is_complete = 'yes';
             $e1->prepBank_type = Input::get('prepBank_type');
             $e1->prepBank_bankname = Input::get('prepBank_bankname');
             $e1->prepBank_loanamt = Input::get('prepBank_loanamt');
@@ -259,132 +261,6 @@ class WeaverController extends Controller
         } 
     }
 
-    public function ejTlAdminaction($action, $id){
-
-        if($did = $this->checkTD()){
-            if($action != 'approved' && $action != 'rejected'){
-                return redirect('/weavers/ej-2loom-list/')->with('error','Invalid action.');
-            }
-            $app = ej2l_Applications::find($id);
-            if($app->app_status == 'applied' && $did == $app->app_district){
-                $w3 = ej2l_Applications::find($id);
-                    $w3->app_status = $action;
-                    if($w3->save()){
-                    return redirect('/weavers/ej-2loom-list/')->with('success','Updated successfully');
-                }
-                else{
-                    return redirect('/weavers/ej-2loom-list/')->with('error','Failed, something went wrong.');
-                }
-            }
-            else{
-                return redirect('/weavers/ej-2loom-list/')->with('error','Invalid user action.');
-            }
-        }
-        else{
-            return redirect('login');
-        }              
-    }
-
-    public function ejTlGetzip($id){
-
-        if($id == ''){
-            abort(404);
-        }
-
-        if($did = $this->checkTD()){
-            $app = ej2l_Applications::find($id);
-            if($did != $app->app_district){
-                return redirect('/weavers/ej-2loom-list/')->with('error','Invalid user action.');
-            }
-            $dir = base_path('storage/user_files/ej_2l/'.$id);
-
-            if (!file_exists($dir)){
-                return redirect('/weavers/ej-2loom-app/details/'.$id)->with('error','Uploads directory not found.');
-            }
-            
-            $zip_file = 'EJ2L_ID_'.$id.'_files.zip';
-
-            // Get real path for our folder
-            $rootPath = realpath($dir);
-
-            // Initialize archive object
-            $zip = new ZipArchive();
-            $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-            // Create recursive directory iterator
-            /** @var SplFileInfo[] $files */
-            $files = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($rootPath),
-                RecursiveIteratorIterator::LEAVES_ONLY
-            );
-
-            foreach ($files as $name => $file)
-            {
-                // Skip directories (they would be added automatically)
-                if (!$file->isDir())
-                {
-                    // Get real and relative path for current file
-                    $filePath = $file->getRealPath();
-                    $relativePath = substr($filePath, strlen($rootPath) + 1);
-
-                    // Add current file to archive
-                    $zip->addFile($filePath, $relativePath);
-                }
-            }
-
-            // Zip archive will be created only after closing object
-            $zip->close();
-
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($zip_file));
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($zip_file));
-            readfile($zip_file);
-        }
-        else{
-            return redirect('login')->with('error','Invalid user action.');
-        }
-
-        
-
-        
-
-    }
-
-    public function ejTlList(){
-        if($did = $this->checkTD()){
-            $applications = ej2l_Applications::where('app_district',$did)->get();
-            return View::make('weavers.ej_list')->with('applications',$applications);
-        }
-        return redirect('login');
-        
-    }
-
-    public function ejTlDetails($id){
-        if($did = $this->checkTD()){
-            $app = ej2l_Applications::find($id);
-            if($did == $app->app_district){
-                $app->user_dist_name = districts::where('id',$app->resi_district)->value('district_name');
-                $app->app_dist_name = districts::where('id',$app->app_district)->value('district_name');
-
-                $app->app_taluk_name = taluks::where('id',$app->app_taluk)->value('Taluk');
-                $app->resi_taluk_name = taluks::where('id',$app->resi_taluk)->value('Taluk');
-
-                return View::make('weavers.ej_details')->with('app',$app);
-            }
-            else{
-                return redirect('login')->with('error','Invalid user.');
-            }
-        }
-        else{
-            return redirect('login');
-        }
-    }
-
     /**
      * All about Power subsidy
      */
@@ -479,6 +355,7 @@ class WeaverController extends Controller
             $psa->app_date = Input::get('app_date');
             $psa->app_place = Input::get('app_place');
             $psa->app_status = 'applied';
+            $psa->is_complete = 'yes';
 
             $scheme_name = Input::get('scheme_name');
             $unit_type = Input::get('unit_type');
@@ -633,156 +510,6 @@ class WeaverController extends Controller
         else{
             abort(404);
         } 
-    }
-
-    public function psList(){
-        if($did = $this->checkTD()){
-            $applications = powerSubsidyApps::where('app_district',$did)->get();
-            return View::make('weavers.ps_list')->with('applications',$applications);
-        }
-        else{
-            return redirect('login')->with('error','Invalid user action.');
-        }
-        
-    }
-
-    public function psDetails($id){
-
-        if($did = $this->checkTD()){
-            $app = powerSubsidyApps::find($id);
-            if($did == $app->app_district){
-                $app->user_dist_name = districts::where('id',$app->resi_district)->value('district_name');
-                $app->app_dist_name = districts::where('id',$app->app_district)->value('district_name');
-
-                $app->app_taluk_name = taluks::where('id',$app->app_taluk)->value('Taluk');
-                $app->resi_taluk_name = taluks::where('id',$app->resi_taluk)->value('Taluk');
-                return View::make('weavers.ps_details')->with('app',$app);
-            }
-            else{
-                return redirect('login')->with('error','Invalid user.');
-            }
-        }
-        else{
-            return redirect('login')->with('error','Invalid user.');
-        }
-    }
-
-    public function psAdminaction($action, $id){
-        if($did = $this->checkTD()){
-            if($action != 'approved' && $action != 'rejected'){
-                return redirect('/weavers/powersubsidy-list/')->with('error','Invalid command.');
-            }
-            $app = powerSubsidyApps::find($id);
-            if($app->app_status == 'applied' && $app->app_district == $did){
-                $w3 = powerSubsidyApps::find($id);
-                    $w3->app_status = $action;
-                    if($w3->save()){
-                    return redirect('/weavers/powersubsidy-list/')->with('success','Updated successfully');
-                }
-                else{
-                    return redirect('/weavers/powersubsidy-list/')->with('error','Failed, something went wrong.');
-                }
-            }
-            else{
-                return redirect('/weavers/powersubsidy-list/')->with('error','Invalid action.');
-            }
-        }
-        else{
-            return redirect('login');
-        }
-    }
-
-    public function psGetzip($id){
-        if($id == ''){
-            abort(404);
-        }
-        if($did = $this->checkTD()){
-            $app = powerSubsidyApps::find($id);
-            if($did != $app->app_district){
-                return redirect('/weavers/powersubsidy-list/')->with('error','Invalid user action.');
-            }
-            $dir = storage_path('user_files/powersubsidy/'.$id);
-            if (!file_exists($dir)){
-                return redirect('/weavers/powersubsidy-list/details/'.$id)->with('error','Uploads directory not found.');
-            }
-            
-            $zip_file = 'PS_ID_'.$id.'_files.zip';
-
-            // Get real path for our folder
-            $rootPath = realpath($dir);
-
-            // Initialize archive object
-            $zip = new ZipArchive();
-            $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-            // Create recursive directory iterator
-            /** @var SplFileInfo[] $files */
-            $files = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($rootPath),
-                RecursiveIteratorIterator::LEAVES_ONLY
-            );
-
-            foreach ($files as $name => $file)
-            {
-                // Skip directories (they would be added automatically)
-                if (!$file->isDir())
-                {
-                    // Get real and relative path for current file
-                    $filePath = $file->getRealPath();
-                    $relativePath = substr($filePath, strlen($rootPath) + 1);
-                    echo "\$zip->addFile('".$filePath."','".$relativePath."');<br>";
-                    // Add current file to archive
-                    $zip->addFile($filePath, $relativePath);
-                }
-            }
-            
-            // Zip archive will be created only after closing object
-            $zip->close();
-
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($zip_file));
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($zip_file));
-            readfile($zip_file);
-        }
-        else{
-            return redirect('login');
-        }
-        
-
-        
-
-    }
-
-    private function checkTD(){
-        if (Auth::check()) {
-            // check user is logged in...
-            $loggedinuser_id = Auth::user()->user_id;
-            $loggedinuser_district = Auth::user()->district;
-
-            $did = districts::where('district_name', '=' ,$loggedinuser_district)->value('id');
-
-
-            $userrole=new user_roles();
-            $role=$userrole->fetchRole($loggedinuser_id);            
-            
-            if($role[0]->role_id =='TD') {
-                // Only for TD user
-                return $did;
-            }
-            else{
-                // for none TD
-                return false;
-            }
-        }
-        else{
-            // if not logged in
-            return false;
-        }
     }
 
     /**

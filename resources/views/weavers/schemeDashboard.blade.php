@@ -61,43 +61,6 @@
                 </ul>
             </div>
         </div>
-
     </div>
-    <div class="row">
-    <div class="col-md-6">
-            <div class="well wellbox2">
-                <h2 style="font-size: 15pt;text-align: left;">NJN Training Scheme</h2>
-                <ul class="list-group">
-                    <li class="list-group-item">
-                      <span class="badge">{{ $appsdata['status'] }}</span>
-                      Training Center Count
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge">{{ $appsdata['nobatch'] }}</span>
-                      Batch Count
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge">{{ $appsdata['nocandidate'] }}</span>
-                      Candidates Count
-                    </li>
-                    <?php $url=""; ?>
-                    @if(Auth::check())
-                        @if(Auth::user()->user_id == 1)
-                            <?php $url = "dashboard"; ?>
-                        @endif
-                        @if(Auth::user()->user_id == 2)
-                            <?php $url = "tcdashboard"; ?>
-                        @endif
-                        @if(Auth::user()->user_id == 4)
-                            <?php $url = "dcdashboard"; ?>
-                        @endif
-                    @endif
-                    <li class="list-group-item text-center">
-                      <a href="{{ URL::to($url) }}" class="btn btn-success">View More</a> 
-                    </li>
-                </ul>
-            </div>
-        </div>
-        </div>
 @endSection
 

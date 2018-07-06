@@ -31,6 +31,8 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Excel;
 use DateTime;
+use Hash;
+
 class TcController extends Controller
 {
 
@@ -43,30 +45,40 @@ class TcController extends Controller
 
         
 
-       $users = new user();
+        $users = new users();
         $oldrecords = new old_records();
-
-         $seqcall = new sequences();
-        $seqinfo = $seqcall->fetchSequence();
-        $centre_id=$seqinfo[0]->centre_id;
-        if($centre_id<10)
-            $centre_id="0".$centre_id;
-        $centre_prefix=$seqinfo[0]->centre_prefix;
-        $centre_code=$district_code.$centre_prefix.$centre_id;
-        $username=$district_code.$centre_id;
-        $password = Hash::make('123');
-        $newcentre_id=$centre_id+1;
-
-
-        
-
-        $newid = array('centre_id'=>$newcentre_id);
-        $seqcall->updateSequence($newid);
+        $seqcall = new sequences();
+        $dist = new districts();
+        //echo "<pre>";print_r($data);die;
         $i=0;
         foreach ($data as $key => $input) {
-           $data = array('district' => $input['district_id'],'division' => $input['division'],'username' => $username,'password' => $password,'centre_id' => $centre_code,'user_id' => 2);
+        $cin = $oldrecords->where('center_name',$input['tc_name'])->value('center_id');
+        if(empty($cin)) {
+
+            $district_code = $dist->pluckDistrictCode($input['district_id']);
+            $division = districts::where('district_code',$district_code)->value('division');
+        
+            $seqinfo = $seqcall->fetchSequence();
+            $centre_id=$seqinfo[0]->centre_id;
+            if($centre_id<10)
+                $centre_id="0".$centre_id;
+            $centre_prefix=$seqinfo[0]->centre_prefix;
+            $centre_code=$district_code.$centre_prefix.$centre_id;
+            $username=$district_code.$centre_id;
+            $password = Hash::make('123');
+            $newcentre_id=$centre_id+1;
+
+            $newid = array('centre_id'=>$newcentre_id);
+            $seqcall->updateSequence($newid);
+
+            $data = array('district' => $input['district_id'],'division' => $division,'username' => $username,'password' => $password,'centre_id' => $centre_code,'user_id' => 2);
                 $users->create($data); 
-$centre_code="";
+        }
+        else{
+            $centre_code = $cin;
+        }
+
+            
             $tdata = array('district' => $input['district_id'],'center_name' => $input['tc_name'],'center_id' => $centre_code, 'batch_name' => $input['batch_name'],'batch_start_date' => $input['batch_start'],'batch_end_date' => $input['batch_end'],'candidate_name' => $input['candidate_name'],'wage_emp' => $input['wage_emp'],'industry' =>$input['industry'],'loan' => $input['loan'],'others' => $input['others'],'self_emp' => $input['self_emp'],'financial_yr' => $input['financial_yr']);
              $oldrecords->insert($tdata);
              $i++;
@@ -76,7 +88,12 @@ $centre_code="";
 
         return $i;
 
-    }   
+    }  
+public function getolddata()
+    {  
+        return view('tcview.olddataimport');
+    }
+     
     public function batch()
     {        
         $tcobj = new training_centre_subjects();
@@ -1000,5 +1017,12 @@ $centre_code="";
         }
         
     }
+
+    public function  oldreport()
+    {
+        //,compact('tbinfo','academicyear')
+        return view('tcview.oldreport');
+    }
+    
     
 }

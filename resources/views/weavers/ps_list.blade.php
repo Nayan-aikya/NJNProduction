@@ -23,47 +23,38 @@
                     <th>Name</th>
                     <th>Mobile</th>
                     <th>Date of apllication</th>
-                    <th>Status</th>                    
-                    <th>Inspection status</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
-            @foreach($applications as $key => $app)
-            <tr>
-                <td>{{$app->id}}</td>
-                <td>{{$app->name}}</td>
-                <td>{{$app->resi_mobile}}</td>
-                <td>{{$app->created_at}}</td>
-                <td>
-                    @if ($app->app_status == 'applied')
-                    <span class="label label-warning">Applied</span>
+                @foreach($applications as $key => $app)
+                <tr>
+                    <td>{{$app->id}}</td>
+                    <td>{{$app->name}}</td>
+                    <td>{{$app->resi_mobile}}</td>
+                    <td>{{$app->created_at}}</td>
+                    <td>
+                        @if ($app->app_status == 'applied')
+                        <span class="label label-warning">Applied</span>
+                        @endif
+                        @if ($app->app_status == 'closed')
+                        <span class="label label-success">Closed</span>
+                        @endif
+                    </td>
+                   
+                    <td>
+                    @if ($app->is_complete == 'yes')
+                        <a class="btn btn-sm btn-info" href="{{ url('/weavers/powersubsidy-app/details/'.$app->id)}}">View details</a>
                     @endif
-                    @if ($app->app_status == 'approved')
-                    <span class="label label-success">Approved</span>
+                    @if ($app->is_complete == 'no')
+                        <a class="btn btn-sm btn-warning" href="{{ url('weavers/powersubsidy-edit/'.$app->id)}}">Edit form</a>
                     @endif
-                    @if ($app->app_status == 'rejected')
-                    <span class="label label-danger">Rejected</span>
-                    @endif
-                </td>
-                <td>
-                    @if ($app->ins_status == 'pending')
-                    <span class="label label-warning">Pending</span>
-                    @endif
-                    @if ($app->ins_status == 'finished')
-                    <span class="label label-success">Finished</span>
-                    @endif
-                    @if ($app->ins_status == 'rejected')
-                    <span class="label label-danger">Rejected</span>
-                    @endif
-                    @if ($app->ins_status == '')
-                    <span class="label label-danger">NA</span>
-                    @endif
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-info" href="{{ url('/weavers/powersubsidy-app/details/'.$app->id)}}">View details</a>
-                </td>
-            </tr>
-            @endforeach
+                    </td>
+                </tr>
+                @endforeach
             </table>
+        </div>
+        <div class="pages text-center">
+            {{ $applications->links() }}
         </div>
     </div>
 @stop

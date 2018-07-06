@@ -28,7 +28,7 @@
       <a class="navbar-brand" href="#">WebSiteName</a>
     </div> -->
     <ul class="nav navbar-nav navbar-center">
-        <?php $url="/"; ?>
+        <?php $url=""; ?>
         @if(Auth::check())
             @if(Auth::user()->user_id == 1)
                 <?php $url = "dashboard"; ?>
@@ -36,11 +36,14 @@
             @if(Auth::user()->user_id == 2)
                 <?php $url = "tcdashboard"; ?>
             @endif
+            @if(Auth::user()->user_id == 4)
+                <?php $url = "dcdashboard"; ?>
+            @endif
         @endif
      
       <li><a href="{{ url('/home') }}">HOME</a></li>
-      <li><a href="{{ $url }}">Training</a></li>
-      <li><a href="#">Schemes</a></li>
+      <li><a href="{{ URL::to($url) }}">Training</a></li>
+      <li><a href="{{ url('/weavers/schemes') }}">Schemes</a></li>
      
     </ul>
   </div>
