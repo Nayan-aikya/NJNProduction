@@ -234,8 +234,8 @@ $( document ).ready(function() {
     $("#addrow").on("click", function () {
         var cols = "";
         cols += '<td><input name="mctype4['+mct_count_4+'][raw_mtr]" type="text"></td>';
-        cols += '<td><input name="mctype4['+mct_count_4+'][avg_cons]" type="text"></td>';
-        cols += '<td><input name="mctype4['+mct_count_4+'][avg_prod]" type="text"></td>';
+        cols += '<td><input name="mctype4['+mct_count_4+'][avg_cons]" type="number"></td>';
+        cols += '<td><input name="mctype4['+mct_count_4+'][avg_prod]" type="number"></td>';
         $("#mctypeCommon tbody").append("<tr>"+cols+"</tr>");
         mct_count_4++;
     });
@@ -246,10 +246,10 @@ $( document ).ready(function() {
     $("#mctype1_btn").on("click", function () {
         var cols = "";
         cols += '<td><input name="mctype1['+mct_count_1+'][loommake]" type="text"></td>';
-        cols += '<td><input name="mctype1['+mct_count_1+'][loomnum]" type="text"></td>';
+        cols += '<td><input name="mctype1['+mct_count_1+'][loomnum]" type="number"></td>';
         cols += '<td><select name="mctype1['+mct_count_1+'][loomtype]"><option value="">Select</option><option value="Ordinary">Ordinary</option><option value="Semi_auto">Semi automatic</option><option value="Auto">Automatic</option><option value="Hi_Tech_pl">Hi-Tech PL</option></select></td>';
-        cols += '<td><input name="mctype1['+mct_count_1+'][loomwidth]" type="text"></td>';
-        cols += '<td><input name="mctype1['+mct_count_1+'][loompowercon]" type="text"></td>';
+        cols += '<td><input name="mctype1['+mct_count_1+'][loomwidth]" type="number"></td>';
+        cols += '<td><input name="mctype1['+mct_count_1+'][loompowercon]" type="number"></td>';
         cols += '<td><input id="dobby1" name="mctype1['+mct_count_1+'][att][]" type="checkbox" value="Dobby">&nbsp;<label for="dobby1">Dobby</label><br><input id="jacquard1" name="mctype1['+mct_count_1+'][att][]" type="checkbox" value="jacquard">&nbsp;<label for="jacquard1">Jacquard</label><br><input id="dropbox1" name="mctype1['+mct_count_1+'][att][]" type="checkbox" value="dropbox">&nbsp;<label for="dropbox1">Dropbox</label></td>';
         $("#mctype1 table tbody").append("<tr>"+cols+"</tr>");
         mct_count_1++;
@@ -293,6 +293,11 @@ $( document ).ready(function() {
             }
         var totalpwr = pwr1+pwr2+pwr3+pwr4+pwr5;
         $("#powertotal").html(totalpwr);
+    });
+
+    // Additional preloom selection
+    $("#additional_preloom1, #additional_preloom2").change(function(){
+        $("#mctype2").toggle();
     });
 
 });
@@ -358,3 +363,4 @@ function validate_file(fileFieldname) {
         return true;
     }
 }
+

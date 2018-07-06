@@ -178,6 +178,7 @@
                                                 if($app->mctype1){
                                                     $temp1 = json_decode($app->mctype1);
                                                     ?>
+                                                    <h5 class="text-center">Powerloom Details</h5>
                                                     <table width="100%" border="1" style="border-collapse: collapse; border:1px solid #ccc;">
                                                     <tr>
                                                         <th>Powerloom make name</th>
@@ -204,6 +205,7 @@
                                                 if($app->mctype2){
                                                     $val = json_decode($app->mctype2);
                                                 ?>
+                                                    <h5 class="text-center">Preloom Details</h5>
                                                     <table border="1" width="100%" style="border-collapse: collapse; border:1px solid #ccc;">
                                                         <tr>
                                                             <th>Preloom facility machines</th>
@@ -261,6 +263,7 @@
                                                 if($app->mctype3){
                                                     $temp1 = json_decode($app->mctype3);
                                                     ?>
+                                                    <h5 class="text-center">Shuttleless Details</h5>
                                                     <table width="100%" border="1" style="border-collapse: collapse; border:1px solid #ccc;">
                                                     <tr>
                                                         <th>Make of shuttleless power loom</th>
