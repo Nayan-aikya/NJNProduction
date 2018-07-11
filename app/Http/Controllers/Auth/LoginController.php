@@ -40,7 +40,6 @@ class LoginController extends Controller
         $password = $req->input('pass');
         session()->put('username',$username);
         session()->put('password',$password);
-        
         if (Auth::attempt(['username' => $req['user'], 'password' => $req['pass']])) {
         $this->middleware('tc');
         }

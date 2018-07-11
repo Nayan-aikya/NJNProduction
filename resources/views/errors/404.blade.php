@@ -66,8 +66,7 @@
     </head>
     <body>
         <div class="flex-center position-ref full-height">
-           <h2>{{ $exception->getMessage() }}</h2>
-
+           <h1>Sorry!! Something Went wrong.<h1>
         </div>
     </body>
 </html>

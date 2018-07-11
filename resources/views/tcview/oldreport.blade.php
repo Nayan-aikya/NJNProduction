@@ -55,12 +55,12 @@
                      
                     </li>
                     <li class="list-group-item">
-                      <span class="cc" style="float: left;"><b>Center ID</b></span>
+                      <span class="cc" style="float: left;"><b>Center Name</b></span>
                       <span class="bc" style="float: right;"><b> Batch Count</b></span><br>
                     </li>
                     @foreach($reports['batch_detail'] as $batch)
                     <li class="list-group-item">
-                      <span class="cc" style="float: left;">{{ $batch->center_id }}</span>
+                      <span class="cc" style="float: left;">{{ $batch->center_name }}</span>
                       <span class="badge" style="float: right;">{{ $batch->batch_count }}</span><br>
                     </li>
                     @endforeach

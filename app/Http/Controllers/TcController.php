@@ -100,7 +100,10 @@ public function getolddata()
         $trainingtype=$tcobj->fetchSubject();
         $ayobj = new academicyear();
         $academicyear = $ayobj -> fetchAcademicyear();
-        return view('tcview.batchcreate',compact('trainingtype','academicyear'));
+        $data['tc'] = $tc = Auth::user()->centre_id;
+        $tcc_c = new training_centres();
+        $tcname = $tcc_c->fetchTcName($tc);
+        return view('tcview.batchcreate',compact('trainingtype','academicyear','tcname'));
     }
     public function batchstrength($type)
     {
@@ -782,10 +785,10 @@ public function getolddata()
 
         $batchlist = $batches->fetchtrainingBatchs($centreid);
         if(!empty($batchid)){
-            $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('training_batches','training_batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->where('batch_candidates.batch_id','=',$batchid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','training_batches.batch_id','training_batches.batch_name','training_batches.action','candidates.attendence')->paginate(10);
+            $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('training_batches','training_batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->where('batch_candidates.batch_id','=',$batchid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','training_batches.batch_id','training_batches.batch_name','training_batches.action','candidates.attendence','candidates.photo')->paginate(10);
         }
         else{
-            $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('training_batches','training_batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','training_batches.batch_id','training_batches.batch_name','training_batches.action','candidates.attendence')->paginate(10);
+            $candidate = DB::table('candidates')->join('batch_candidates','batch_candidates.candidate_id','=','candidates.candidate_id')->join('training_batches','training_batches.batch_id','batch_candidates.batch_id')->where('batch_candidates.centre_id','=',$centreid)->select('batch_candidates.candidate_id','batch_candidates.batch_type','candidates.first_name','candidates.last_name','candidates.gender','candidates.category','candidates.education','candidates.skill','training_batches.batch_id','training_batches.batch_name','training_batches.action','candidates.attendence','candidates.photo')->paginate(10);
         }
         
         return view('tcview.candidate',compact('candidate','batchlist','batchid'));   
@@ -814,11 +817,13 @@ public function getolddata()
         }
 
         $data['tc'] = $tc = Auth::user()->centre_id;
+        $tcc_c = new training_centres();
+        $data['tcname'] = $tcc_c->fetchTcName($tc);
         $data['acyear'] = $year;
-
+        $date = date('Y-m-d H:i:s');
         $data['academicyear']=$academicyear=academicyear::all();
 
-        $data['info'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->select('training_batches.batch_id','training_batches.batch_name','training_batches.status','batches.start_date','batches.end_date','batches.no_of_stud','training_batches.action')->get();
+        $data['info'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->select('training_batches.batch_id','training_batches.batch_name','training_batches.status','training_centres.centre_name','batches.start_date','batches.end_date','batches.no_of_stud','training_batches.action')->get();
       
         $data['status']=$tcactive = DB::table('training_batches')->where('centre_id',$tc)->where('batch_academic_year',$year)->value('status');
        
@@ -838,6 +843,14 @@ public function getolddata()
         $data['candidateplaced'] = DB::table('batch_candidates')->where('centre_id',$tc)->where('academic_year',$year)->where('employment_status','Yes')->count();
 
         $data['placementexpense'] = DB::table('batch_employment_expenses')->where('centre_id',$tc)->where('academic_year',$year)->sum('expense');
+
+        $data['activebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->where('training_batches.action',"Start")->get();
+
+        $data['nactivebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->where('batches.start_date','<',$date)->where('training_batches.action',NULL)->get();
+            
+        $data['idlebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->where('batches.start_date','>',$date)->get();
+
+        $data['completed'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->where('training_batches.action','=','Completed')->get();
 
         
         return view('reports.tcdashboard')->with('data',$data);

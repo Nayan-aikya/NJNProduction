@@ -26,36 +26,17 @@
         <!-- main content -->
 <div id="viewtargetcontent" class="col-md-12">
 <div class="row" >
-<form action="{{ URL::to('dcdashboard') }}" method="get">
+<form action="{{ URL::to('stdashboard') }}" method="get">
 <div class="col-sm-4">
   <label for="usr">Academic Year</label>
   <select onchange="this.form.submit()" class="form-control" id="sel1" name="fiscalyear" required>
-  <option value="">-----Select Academic Year-----</option>
+  <option value=" ">-----Select Academic Year-----</option>
   @foreach ($data['academicyear'] as $key )
   <option value="{{ $key->academic_year }}"  {{( $key->academic_year == $data['acyear'] ) ? 'selected' : ''}} >{{ $key->academic_year }}</option>
   @endforeach
   </select>
 </div>
 
-<div class="col-sm-4" >
-  <label for="usr">Districts</label>
-  <select onchange="this.form.submit()" class="form-control" id="sel1" name="did" required>
-  <option value="all"> All</option>
-  @foreach ($data['districts'] as $key )
-  <option value="{{ $key->district_code }}"  {{( $key->district_code == $data['did'] ) ? 'selected' : ''}} >{{ $key->district_name }}</option>
-  @endforeach
-  </select>
-</div>
-
-<div class="col-sm-4">
-  <label for="usr">Training Center: </label>
-   <select onchange="this.form.submit()" class="form-control" id="sel1" name="tcid" required>
-    <option value="all">-----All Training Centers-----</option>
-    @foreach ($data['tcinfo'] as $key )
-    <option value="{{ $key->centre_id }}" {{( $key->centre_id == $data['tcid'] ) ? 'selected' : ''}}  >{{ $key->centre_name }}</option>
-    @endforeach
-              </select>
- </div>
 
 </form>
 
@@ -162,8 +143,26 @@
     <h2 style="font-size: 28pt;text-align: left;">{{ $data['placementexpense']}}</h2>
     </div>
   </div>
+   @if(isset($data['olddata'][0]->district) && !empty($data['olddata'][0]->district))
+  <div class="row">
+     <div class="col-sm-2 offset-sm-2">
+       </div>
+          <div class="col-sm-5 well wellbox" >
+         <h2 style="font-size:15pt;text-align: center;">Past Reports - {{ $data['olddata'][0]->ovcount + $data['olddata'][1]->ovcount }}</h2>
+         
+        <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:100%;height: 6px;">
+          <span class="sr-only">70% Complete</span>
+        </div>
+       
+         <h2 style="font-size:13pt;text-align: left;"><span>{{ $data['olddata'][0]->district }}</span>- {{ $data['olddata'][0]->ovcount }}
+
+          <h2 style="font-size:13pt;text-align: left;"><span >{{ $data['olddata'][1]->district }}</span>- {{ $data['olddata'][1]->ovcount }}
+        
+      </div>
+
  
   </div>
+  @endif
   <!--================================= Modals================================== -->
 <!-- Modal -->
   <div class="modal fade" id="active" role="dialog">

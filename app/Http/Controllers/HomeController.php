@@ -42,12 +42,10 @@ class HomeController extends Controller
     {
     	$dividata = array();
     	$userRole = $request->userRole;
-
+        $dividata['userRole'] = $userRole;
         if($userRole == 'TD'){
             $did = $request->current_did;
             $disID = $request->current_didID;
-            
-            $dividata['userRole'] = $userRole;
             $dividata['adminTypeName'] = $request->district_name;
 
             $dividata['ej2l_apps_received'] = ej2l_Applications::where('app_district', '=', $did)->count();                          
@@ -66,7 +64,7 @@ class HomeController extends Controller
             $division_name = $request->division_name;
             $dists_under_div = districts::select('id')->where('division', '=', $division_name)->get();
 
-            $dividata['userRole'] = $userRole;
+            
             $dividata['adminTypeName'] = $division_name;
             $dividata['ej2l_apps_received'] = ej2l_Applications::whereIn('app_district', $dists_under_div)->count();
             $dividata['ej2l_apps_complted'] = ej2l_Applications::where('app_status', '=', 'closed')
@@ -88,6 +86,31 @@ class HomeController extends Controller
             $dividata['nocandidate'] = DB::table('batch_candidates')->join('batches','batch_candidates.batch_id','=','batches.batch_id')
             ->whereIn('district_id',$disids)->count();
 
+        }
+        if($userRole  == 'TC'){
+            $tc=Auth::user()->centre_id;
+
+            $dividata['status'] = DB::table('training_batches')->where('centre_id',$tc)->value('status');
+       
+
+            $dividata['nobatch'] = DB::table('training_batches')->where('centre_id',$tc)->count();
+
+            $dividata['nocandidate'] = DB::table('batch_candidates')->where('centre_id',$tc)->count();
+        }
+        if($userRole  == 'SD'){
+
+            $dividata['adminTypeName'] = "";
+            $dividata['ej2l_apps_received'] = "";
+            $dividata['ej2l_apps_complted'] = "";
+
+            $dividata['ps_apps_received'] ="";
+            $dividata['ps_apps_complted'] = "";
+            $dividata['status'] = DB::table('training_centres')->count();
+       
+
+            $dividata['nobatch'] = DB::table('training_batches')->count();
+
+            $dividata['nocandidate'] = DB::table('batch_candidates')->count();
         }
 	    	return view('dcview.home')->with('appsdata',$dividata);
     	

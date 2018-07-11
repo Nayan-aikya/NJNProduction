@@ -1,6 +1,11 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" >
 @extends('layouts.sidebar')
 @section('content')
+<style type="text/css">
+    input[type='file'] {
+  color: transparent;    /* Hides your "No File Selected" */
+}
+</style>
 <div class="row" id="batchcreatecontainer">
 <div id="sidebar" class="col-md-3">
 @include('includes.sidebar')
@@ -41,11 +46,13 @@
  @foreach ($candidate as $c)
     <tr><td>{{$c->candidate_id}}</td><td>{{$c->first_name}}</td><td>{{$c->last_name}}</td><td>{{$c->gender}}</td><td>{{$c->batch_id}}</td><td>{{$c->batch_name}}</td><td>{{$c->batch_type}}</td>
     <td>
+        <?php $src = "/uploads/".$c->photo; ?>
    		 <form id="uploadphoto.{{$c->candidate_id}}"  action="{{ url('uploadcandidatephoto/'.$c->candidate_id.'/'.$c->batch_id) }}" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <span style="float:left;margin-top: 4%;"><input type="file" name="photo" /></span><br>
             <span style="float:right;margin-top: -10%;"><button class="btn btn-primary">Upload</button></span>
             <p style="color: blue;">(Image size should begit below 1Mb)</p>
+            @if(!empty($c->photo))<img src="{{ $src }}" style="height: 90px; width: auto; float: right;">@endif
         </form>
     </td>
     <td>

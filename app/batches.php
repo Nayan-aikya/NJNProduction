@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use DB;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -40,13 +41,16 @@ class batches extends Model
     }
     public function fetchPendingBatchListPaginate($district,$centre_id,$status){
         if(!empty($centre_id) && !empty($status))
-            $batches = batches::where('district_id',$district)->where('centre_id',$centre_id)->where('status',$status)->paginate(10); 
+            $batches = DB::table('training_centres')->join('batches','training_centres.centre_id','=','batches.centre_id')->where('batches.district_id',$district)->where('batches.status',$status)->where('batches.centre_id',$centre_id)->select('training_centres.centre_name','batches.*')->paginate(10); 
+
         else if(!empty($centre_id) && empty($status))
-            $batches = batches::where('district_id',$district)->where('centre_id',$centre_id)->paginate(10); 
+            $batches = DB::table('training_centres')->join('batches','training_centres.centre_id','=','batches.centre_id')->where('batches.district_id',$district)->where('batches.centre_id',$centre_id)->select('training_centres.centre_name','batches.*')->paginate(10); 
+
         else if(empty($centre_id) && !empty($status))
-            $batches = batches::where('district_id',$district)->where('centre_id',$centre_id)->paginate(10); 
+           $batches = DB::table('training_centres')->join('batches','training_centres.centre_id','=','batches.centre_id')->where('batches.district_id',$district)->where('batches.status',$status)->select('training_centres.centre_name','batches.*')->paginate(10);  
         else
-            $batches = batches::where('district_id',$district)->paginate(10); 
+            $batches = DB::table('training_centres')->join('batches','training_centres.centre_id','=','batches.centre_id')->where('batches.district_id',$district)->select('training_centres.centre_name','batches.*')->paginate(10);  
+
         return $batches;
     }
     public function approveBatch($batchid,$new_batch_data){

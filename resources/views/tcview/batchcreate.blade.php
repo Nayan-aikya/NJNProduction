@@ -9,7 +9,7 @@
 		@if(Session::has('success'))
         <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span><em> {!! session('success') !!}<button type="button" class="close" data-dismiss="alert">×</button></em></div>
         @endif
-<h1 id="heading">Batch Creation</h1>
+<h1 id="heading">Batch Creation</h1><div align="right"><b>Training Center Name:</b> {{ $tcname }}</div>
 <form action="{{ url('/batchcreate') }}" method="post">
 {{csrf_field()}}
 <table style="width: 80%;" cellspacing="15">

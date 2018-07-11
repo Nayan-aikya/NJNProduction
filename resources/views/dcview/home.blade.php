@@ -24,6 +24,7 @@
     @endforeach
     </ul>
     @endif
+    @if($appsdata['userRole'] != 'TC')
     <div class="row">
         <div class="col-md-6">
             <div class="well wellbox2">
@@ -63,8 +64,9 @@
         </div>
 
     </div>
-    <div class="row">
-    <div class="col-md-6">
+    @endif
+    <br><div class="row">
+        <div class="col-md-6">
             <div class="well wellbox2">
                 <h2 style="font-size: 15pt;text-align: left;">NJN Training Scheme</h2>
                 <ul class="list-group">
@@ -91,6 +93,9 @@
                         @if(Auth::user()->user_id == 4)
                             <?php $url = "dcdashboard"; ?>
                         @endif
+                        @if(Auth::user()->user_id == 6)
+                            <?php $url = "stdashboard"; ?>
+                        @endif
                     @endif
                     <li class="list-group-item text-center">
                       <a href="{{ URL::to($url) }}" class="btn btn-success">View More</a> 
@@ -98,6 +103,6 @@
                 </ul>
             </div>
         </div>
-        </div>
+    </div>
 @endSection
 

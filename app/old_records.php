@@ -19,9 +19,9 @@ class old_records extends Model
         $data['cand_count'] = old_records::where('district',$dist)->count();    
 
         $data['batch_detail'] = DB::table('old_records')
-                     ->select(DB::raw('count(id) as batch_count, center_id'))
+                     ->select(DB::raw('count(id) as batch_count, center_name'))
                      ->where('district', '=', $dist)
-                     ->groupBy('center_id')
+                     ->groupBy('center_name')
                      ->get();
         $data['placed_cand'] = old_records::where('district',$dist)->where('wage_emp',"ಹೌದು")->count(); 
                       

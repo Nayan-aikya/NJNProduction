@@ -1,3 +1,4 @@
+
 <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" >
 @extends('layouts.sidebar')
 @section('content')
@@ -40,17 +41,16 @@
         </div><br>
         
         <table class="table table-bordered">
-        <tr><th>Batch Id</th><th>Batch Name</th><th>Batch Type</th><th>Batch Status</th><th>Start Date</th><th>End Date</th><th>No Of Candidate</th><th>Approve</th><th>Reject</th></tr>
+        <tr><th>Batch Id</th><th>Batch Name</th><th>Center Name</th><th>Batch Type</th><th>Batch Status</th><th>Start Date</th><th>End Date</th><th>No Of Candidate</th><th>Approve</th><th>Reject</th></tr>
         <?php $curDate = date('d/m/Y');
          ?>
             @foreach($batchinfo as $row)
-
             <form action="{{ url('approvebatch/'.$row->batch_id) }}" method="POST">
                                     {{ csrf_field() }}
 
             <tr>
                 <input type="hidden" name="batchid" value="{{ $row->batch_id }}">
-                <td>{{$row->batch_id}}</td><td>{{$row->batch_name}}</td><td>{{$row->training_type}}</td><td>{{$row->status}}</td>
+                <td>{{$row->batch_id}}</td><td>{{ $row->centre_name}}</td><td>{{$row->batch_name}}</td><td>{{$row->training_type}}</td><td>{{$row->status}}</td>
                 <td><input type="date" name="start_date" <?php if(time() >= strtotime($row->start_date)) { echo "disabled"; } ?> value="{{$row->start_date}}"></td>
                 <td><input type="date" <?php if(time() >= strtotime($row->start_date)) { echo "disabled"; } ?> name="end_date" value="{{$row->end_date}}"></td>
                 <td>{{$row->no_of_stud}}</td>

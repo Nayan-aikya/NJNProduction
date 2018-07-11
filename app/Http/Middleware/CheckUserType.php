@@ -36,6 +36,17 @@ class CheckUserType
                 $request->merge(array('userRole'=>'DD', 'division_name'=> $loggedinuser_division));
                 return $next($request);
             }
+            if($logged_type_id == 2){
+                // division user
+                $center_id = Auth::user()->centre_id;
+                $request->merge(array('userRole'=>'TC', 'center_id'=> $center_id));
+                return $next($request);
+            }
+            if($logged_type_id == 6){
+                // division user
+                $request->merge(array('userRole'=>'SD'));
+                return $next($request);
+            }
             return redirect()->back();
         }
         return redirect('login');        

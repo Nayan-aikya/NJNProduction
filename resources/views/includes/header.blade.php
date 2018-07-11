@@ -7,7 +7,9 @@
       <a class="navbar-brand"><img src="{{asset('img/logo.png')}}" alt="Logo goes Here"></a>
     </div>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="#">Contact us @ 1234567890</a></li>
+      @if(Auth::check())
+      <li><a href="#">Support Numbers: 9740139896, 9740137638 </a></li>
+      @endif
       <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">English
         <span class="caret"></span></a>
@@ -16,9 +18,31 @@
           <li><a href="#">Kannada</a></li>
         </ul>
       </li>
-      @if(Auth::check())
-      <li><a  href="{{ URL::to('logout') }}" data-target="#login-modal" id="loginlogout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-      @endif
+    
+    <?php $show = "Welcome"; ?>
+    @if(Auth::check())
+    @if(Auth::user()->user_id == 1 && isset($ldistrict))
+        <?php $show = $ldistrict; ?>
+    @endif
+    @if(Auth::user()->user_id == 2 && isset($ltcName))
+        <?php $show = $ltcName; ?>
+    @endif
+    @if(Auth::user()->user_id == 4 && isset($ldivision))
+        <?php $show = $ldivision; ?>
+    @endif
+    @if(Auth::user()->user_id == 6 )
+        <?php $show = "Karnataka"; ?>
+    @endif
+    @endif
+    @if(Auth::check())
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ $show }}
+          <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+             <li><a  href="{{ URL::to('logout') }}" data-target="#login-modal" id="loginlogout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+          </ul>
+        </li>
+    @endif
     </ul>
   </div>
 </nav>

@@ -17,14 +17,12 @@ class TcMiddleware
      */
     public function handle($request, Closure $next)
     { 
-        if(Auth::check() && Auth::user()->user_id == 2){
+        if(Auth::check()){
 
-            return redirect('tcdashboard');
-        }
-       
-        else{
             return redirect('home');
         }
+       
+        
         return $next($request);
 
     }

@@ -20,6 +20,7 @@
           <th>Industry</th>
           <th>Loan</th>
           <th>Self Employed</th>
+          <th>Action</th>
          
         </tr>
             @foreach($data as $row)
@@ -35,6 +36,10 @@
                 <td>{{ $row->industry }}</td>
                 <td>{{ $row->loan }}</td>
                 <td>{{ $row->self_emp }}</td>
+                <td>
+                  <a href="#">
+                    <span class="glyphicon glyphicon-edit"></span>
+                  </a></td>
 
             </tr>
             @endforeach

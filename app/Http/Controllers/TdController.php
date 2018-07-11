@@ -561,10 +561,10 @@ class TdController extends Controller
         $dis=new districts();
         $dis_code = $dis->pluckDistrictCode($district);
         $data['tcinfo'] = $tccall->fetchTcListByDistrict($district);
-
+        $date = date('Y-m-d H:i:s');
         if($tc == "All")
         {
-            $data['info'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->select('training_batches.batch_id','training_batches.batch_name','training_batches.status','batches.start_date','batches.end_date','batches.no_of_stud','training_batches.action')->get();
+            $data['info'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->select('training_batches.batch_id','training_batches.batch_name','training_batches.status','training_centres.centre_name','batches.start_date','batches.end_date','batches.no_of_stud','training_batches.action')->get();
 
             $data['status']=$tcactive = DB::table('training_centres')->where('district',$district)->count();
 
@@ -594,10 +594,19 @@ class TdController extends Controller
             ->where('batch_candidates.academic_year',$year)->where('batch_candidates.employment_status','Yes')->count();
 
             $data['placementexpense'] = DB::table('batch_employment_expenses')->join('batches','batches.batch_id','=','batch_employment_expenses.batch_id')->where('batch_employment_expenses.academic_year',$year)->where('batches.district_id',$dis_code)->sum('expense');
+
+            $data['activebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->where('training_batches.action',"Start")->get();
+
+            $data['nactivebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->where('batches.start_date','<',$date)->where('training_batches.action',NULL)->get();
+
+            $data['idlebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->where('batches.start_date','>',$date)->get();
+
+            $data['completed'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->where('training_batches.action','=','Completed')->get();
+
         }
         else
         {
-            $data['info'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->select('training_batches.batch_id','training_batches.batch_name','training_batches.status','batches.start_date','batches.end_date','batches.no_of_stud','training_batches.action')->get();
+            $data['info'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->select('training_batches.batch_id','training_batches.batch_name','training_batches.status','training_centres.centre_name','batches.start_date','batches.end_date','batches.no_of_stud','training_batches.action')->get();
 
             $data['active']= DB::table('training_centres')->where('centre_id',$tc)->where('centre_status','Approved')->count();
 
@@ -623,6 +632,14 @@ class TdController extends Controller
             $data['candidateplaced'] = DB::table('batch_candidates')->where('centre_id',$tc)->where('academic_year',$year)->where('employment_status','Yes')->count();
 
             $data['placementexpense'] = DB::table('batch_employment_expenses')->where('centre_id',$tc)->where('academic_year',$year)->sum('expense');
+
+            $data['activebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->where('training_batches.action',"Start")->get();
+
+            $data['nactivebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->where('batches.start_date','<',$date)->where('training_batches.action',NULL)->get();
+            
+            $data['idlebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->where('batches.start_date','>',$date)->get();
+
+            $data['completed'] = DB::table('training_batches')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.centre_id',$tc)->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$dis_code)->where('training_batches.action','=','Completed')->get();
         }
         
       
@@ -666,7 +683,7 @@ class TdController extends Controller
         $data['districts'] = $dis->getDistrictByDivision($data['division']);
         $data['tcinfo'] = $tccall->fetchDistrictwiseTc($did);
 
-
+        $date = date('Y-m-d H:i:s');
         
         if((!empty($did) && $did != "all" ) && $tcid == "all")
         {
@@ -699,6 +716,14 @@ class TdController extends Controller
 
             $data['placementexpense'] = DB::table('batch_employment_expenses')->join('batches','batches.batch_id','=','batch_employment_expenses.batch_id')->where('batch_employment_expenses.academic_year',$year)->where('batches.district_id',$did)->sum('expense');
 
+            $data['activebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$did)->where('training_batches.action',"Start")->get();
+
+            $data['nactivebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$did)->where('batches.start_date','<',$date)->where('training_batches.action',NULL)->get();
+
+            $data['idlebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$did)->where('batches.start_date','>',$date)->get();
+
+            $data['completed'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$did)->where('training_batches.action','=','Completed')->get();
+
           
         }
         else if((!empty($did) && $did != "all" ) && (!empty($tcid) && $tcid != "all" ))
@@ -727,6 +752,16 @@ class TdController extends Controller
             $data['candidateplaced'] = DB::table('batch_candidates')->where('centre_id',$tcid)->where('academic_year',$year)->where('employment_status','Yes')->count();
 
             $data['placementexpense'] = DB::table('batch_employment_expenses')->where('centre_id',$tcid)->where('academic_year',$year)->sum('expense');
+
+             $data['activebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tcid)->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$did)->where('training_batches.action',"Start")->get();
+
+            $data['nactivebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tcid)->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$did)->where('batches.start_date','<',$date)->where('training_batches.action',NULL)->get();
+            
+            $data['idlebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.centre_id',$tcid)->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$did)->where('batches.start_date','>',$date)->get();
+
+            $data['completed'] = DB::table('training_batches')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.centre_id',$tcid)->where('training_batches.batch_academic_year',$year)->where('batches.district_id',$did)->where('training_batches.action','=','Completed')->get();
+
+
         }
         else
         {
@@ -763,6 +798,14 @@ class TdController extends Controller
             ->where('batch_candidates.academic_year',$year)->where('batch_candidates.employment_status','Yes')->count();
 
             $data['placementexpense'] = DB::table('batch_employment_expenses')->join('batches','batches.batch_id','=','batch_employment_expenses.batch_id')->where('batch_employment_expenses.academic_year',$year)->whereIn('batches.district_id',$disids)->sum('expense');
+
+            $data['activebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->whereIn('batches.district_id',$disids)->where('training_batches.action',"Start")->get();
+
+            $data['nactivebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->whereIn('batches.district_id',$disids)->where('batches.start_date','<',$date)->where('training_batches.action',NULL)->get();
+
+            $data['idlebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->whereIn('batches.district_id',$disids)->where('batches.start_date','>',$date)->get();
+
+            $data['completed'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->whereIn('batches.district_id',$disids)->where('training_batches.action','=','Completed')->get();
 
         }
         return view('reports.dddashboard')->with('data',$data);
@@ -968,4 +1011,63 @@ class TdController extends Controller
         $data = $oldr->where('district',$district)->paginate(10);
         return view('tdview.fulldetails',compact('data','district'));
     }
+
+    public function fetchSTDashboardInfo() 
+    {
+        $year = NULL;
+        if($year == NULL){
+            $now = new DateTime();
+            $year1 = $now->format("Y");
+            $year2 = (int)$year1+1;
+            $year = $year1.'-'.$year2;
+        }
+         if(Input::get('fiscalyear'))
+           $data['acyear'] = $year = Input::get('fiscalyear');
+        $data['acyear'] = $year;
+
+        $data['academicyear']=$academicyear=academicyear::all();
+        $date = date('Y-m-d H:i:s');
+            $data['status']=$tcactive = DB::table('training_centres')->count(); 
+
+            $data['active']= DB::table('training_centres')->where('centre_status','Approved')->count();
+
+            $data['idle']= DB::table('training_centres')->where('centre_status','created')->count();
+
+             $data['defunt']= DB::table('training_centres')->where('centre_status','Rejected')->count();
+
+            $data['nobatch'] = DB::table('training_batches')->where('batch_academic_year',$year)->count();
+
+            $data['nocandidate'] = DB::table('batch_candidates')->join('batches','batch_candidates.batch_id','=','batches.batch_id')
+            
+            ->where('batch_candidates.academic_year',$year)->count();
+
+            $data['stipend'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.batch_academic_year',$year)->sum('stipend');
+
+            $data['inst_exp'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.batch_academic_year',$year)->sum('inst_exp');
+
+            $data['rawmaterial'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.batch_academic_year',$year)->sum('raw_material');
+
+             $data['total_exp'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->where('training_batches.batch_academic_year',$year)->sum('total_expense');
+
+            $data['candidateplaced'] = DB::table('batch_candidates')->join('batches','batch_candidates.batch_id','=','batches.batch_id')
+           ->where('batch_candidates.academic_year',$year)->where('batch_candidates.employment_status','Yes')->count();
+
+            $data['placementexpense'] = DB::table('batch_employment_expenses')->join('batches','batches.batch_id','=','batch_employment_expenses.batch_id')->where('batch_employment_expenses.academic_year',$year)->sum('expense');
+
+            $data['activebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('training_batches.action',"Start")->get();
+
+            $data['nactivebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.start_date','<',$date)->where('training_batches.action',NULL)->get();
+
+            $data['idlebatch'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('batches.start_date','>',$date)->get();
+
+            $data['completed'] = DB::table('training_batches')->join('batches','batches.batch_id','=','training_batches.batch_id')->join('training_centres','training_centres.centre_id','=','training_batches.centre_id')->where('training_batches.batch_academic_year',$year)->where('training_batches.action','=','Completed')->get();
+
+             $data['olddata'] =DB::table('old_records')
+                     ->select(DB::raw('count(district) as ovcount, district'))
+                     ->groupBy('district')
+                     ->get();
+
+            return view('reports.stdashboard')->with('data',$data);
+    }
+    
 }
