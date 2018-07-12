@@ -17,12 +17,12 @@ $( document ).ready(function() {
 
     $("#form2").submit(function(e){
 
-        var ubank_name_check = validate_inputtext(req_reg, 'ubank_name');
-        var ubank_uname_check = validate_inputtext(name_reg, 'ubank_uname');
-        var ubank_branch_check = validate_inputtext(req_reg, 'ubank_branch');
-        var ubank_actype_check = validate_radio(req_reg, 'ubank_actype');
-        var ubank_acno_check = validate_inputtext(req_reg, 'ubank_acno');
-        var ubank_ifsc_check = validate_inputtext(req_reg, 'ubank_ifsc');
+        // var ubank_name_check = validate_inputtext(req_reg, 'ubank_name');
+        // var ubank_uname_check = validate_inputtext(name_reg, 'ubank_uname');
+        // var ubank_branch_check = validate_inputtext(req_reg, 'ubank_branch');
+        // var ubank_actype_check = validate_radio(req_reg, 'ubank_actype');
+        // var ubank_acno_check = validate_inputtext(req_reg, 'ubank_acno');
+        // var ubank_ifsc_check = validate_inputtext(req_reg, 'ubank_ifsc');
         
         var name_check = validate_inputtext(name_reg, 'name');
         var salutation_check = validate_dropdown(req_reg, 'salutation');
@@ -38,7 +38,7 @@ $( document ).ready(function() {
         var aadhaar_file_check = validate_file('aadhaar_file');
         var training_cert_check = validate_file('training_cert');
         var ind_licence_copy_check = validate_file('ind_licence_copy');
-        var prepBank_sancLetter_check = validate_file('prepBank_sancLetter');
+        // var prepBank_sancLetter_check = validate_file('prepBank_sancLetter');
         var general_licence_copy_check = validate_file('general_licence_copy');
         
         var resi_mobile_check = validate_inputtext(mob_reg, 'resi_mobile');
@@ -53,10 +53,10 @@ $( document ).ready(function() {
         var building_own_type_check = validate_radio(req_reg, 'building_own_type');
         var facility_sel_check = validate_dropdown(req_reg, 'facility_sel');
 
-        var prepBank_type_check = validate_radio(req_reg, 'prepBank_type');
-        var prepBank_bankname_check = validate_inputtext(req_reg, 'prepBank_bankname');
-        var prepBank_loanamt_check = validate_inputtext(num_reg, 'prepBank_loanamt');
-        var prepBank_date_check = validate_inputtext(date_reg, 'prepBank_date');
+        // var prepBank_type_check = validate_radio(req_reg, 'prepBank_type');
+        // var prepBank_bankname_check = validate_inputtext(req_reg, 'prepBank_bankname');
+        // var prepBank_loanamt_check = validate_inputtext(num_reg, 'prepBank_loanamt');
+        // var prepBank_date_check = validate_inputtext(date_reg, 'prepBank_date');
 
         // cast certificate only for SC/ST
         var caste_certificate_check = false;
@@ -78,7 +78,7 @@ $( document ).ready(function() {
         var space_sqft_check = validate_inputtext(num_reg, 'space_sqft');
         var app_place_check = validate_inputtext(req_reg, 'app_place');
 
-        if(ubank_name_check && ubank_uname_check && ubank_branch_check && ubank_actype_check && ubank_acno_check && ubank_ifsc_check && name_check && salutation_check && fin_year_check && resi_houseno_check && resi_wardno_check && resi_crossno_check && resi_village_check && resi_taluk_check && resi_district_check && resi_pin_check && photo_check && aadhaar_file_check && training_cert_check && ind_licence_copy_check && general_licence_copy_check && prepBank_sancLetter_check && resi_mobile_check && app_district_check && fwh_name_check && appdate_check && age_check && aadhaar_check && connect_load_check && gender_check && castecategory_check && facility_sel_check && prepBank_type_check && prepBank_bankname_check && prepBank_loanamt_check && prepBank_date_check && caste_certificate_check && income_check && building_docs_check && rr_number_check && msme_number_check && num_of_looms_check && msme_number_check && plan_uadd_check && space_sqft_check && app_place_check && building_own_type_check){
+        if(name_check && salutation_check && fin_year_check && resi_houseno_check && resi_wardno_check && resi_crossno_check && resi_village_check && resi_taluk_check && resi_district_check && resi_pin_check && photo_check && aadhaar_file_check && training_cert_check && ind_licence_copy_check && general_licence_copy_check && resi_mobile_check && app_district_check && fwh_name_check && appdate_check && age_check && aadhaar_check && connect_load_check && gender_check && castecategory_check && facility_sel_check && caste_certificate_check && income_check && building_docs_check && rr_number_check && msme_number_check && num_of_looms_check && msme_number_check && plan_uadd_check && space_sqft_check && app_place_check && building_own_type_check){
             $("#errorsummer").html('');
             return true;
         }

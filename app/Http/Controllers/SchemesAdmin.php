@@ -11,6 +11,7 @@ use App\DistAppCommits;
 use App\DivAppCommits;
 use App\FieldInspection;
 use View;
+use DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
@@ -49,6 +50,42 @@ class SchemesAdmin extends Controller
 
             $dividata['ps_apps_received'] = powerSubsidyApps::whereIn('app_district', $dists_under_div)->count();
             $dividata['ps_apps_complted'] = powerSubsidyApps::whereIn('app_district', $dists_under_div)->where('app_status', '=', 'closed')->count();
+
+            return view('weavers.schemeDashboard')->with('appsdata',$dividata);
+        }
+        if($userRole == 'SD'){
+            $did = $request->current_did;
+            $division_name = $request->division_name;
+            $dists_under_div = districts::select('id')->where('division', '=', $division_name)->get();
+
+            $dividata['userRole'] = $userRole;
+            $dividata['adminTypeName'] = $division_name;
+            $dividata['ej2l_apps_received'] = ej2l_Applications::count(); 
+            $dividata['ej2l_apps_complted'] = ej2l_Applications::where('app_status', '=', 'closed')->count();  
+
+            $dividata['ps_apps_received'] = powerSubsidyApps::count();
+            $dividata['ps_apps_complted'] = powerSubsidyApps::where('app_status', '=', 'closed')->count();  
+
+            $dividata['ps_apps_uploaded'] = powerSubsidyApps::where('is_complete', '=', 'no')->count();   
+            $dividata['ps_apps_submitted'] = powerSubsidyApps::where('is_complete', '=', 'yes')->count(); 
+              
+            $dividata['ps_field_inspections'] = FieldInspection::where('appType', '=', 'power_subsidy')->count();
+            $dividata['ej_field_inspections'] = FieldInspection::where('appType', '=', 'ej_2l')->count();
+
+
+            $dividata['ps_districtwise'] = DB::table('power_subsidy_apps')
+            ->rightjoin('districts', 'power_subsidy_apps.app_district', '=', 'districts.id')
+            ->select(DB::raw('count(power_subsidy_apps.id) as total'), 'districts.id as did', 'districts.district_name')
+            ->groupBy('districts.id')
+            ->get();
+
+            $dividata['ej_districtwise'] = DB::table('ej2l_Applications')
+            ->rightjoin('districts', 'ej2l_Applications.app_district', '=', 'districts.id')
+            ->select(DB::raw('count(ej2l_Applications.id) as total'), 'districts.id as did', 'districts.district_name')
+            ->groupBy('districts.id')
+            ->get();
+
+
 
             return view('weavers.schemeDashboard')->with('appsdata',$dividata);
         }

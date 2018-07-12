@@ -41,12 +41,7 @@
                         @endif
                     </td>
                     <td>
-                        @if ($app->is_complete == 'yes')
-                            <a class="btn btn-sm btn-info" href="{{ url('/weavers/ej-2loom-app/details/'.$app->id)}}">View details</a>
-                        @endif
-                        @if ($app->is_complete == 'no')
-                            <a class="btn btn-sm btn-warning" href="{{ url('/weavers/ej-2loom-app/details/'.$app->id)}}">Edit form</a>
-                        @endif
+                        <a class="btn btn-sm btn-info" href="{{ url('/weavers/ej-2loom-app/details/'.$app->id)}}">View details</a>
                     </td>
                 </tr>
                 @endforeach

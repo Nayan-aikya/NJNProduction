@@ -16,6 +16,9 @@
     @if($appsdata['userRole'] == 'DD')
     <h4 class="text-center pad_bottom_20 pad_top_20">WELCOME TO {{ $appsdata['adminTypeName']}} DIVISION.</h4>
     @endIf
+     @if($appsdata['userRole'] == 'SD')
+    <h4 class="text-center pad_bottom_20 pad_top_20">WELCOME TO KARNATAKA STATE.</h4>
+    @endIf
 
     @if($errors->any())
     <ul class="list-unstyled">
@@ -24,7 +27,7 @@
     @endforeach
     </ul>
     @endif
-    @if($appsdata['userRole'] != 'TC')
+    @if($appsdata['userRole'] == 'DD' || $appsdata['userRole'] == 'TD')
     <div class="row">
         <div class="col-md-6">
             <div class="well wellbox2">
@@ -58,6 +61,47 @@
                     </li>
                     <li class="list-group-item text-center">
                       <a href="{{ url('/weavers/powersubsidy-list') }}" class="btn btn-success">View applications</a> <a href="{{ url('/weavers/powersubsidy-apply') }}" class="btn btn-info">Fill application</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    @endif
+    @if($appsdata['userRole'] == 'SD')
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well wellbox2">
+                <h2 style="font-size: 15pt;text-align: left;">2 loom, Elecronic Jacquard and Knotting machine scheme</h2>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                      <span class="badge">{{ $appsdata['ej2l_apps_received'] }}</span>
+                      Applications received
+                    </li>
+                    <li class="list-group-item">
+                      <span class="badge">{{ $appsdata['ej2l_apps_complted'] }}</span>
+                      Applications processed
+                    </li>
+                    <li class="list-group-item text-center">
+                      <a href="{{ url('/weavers/schemes') }}" class="btn btn-success">View details</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="well wellbox2">
+                <h2 style="font-size: 15pt;text-align: left;">Power subsidy</h2>
+                <ul class="list-group">
+                <li class="list-group-item">
+                      <span class="badge">{{ $appsdata['ps_apps_received'] }}</span>
+                      Applications received
+                    </li>
+                    <li class="list-group-item">
+                      <span class="badge">{{ $appsdata['ps_apps_complted'] }}</span>
+                      Applications processed
+                    </li>
+                    <li class="list-group-item text-center">
+                      <a href="{{ url('/weavers/schemes') }}" class="btn btn-success">View details</a>
                     </li>
                 </ul>
             </div>

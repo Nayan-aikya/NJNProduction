@@ -4,7 +4,7 @@
 @stop
 @section('content')
     <div class="container">
-    <h2 class="text-center">Applications received for power subsidy</h2>
+    <h2 class="text-center">Applications received for power subsidy (2017-18)</h2>
     @if(session()->has('error'))
     <div class="alert alert-danger">
         {{ session()->get('error') }}

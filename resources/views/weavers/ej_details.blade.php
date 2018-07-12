@@ -302,7 +302,7 @@
                     <li class="list-group-item active text-bold"><b>Timelines</b></li>
                     <li class="list-group-item">
                         <b>Application</b><br>
-                        Received: {{$app->app_date}}<br>
+                        Received: {{$app->appdate}}<br>
                         Current status: {{$app->app_status}}
                     </li>
                     <li class="list-group-item">
@@ -328,7 +328,7 @@
                     <a href="#" id="printThis" class="btn btn-success btn-md">Print applition<br><span class="glyphicon glyphicon-print" aria-hidden="true"></span></a>
                     <a href="{{ url('/weavers/ej-2loom-getzip/'.$app->id) }}" class="btn btn-info btn-md">Download all attachments<br><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
                     <hr>
-                    @if($app->app_status == 'applied' && $app->userRole == 'TD' && !isset($app->dist_remarks->remarks))
+                    @if($app->app_status == 'applied' && $app->userRole == 'TD' && isset($app->insp_remarks->ins_status) && !isset($app->dist_remarks->remarks))
                     <div class="dd-comment">
                     <h4 class="text-center">Add remarks</h4>
                         {{ Form::open(array('url' => 'weavers/ej-2loom-addremarks')) }}
@@ -338,7 +338,7 @@
                         {{ Form::close() }}
                     </div>
                     @endif
-                    @if($app->app_status == 'applied' && $app->userRole == 'DD' && !isset($app->div_remarks->remarks))
+                    @if($app->app_status == 'applied' && $app->userRole == 'DD' && isset($app->insp_remarks->ins_status) && isset($app->dist_remarks->remarks) && !isset($app->div_remarks->remarks))
                     <div class="dd-comment">
                     <h4 class="text-center">Add remarks</h4>
                         {{ Form::open(array('url' => 'weavers/ej-2loom-addremarks')) }}

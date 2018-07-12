@@ -363,4 +363,3 @@ function validate_file(fileFieldname) {
         return true;
     }
 }
-

@@ -71,23 +71,24 @@ class WeaverController extends Controller
             "rr_number" => 'required',
             "connect_load" => 'required|numeric',
             "building_own_type" => 'required|in:Own,Rent,Lease',
-            "prepBank_type" => 'required',
-            "prepBank_bankname" => 'required',
-            "prepBank_loanamt" => 'required',
-            "prepBank_date" => 'required',
-            "ubank_name" => 'required',
-            "ubank_uname" => 'required',
-            "ubank_branch" => 'required',
-            "ubank_actype" => 'required|in:SB,current',
-            "ubank_acno" => 'required',
-            "ubank_ifsc" => 'required',
+            // "prepBank_type" => 'required',
+            // "prepBank_bankname" => 'required',
+            // "prepBank_loanamt" => 'required',
+            // "prepBank_date" => 'required',
+            // "ubank_name" => 'required',
+            // "ubank_uname" => 'required',
+            // "ubank_branch" => 'required',
+            // "ubank_actype" => 'required|in:SB,current',
+            // "ubank_acno" => 'required',
+            // "ubank_ifsc" => 'required',
             "appdate" => 'required',
             "app_place" => 'required',
-            "photo" => 'required',
-            "ind_licence_copy" => 'required',
-            'general_licence_copy' => 'required',
-            "prepBank_sancLetter" => 'required',
-            "aadhaar_file" => 'required',
+            "photo" => 'required|file',
+            // "prepBank_sancLetter" => 'required',
+            "aadhaar_file" => 'required|file',
+            "training_cert" => 'required|file',
+            "general_licence_copy" => 'required|file',
+            "ind_licence_copy" => 'required|file',
         );
         $validator = Validator::make(Input::all(), $rules);
         if($validator->fails()){
@@ -620,4 +621,3 @@ class WeaverController extends Controller
         return View::make('weavers.invest_list')->with('applications',$applications);
     }
 }
-

@@ -100,11 +100,13 @@ class HomeController extends Controller
         if($userRole  == 'SD'){
 
             $dividata['adminTypeName'] = "";
-            $dividata['ej2l_apps_received'] = "";
-            $dividata['ej2l_apps_complted'] = "";
+            $dividata['ej2l_apps_received'] = ej2l_Applications::count(); 
+            $dividata['ej2l_apps_complted'] = ej2l_Applications::where('app_status', '=', 'closed')->count();  
 
-            $dividata['ps_apps_received'] ="";
-            $dividata['ps_apps_complted'] = "";
+            $dividata['ps_apps_received'] = powerSubsidyApps::count();
+            $dividata['ps_apps_complted'] = powerSubsidyApps::where('app_status', '=', 'closed')->count();  
+
+
             $dividata['status'] = DB::table('training_centres')->count();
        
 

@@ -234,45 +234,47 @@
                                                     <tr>
                                                         <td>Pirn winding machine</td>
                                                         <td>{{$val->pirnwind->avail or ''}}</td>
-                                                        <td>{{$val->pirnwind->num_loom}}</td>
-                                                        <td>{{$val->pirnwind->num_mcs}}</td>
-                                                        <td>{{$val->pirnwind->power}}</td>
+                                                        <td>{{$val->pirnwind->num_loom or ''}}</td>
+                                                        <td>{{$val->pirnwind->num_mcs or ''}}</td>
+                                                        <td>{{$val->pirnwind->power or ''}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td>Bobbin/dubbling/winding</td>
                                                         <td>{{$val->bbdbwi->avail or ''}}</td>
-                                                        <td>{{$val->bbdbwi->num_loom}}</td>
-                                                        <td>{{$val->bbdbwi->num_mcs}}</td>
-                                                        <td>{{$val->bbdbwi->power}}</td>
+                                                        <td>{{$val->bbdbwi->num_loom or ''}}</td>
+                                                        <td>{{$val->bbdbwi->num_mcs or ''}}</td>
+                                                        <td>{{$val->bbdbwi->power or ''}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td>Warping machine</td>
                                                         <td>{{$val->wrp->avail or ''}}</td>
-                                                        <td>{{$val->wrp->num_loom}}</td>
-                                                        <td>{{$val->wrp->num_mcs}}</td>
-                                                        <td>{{$val->wrp->power}}</td>
+                                                        <td>{{$val->wrp->num_loom or ''}}</td>
+                                                        <td>{{$val->wrp->num_mcs or ''}}</td>
+                                                        <td>{{$val->wrp->power or ''}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td>Twisting machine</td>
                                                         <td>{{$val->twst->avail or ''}}</td>
-                                                        <td>{{$val->twst->num_loom}}</td>
-                                                        <td>{{$val->twst->num_mcs}}</td>
-                                                        <td>{{$val->twst->power}}</td>
+                                                        <td>{{$val->twst->num_loom or ''}}</td>
+                                                        <td>{{$val->twst->num_mcs or ''}}</td>
+                                                        <td>{{$val->twst->power or ''}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td>Other machines<br>
-                                                            @if ($val->other->othername)
-                                                            {{$val->other->othername}}
-                                                            @endif
+                                                            <?php
+                                                            if(isset($val->other->othername)){
+                                                                echo $val->other->othername;
+                                                            }
+                                                            ?>
                                                         </td>
                                                         <td>{{$val->other->avail or ''}}</td>
-                                                        <td>{{$val->other->num_loom}}</td>
-                                                        <td>{{$val->other->num_mcs}}</td>
-                                                        <td>{{$val->other->power}}</td>
+                                                        <td>{{$val->other->num_loom or ''}}</td>
+                                                        <td>{{$val->other->num_mcs or ''}}</td>
+                                                        <td>{{$val->other->power or ''}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="4">Total</td>
-                                                        <td>{{$val->totalpower}}</td>
+                                                        <td>{{$val->totalpower  or ''}}</td>
                                                     </tr>
                                                 </table>
                                             <?php
@@ -312,7 +314,8 @@
                                 <tr>
                                     <td colspan="4">
                                         <?php
-                                        $temp = json_decode($app->mctype4);                                            
+                                        if(isset($app->mctype4)){
+                                        $temp = json_decode($app->mctype4);                                           
                                         ?>
                                         <table width="100%" border="1" style="border-collapse: collapse; border:1px solid #ccc;">
                                             <tr>
@@ -329,6 +332,9 @@
                                                 }
                                             ?>
                                         </table>
+                                        <?php
+                                        }
+                                        ?>
                                     </td>
                                 </tr>
                                 <tr>
@@ -474,7 +480,7 @@
                     <hr>
                     
 
-                    @if($app->app_status == 'applied' && $app->userRole == 'TD' && !isset($app->dist_remarks->remarks))
+                    @if($app->app_status == 'applied' && $app->userRole == 'TD' && isset($app->insp_remarks->ins_status) && !isset($app->dist_remarks->remarks))
                     <div class="dd-comment">
                     <h4 class="text-center">Add remarks</h4>
                         {{ Form::open(array('url' => 'weavers/powersubsidy-addremarks')) }}
@@ -484,7 +490,7 @@
                         {{ Form::close() }}
                     </div>
                     @endif
-                    @if($app->app_status == 'applied' && $app->userRole == 'DD' && !isset($app->div_remarks->remarks))
+                    @if($app->app_status == 'applied' && $app->userRole == 'DD' && isset($app->insp_remarks->ins_status) && isset($app->dist_remarks->remarks) && !isset($app->div_remarks->remarks))
                     <div class="dd-comment">
                     <h4 class="text-center">Add remarks</h4>
                         {{ Form::open(array('url' => 'weavers/powersubsidy-addremarks')) }}
@@ -527,4 +533,3 @@ $(function () {
 });
 </script>
 @stop
-

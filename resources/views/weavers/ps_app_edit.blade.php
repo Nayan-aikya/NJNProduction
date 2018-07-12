@@ -66,6 +66,7 @@ foreach ($app->dists as $data)
                 <div class="col-sm-4 text-center">
                         <p class=""><label>For the financial year </label><br>
                             {{ Form::select('fin_year', [
+                                ''=>'Select',
                                 '2018-19'=>'2018-19',
                                 '2017-18' => '2017-18',
                                 '2016-17' => '2016-17',
